@@ -497,6 +497,7 @@
         <button onclick="closeRulesModal()" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <div class="text-xs text-gray-300 flex flex-col gap-3 leading-relaxed">
+        <p>• <strong>Günün Yarışması:</strong> Toplam 3 Set (18 Etap). 1. Set standart, 2. Set 1.5 katı, 3. Set ise 2 katı puan kazandırır.</p>
         <p>• <strong>Oda Kodu ile Rekabet:</strong> Kodlu tüm meydan okumalarda eşitlik için süre <strong>90 saniye</strong>ye sabitlenir.</p>
         <p>• <strong>Kelime Etapları:</strong> Türk Dil Kurumu uyumlu txt sözlüğü ile doğrulama yapılır. Harf sayısı kadar puan kazanırsınız. 9 harfli kelimeler 15 puandır.</p>
         <p>• <strong>İşlem Etapları:</strong> Hedef sayıya tam ulaşan 10 puan alır. Yakınlaşma derecesine göre puanlama yapılır.</p>
@@ -771,7 +772,9 @@
       isTimerRunning: false,
       history: [],
       stageData: null,
-      practiceType: 'word'
+      practiceType: 'word',
+      // Günün Yarışması İçin Set Puanları (3 Set x 6 Oyun = 18 Oyun)
+      dailySetScores: [0, 0, 0] 
     };
 
     let timerInterval = null;
@@ -801,6 +804,27 @@
       return pool[0];
     }
 
+    function getTodaySeedString() {
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const yyyy = today.getFullYear();
+      return `GUNUN-YARISMASI-${dd}${mm}${yyyy}`;
+    }
+
+    function getCurrentMultiplier() {
+      if (appState.mode !== GAME_MODES.DAILY) return 1.0;
+      if (appState.currentStageIndex < 6) return 1.0;
+      if (appState.currentStageIndex < 12) return 1.5;
+      return 2.0;
+    }
+
+    function getCurrentSetIndex() {
+      if (appState.currentStageIndex < 6) return 0;
+      if (appState.currentStageIndex < 12) return 1;
+      return 2;
+    }
+
     async function initGame() {
       await loadDictionaryFile();
       updateSoundUI();
@@ -824,6 +848,7 @@
       stopDraftTimer();
       appState.roundDuration = appState.userDefaultDuration;
       appState.seed = '';
+      appState.dailySetScores = [0, 0, 0];
       renderTimerModeInUI();
 
       const container = document.getElementById('main-stage-container');
@@ -832,23 +857,44 @@
       document.getElementById('footer-status-text').textContent = 'HAZIR • YARIŞMA MODUNU SEÇİNİZ';
       renderStageTrackerHeader();
 
+      const todayScore = localStorage.getItem(`daily_score_${getTodaySeedString()}`);
+
       container.innerHTML = `
         <div class="max-w-3xl mx-auto neon-panel p-6 sm:p-8 flex flex-col gap-6 text-center animate-fade-in">
           <div>
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-pink-950/60 border border-pink-500/50 text-pink-300 font-mono-label text-xs uppercase mb-3">
-              <i data-lucide="award" class="w-4 h-4"></i> YARIŞMA STÜDYOSU
+              <i data-lucide="award" class="w-4 h-4"></i> YARIŞMA STÜDYOSU V2.0
             </div>
             <h2 class="font-headline font-extrabold text-2xl sm:text-3xl text-white tracking-tight">OYNAMAK İSTEDİĞİNİZ MODU SEÇİN</h2>
-            <p class="text-sm text-gray-300 mt-2 max-w-lg mx-auto">İster klasik 8 etaplı yarışmada, ister 6 etaplık Kelime veya İşlem liglerinde yarışın.</p>
+            <p class="text-sm text-gray-300 mt-2 max-w-lg mx-auto">Günün Yarışması ile katlanan puan heyecanını yaşayın veya klasik liglerde yarışın.</p>
+          </div>
+
+          <!-- GÜNÜN YARIŞMASI ÖZEL KARTI -->
+          <div class="neon-panel-gold p-5 text-left flex flex-col sm:flex-row items-center justify-between gap-4 border-2 border-yellow-500/60 shadow-[0_0_20px_rgba(255,224,74,0.15)] relative overflow-hidden">
+            <div class="flex flex-col gap-1 z-10">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-yellow-400 text-black font-headline font-extrabold text-xs uppercase tracking-wider">ÖZEL MOD</span>
+                <span class="font-mono-label text-xs text-yellow-300">3 SET • 18 OYUN</span>
+              </div>
+              <h3 class="font-headline font-extrabold text-xl text-white flex items-center gap-2 mt-1">
+                <i data-lucide="calendar" class="w-5 h-5 text-yellow-400"></i> GÜNÜN YARIŞMASI
+              </h3>
+              <p class="text-xs text-gray-300 max-w-md">1. Set (x1.0) ➔ 2. Set (x1.5) ➔ 3. Set (x2.0). Bugünün özel sorularıyla rekabete katılın!</p>
+              ${todayScore ? `<div class="mt-2 text-xs font-mono-label text-emerald-400 font-bold">✓ Bugünü Tamamladınız! Skorunuz: ${todayScore} Puan</div>` : ''}
+            </div>
+
+            <button onclick="startMode('${GAME_MODES.DAILY}')" class="btn-gold px-6 py-3.5 text-xs font-extrabold shrink-0 flex items-center gap-2 text-base z-10">
+              <i data-lucide="play" class="w-5 h-5"></i> ${todayScore ? 'TEKRAR OYNA' : 'BAŞLA (x2 PUAN)'}
+            </button>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
             <button onclick="startMode('${GAME_MODES.TOURNAMENT}')" class="neon-panel p-4 hover:border-pink-500 hover:shadow-[0_0_16px_rgba(255,45,120,0.3)] transition cursor-pointer group flex flex-col justify-between">
               <div>
                 <div class="flex items-center justify-between mb-2">
-                  <span class="font-headline font-bold text-sm text-pink-400 group-hover:text-white flex items-center gap-1.5"><i data-lucide="trophy" class="w-4 h-4 text-pink-400"></i> BİR KELİME BİR İŞLEM</span>
+                  <span class="font-headline font-bold text-sm text-pink-400 group-hover:text-white flex items-center gap-1.5"><i data-lucide="trophy" class="w-4 h-4 text-pink-400"></i> KARMA ŞAMPİYONA</span>
                 </div>
-                <p class="text-xs text-gray-300">Klasik karma format. 4 Kelime + 4 İşlem (Toplam 8 Etap).</p>
+                <p class="text-xs text-gray-300">Klasik format. 4 Kelime + 4 İşlem (Toplam 8 Etap).</p>
               </div>
               <span class="text-[10px] font-mono-label text-pink-400 mt-3 block">8 ETAP • KARMA</span>
             </button>
@@ -881,7 +927,7 @@
                 <span class="font-headline font-bold text-sm text-yellow-300 flex items-center gap-1.5"><i data-lucide="key" class="w-4 h-4 text-yellow-400"></i> ODA KODU İLE REKABET</span>
                 <span class="text-[10px] font-mono-label bg-yellow-950 text-yellow-300 px-2 py-0.5 rounded border border-yellow-500/30">90 SN SABİT SÜRE</span>
               </div>
-              <p class="text-xs text-gray-300">Arkadaşınızın kodunu girin (Örn: VOLKAN433, 583-ROKET-433, PARİS26):</p>
+              <p class="text-xs text-gray-300">Arkadaşınızın kodunu girin (Örn: PARİS26, VOLKAN433):</p>
               <div class="flex items-center gap-2">
                 <input type="text" id="custom-seed-input" placeholder="Örn: PARİS26" class="flex-1 bg-surface-container-low border border-yellow-500/50 rounded px-3 py-2 text-xs text-white uppercase font-mono-label focus:outline-none focus:border-yellow-400">
                 <button onclick="startCustomSeedMode()" class="btn-gold px-4 py-2 text-xs font-bold shrink-0">GİR VE OYNA</button>
@@ -921,7 +967,7 @@
 
         stageLabels.push({
           type: isWord ? 'word' : 'math',
-          label: `E${i+1}: ${isWord ? 'KELİME' : 'İŞLEM'}`
+          label: `E${i+1}: ${isWord ? 'K' : 'İ'}`
         });
       }
 
@@ -929,10 +975,16 @@
         let stateClass = 'stage-pill';
         if (idx === appState.currentStageIndex) stateClass += ' is-active';
         else if (idx < appState.currentStageIndex) stateClass += ' is-done';
+
+        let extraBadge = '';
+        if (appState.mode === GAME_MODES.DAILY) {
+          if (idx === 6) extraBadge = ' <span class="text-yellow-400 text-[9px] font-bold">[x1.5]</span>';
+          if (idx === 12) extraBadge = ' <span class="text-pink-400 text-[9px] font-bold">[x2.0]</span>';
+        }
+
         return `
-          <div class="${stateClass}" title="${s.label}">
-            <span class="hide-mobile">${s.label}</span>
-            <span class="sm:hidden">${s.type === 'word' ? 'K' : 'İ'}${idx + 1}</span>
+          <div class="${stateClass}" title="Etap ${idx + 1}">
+            <span>${s.label}${idx + 1}</span>${extraBadge}
           </div>
         `;
       }).join('');
@@ -961,22 +1013,22 @@
       appState.mode = mode;
       appState.currentStageIndex = 0;
       appState.totalScore = 0;
+      appState.dailySetScores = [0, 0, 0];
       appState.history = [];
       document.getElementById('scoreboard-total').textContent = '0';
 
-      const effectiveMode = (mode === GAME_MODES.CUSTOM_SEED) ? appState.customSubType : mode;
-
-      if (effectiveMode === GAME_MODES.WORD_ONLY || effectiveMode === GAME_MODES.MATH_ONLY) {
+      if (mode === GAME_MODES.DAILY) {
+        appState.maxStages = 18; // 3 Set x 6 Oyun
+        appState.seed = getTodaySeedString();
+      } else if (mode === GAME_MODES.WORD_ONLY || mode === GAME_MODES.MATH_ONLY) {
         appState.maxStages = 6;
-      } else {
+        appState.seed = generateShareableSeed(mode);
+      } else if (mode === GAME_MODES.TOURNAMENT) {
         appState.maxStages = 8;
-      }
-
-      if (mode !== GAME_MODES.CUSTOM_SEED) {
         appState.seed = generateShareableSeed(mode);
       }
-      currentPRNG = Mulberry32(appState.seed);
 
+      currentPRNG = Mulberry32(appState.seed);
       loadCurrentStage();
     }
 
@@ -1023,19 +1075,22 @@
       else if (appState.mode === GAME_MODES.PRACTICE) isWordStage = (appState.practiceType === 'word');
       else isWordStage = (stageIndex % 2 === 0);
 
+      const mult = getCurrentMultiplier();
+      const multStr = mult > 1 ? ` (ÇARPAN: x${mult})` : '';
+
       document.getElementById('footer-status-text').textContent = appState.mode === GAME_MODES.PRACTICE 
         ? `ANTRENMAN MODU • ${isWordStage ? 'KELİME' : 'İŞLEM'}` 
-        : `ETAP ${stageIndex + 1} / ${appState.maxStages} • ${isWordStage ? 'KELİME' : 'İŞLEM'} ETABI`;
+        : `ETAP ${stageIndex + 1} / ${appState.maxStages} • ${isWordStage ? 'KELİME' : 'İŞLEM'} ETABI${multStr}`;
 
       if (isWordStage) setupWordStage();
       else setupMathStage();
     }
 
     /* ==========================================================================
-       5. KELİME ETABI AKIŞI (3 ÜNLÜ + 5 ÜNSÜZ KURAL KISITLAMALI)
+       5. KELİME ETABI AKIŞI
        ========================================================================== */
     function setupWordStage() {
-      const isCustomSeed = (appState.mode === GAME_MODES.CUSTOM_SEED);
+      const isCustomSeed = (appState.mode === GAME_MODES.CUSTOM_SEED || appState.mode === GAME_MODES.DAILY);
 
       const predeterminedVowels = [];
       for (let i = 0; i < 3; i++) {
@@ -1263,6 +1318,8 @@
             </div>
           `).join('');
 
+      const mult = getCurrentMultiplier();
+
       container.innerHTML = `
         <div class="max-w-2xl mx-auto flex flex-col gap-5 animate-fade-in">
 
@@ -1270,6 +1327,7 @@
             <div class="flex items-center gap-2">
               <span class="w-3 h-3 rounded-full bg-pink-500 animate-ping"></span>
               <span class="font-headline font-bold text-sm text-pink-300">KELİME ETABI</span>
+              ${mult > 1 ? `<span class="px-2 py-0.5 rounded bg-yellow-400 text-black font-extrabold font-mono-label text-xs">x${mult} PUAN</span>` : ''}
             </div>
             <div class="flex items-center gap-2">
               <i data-lucide="clock" class="w-4 h-4 text-pink-400"></i>
@@ -1369,15 +1427,23 @@
       const len = wordStr.length;
       const isValid = (len >= 2 && isValidTurkishWord(wordStr));
 
-      let points = 0;
+      let basePoints = 0;
       if (isValid) {
-        points = (len === 9) ? 15 : len;
+        basePoints = (len === 9) ? 15 : len;
         soundSuccess();
       } else {
         soundFail();
       }
 
-      appState.totalScore += points;
+      const mult = getCurrentMultiplier();
+      const finalPoints = Math.round(basePoints * mult);
+
+      if (appState.mode === GAME_MODES.DAILY) {
+        const setIdx = getCurrentSetIndex();
+        appState.dailySetScores[setIdx] += finalPoints;
+      }
+
+      appState.totalScore += finalPoints;
       document.getElementById('scoreboard-total').textContent = String(appState.totalScore);
 
       const roundRecord = {
@@ -1386,7 +1452,9 @@
         letters: [...appState.stageData.letters],
         userAnswer: wordStr || '(Cevap Yok)',
         isValid: isValid,
-        pointsAwarded: points,
+        basePoints: basePoints,
+        multiplier: mult,
+        pointsAwarded: finalPoints,
         timeUsed: appState.roundDuration - appState.timerRemaining,
         bestWords: appState.stageData.bestWords.slice(0, 5)
       };
@@ -1466,12 +1534,15 @@
             </div>
           `).join('');
 
+      const mult = getCurrentMultiplier();
+
       container.innerHTML = `
         <div class="max-w-2xl mx-auto flex flex-col gap-4 animate-fade-in">
           <div class="neon-panel p-4 flex items-center justify-between">
             <div class="flex items-center gap-2">
               <span class="w-3 h-3 rounded-full bg-cyan-400 animate-ping"></span>
               <span class="font-headline font-bold text-sm text-cyan-300">İŞLEM ETABI</span>
+              ${mult > 1 ? `<span class="px-2 py-0.5 rounded bg-yellow-400 text-black font-extrabold font-mono-label text-xs">x${mult} PUAN</span>` : ''}
             </div>
             <div class="flex items-center gap-2">
               <i data-lucide="clock" class="w-4 h-4 text-cyan-400"></i>
@@ -1595,20 +1666,28 @@
         }
       });
 
-      let points = 0;
-      if (closestDiff === 0) points = 10;
-      else if (closestDiff === 1) points = 9;
-      else if (closestDiff === 2) points = 8;
-      else if (closestDiff === 3) points = 7;
-      else if (closestDiff === 4) points = 6;
-      else if (closestDiff === 5) points = 5;
-      else if (closestDiff <= 10) points = 3;
-      else points = 0;
+      let basePoints = 0;
+      if (closestDiff === 0) basePoints = 10;
+      else if (closestDiff === 1) basePoints = 9;
+      else if (closestDiff === 2) basePoints = 8;
+      else if (closestDiff === 3) basePoints = 7;
+      else if (closestDiff === 4) basePoints = 6;
+      else if (closestDiff === 5) basePoints = 5;
+      else if (closestDiff <= 10) basePoints = 3;
+      else basePoints = 0;
+
+      const mult = getCurrentMultiplier();
+      const finalPoints = Math.round(basePoints * mult);
 
       if (points >= 8) soundSuccess();
       else soundFail();
 
-      appState.totalScore += points;
+      if (appState.mode === GAME_MODES.DAILY) {
+        const setIdx = getCurrentSetIndex();
+        appState.dailySetScores[setIdx] += finalPoints;
+      }
+
+      appState.totalScore += finalPoints;
       document.getElementById('scoreboard-total').textContent = String(appState.totalScore);
 
       const roundRecord = {
@@ -1619,7 +1698,9 @@
         userValue: closestVal,
         userSteps: [...data.steps],
         diff: closestDiff,
-        pointsAwarded: points,
+        basePoints: basePoints,
+        multiplier: mult,
+        pointsAwarded: finalPoints,
         timeUsed: appState.roundDuration - appState.timerRemaining,
         bestSolver: data.bestSolver
       };
@@ -1666,7 +1747,7 @@
           <h3 class="font-headline font-extrabold text-xl text-white">
             ${isPractice ? 'ANTRENMAN SONUCU' : `ETAP ${record.stageIndex + 1} / ${maxStg} SONUCU`}
           </h3>
-          <span class="font-mono-label text-sm text-pink-400 font-bold">+${record.pointsAwarded} PUAN</span>
+          <span class="font-mono-label text-sm text-pink-400 font-bold">+${record.pointsAwarded} PUAN ${record.multiplier > 1 ? `(x${record.multiplier})` : ''}</span>
         </div>
 
         <div class="p-4 rounded bg-surface-container-high border border-gray-800 flex flex-col gap-2">
@@ -1726,7 +1807,7 @@
 
     function copyMatchCodeToClipboard(codeStr) {
       navigator.clipboard.writeText(codeStr).then(() => {
-        alert(`Oda Kodu Kopyalandı: ${codeStr}\n\nArkadaşınız bu kodu girerek tam olarak aynı sorularınızla 90 saniye yarışabilir!`);
+        alert(`Oda Kodu Kopyalandı: ${codeStr}\n\nArkadaşınız bu kodu girerek tam olarak aynı sorularınızla yarışabilir!`);
       }).catch(() => {
         alert(`Oda Kodunuz: ${codeStr}`);
       });
@@ -1742,6 +1823,31 @@
       const total = appState.totalScore;
       const shareCode = appState.seed || generateShareableSeed(appState.mode);
 
+      // Günün Yarışması tamamlandıysa skoru yerel hafızaya kaydet
+      if (appState.mode === GAME_MODES.DAILY) {
+        localStorage.setItem(`daily_score_${getTodaySeedString()}`, total);
+      }
+
+      let dailyBreakdownHtml = '';
+      if (appState.mode === GAME_MODES.DAILY) {
+        dailyBreakdownHtml = `
+          <div class="grid grid-cols-3 gap-2 my-2 text-left">
+            <div class="p-3 rounded bg-surface-container-low border border-gray-800 text-center">
+              <span class="font-mono-label text-[10px] text-gray-400 block">1. SET (x1.0)</span>
+              <span class="font-headline font-bold text-lg text-white">${appState.dailySetScores[0]} P</span>
+            </div>
+            <div class="p-3 rounded bg-surface-container-low border border-yellow-500/40 text-center">
+              <span class="font-mono-label text-[10px] text-yellow-400 block">2. SET (x1.5)</span>
+              <span class="font-headline font-bold text-lg text-yellow-300">${appState.dailySetScores[1]} P</span>
+            </div>
+            <div class="p-3 rounded bg-surface-container-low border border-pink-500/40 text-center">
+              <span class="font-mono-label text-[10px] text-pink-400 block">3. SET (x2.0)</span>
+              <span class="font-headline font-bold text-lg text-pink-400">${appState.dailySetScores[2]} P</span>
+            </div>
+          </div>
+        `;
+      }
+
       container.innerHTML = `
         <div class="max-w-2xl mx-auto neon-panel p-8 text-center flex flex-col gap-6 animate-fade-in">
           <h2 class="font-headline font-extrabold text-3xl text-white">TEBRİKLER! YARIŞMA BİTTİ</h2>
@@ -1752,11 +1858,13 @@
             <span class="font-mono-label text-xs text-gray-400 block">PUAN</span>
           </div>
 
+          ${dailyBreakdownHtml}
+
           <div class="neon-panel-cyan p-4 rounded flex flex-col items-center gap-3">
             <div class="flex items-center gap-2 text-xs font-mono-label text-cyan-300">
               <i data-lucide="share-2" class="w-4 h-4"></i> ARKADAŞINA MEYDAN OKU!
             </div>
-            <p class="text-xs text-gray-300">Aşağıdaki kodu kopyalayıp arkadaşına gönder. Aynı sorularla eşit olarak 90 saniye yarışsın!</p>
+            <p class="text-xs text-gray-300">Aşağıdaki kodu kopyalayıp arkadaşına gönder. Aynı sorularla eşit olarak yarışsın!</p>
             
             <div class="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded border border-cyan-500/50">
               <span class="font-mono-label text-sm text-white font-bold tracking-widest">${shareCode}</span>
