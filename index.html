@@ -497,7 +497,7 @@
         <button onclick="closeRulesModal()" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <div class="text-xs text-gray-300 flex flex-col gap-3 leading-relaxed">
-        <p>• <strong>Günün Yarışması:</strong> Toplam 3 Set (18 Etap). 1. Set standart, 2. Set 1.5 katı, 3. Set ise 2 katı puan kazandırır.</p>
+        <p>• <strong>Günün Yarışması:</strong> Toplam 3 Set (18 Etap). Tüm oyuncular eşit şartlarda sabit <strong>90 saniye</strong> süreyle yarışır. 1. Set standart, 2. Set 1.5 katı, 3. Set ise 2 katı puan kazandırır.</p>
         <p>• <strong>Oda Kodu ile Rekabet:</strong> Kodlu tüm meydan okumalarda eşitlik için süre <strong>90 saniye</strong>ye sabitlenir.</p>
         <p>• <strong>Kelime Etapları:</strong> Türk Dil Kurumu uyumlu txt sözlüğü ile doğrulama yapılır. Harf sayısı kadar puan kazanırsınız. 9 harfli kelimeler 15 puandır.</p>
         <p>• <strong>İşlem Etapları:</strong> Hedef sayıya tam ulaşan 10 puan alır. Yakınlaşma derecesine göre puanlama yapılır.</p>
@@ -773,7 +773,6 @@
       history: [],
       stageData: null,
       practiceType: 'word',
-      // Günün Yarışması İçin Set Puanları (3 Set x 6 Oyun = 18 Oyun)
       dailySetScores: [0, 0, 0] 
     };
 
@@ -874,7 +873,7 @@
             <div class="flex flex-col gap-1 z-10">
               <div class="flex items-center gap-2">
                 <span class="px-2 py-0.5 rounded bg-yellow-400 text-black font-headline font-extrabold text-xs uppercase tracking-wider">ÖZEL MOD</span>
-                <span class="font-mono-label text-xs text-yellow-300">3 SET • 18 OYUN</span>
+                <span class="font-mono-label text-xs text-yellow-300">3 SET • 18 OYUN • 90 SN</span>
               </div>
               <h3 class="font-headline font-extrabold text-xl text-white flex items-center gap-2 mt-1">
                 <i data-lucide="calendar" class="w-5 h-5 text-yellow-400"></i> GÜNÜN YARIŞMASI
@@ -1020,14 +1019,20 @@
       if (mode === GAME_MODES.DAILY) {
         appState.maxStages = 18; // 3 Set x 6 Oyun
         appState.seed = getTodaySeedString();
+        appState.roundDuration = 90; // Günün Yarışması 90 saniyeye sabitlendi
       } else if (mode === GAME_MODES.WORD_ONLY || mode === GAME_MODES.MATH_ONLY) {
         appState.maxStages = 6;
         appState.seed = generateShareableSeed(mode);
+        appState.roundDuration = appState.userDefaultDuration;
       } else if (mode === GAME_MODES.TOURNAMENT) {
         appState.maxStages = 8;
         appState.seed = generateShareableSeed(mode);
+        appState.roundDuration = appState.userDefaultDuration;
+      } else {
+        appState.roundDuration = appState.userDefaultDuration;
       }
 
+      renderTimerModeInUI();
       currentPRNG = Mulberry32(appState.seed);
       loadCurrentStage();
     }
@@ -1679,7 +1684,7 @@
       const mult = getCurrentMultiplier();
       const finalPoints = Math.round(basePoints * mult);
 
-      if (points >= 8) soundSuccess();
+      if (finalPoints >= 8) soundSuccess();
       else soundFail();
 
       if (appState.mode === GAME_MODES.DAILY) {
@@ -1823,7 +1828,6 @@
       const total = appState.totalScore;
       const shareCode = appState.seed || generateShareableSeed(appState.mode);
 
-      // Günün Yarışması tamamlandıysa skoru yerel hafızaya kaydet
       if (appState.mode === GAME_MODES.DAILY) {
         localStorage.setItem(`daily_score_${getTodaySeedString()}`, total);
       }
