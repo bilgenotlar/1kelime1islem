@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="artifact-type" content="tool">
   <meta name="design-style" content="neon_noir">
-  <title>Bir Kelime Bir İşlem — Zihin Jimnastiği ve Yarışma Stüdyosu</title>
+  <title>Bir Kelime Bir İşlem — MaviBlue Yarışma Stüdyosu</title>
 
   <!-- Google Fonts: Sora, Inter, Space Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
@@ -77,6 +77,24 @@
     .page-grid * { min-width: 0; }
     .font-headline { font-family: var(--font-headline); }
     .font-mono-label { font-family: var(--font-label); }
+
+    /* MAVİBLUE LOGO ÖZEL CSS */
+    .maviblue-logo {
+      font-family: var(--font-headline);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      display: inline-flex;
+      align-items: center;
+      user-select: none;
+    }
+    .maviblue-logo .part-mavi {
+      color: #00f0ff;
+      text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+    }
+    .maviblue-logo .part-blue {
+      color: #3b82f6;
+      text-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+    }
 
     .neon-panel {
       background: var(--surface-container);
@@ -315,6 +333,9 @@
           </div>
           <div>
             <h1 class="font-headline font-extrabold text-lg sm:text-xl text-white tracking-tight flex items-center gap-2">
+              <span class="maviblue-logo text-xl sm:text-2xl mr-1">
+                <span class="part-mavi">Mavi</span><span class="part-blue">Blue</span>
+              </span>
               BİR KELİME BİR İŞLEM
             </h1>
             <p class="font-mono-label text-xs text-gray-400 tracking-wider">YARIŞMA STÜDYOSU • ZİHİN ŞAMPİYONASI</p>
@@ -811,6 +832,14 @@
       return `GUNUN-YARISMASI-${dd}${mm}${yyyy}`;
     }
 
+    function getTodayFormattedDate() {
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const yyyy = today.getFullYear();
+      return `${dd}.${mm}.${yyyy}`;
+    }
+
     function getCurrentMultiplier() {
       if (appState.mode !== GAME_MODES.DAILY) return 1.0;
       if (appState.currentStageIndex < 6) return 1.0;
@@ -857,6 +886,7 @@
       renderStageTrackerHeader();
 
       const todayScore = localStorage.getItem(`daily_score_${getTodaySeedString()}`);
+      const todayDateStr = getTodayFormattedDate();
 
       container.innerHTML = `
         <div class="max-w-3xl mx-auto neon-panel p-6 sm:p-8 flex flex-col gap-6 text-center animate-fade-in">
@@ -874,6 +904,9 @@
               <div class="flex items-center gap-2">
                 <span class="px-2 py-0.5 rounded bg-yellow-400 text-black font-headline font-extrabold text-xs uppercase tracking-wider">ÖZEL MOD</span>
                 <span class="font-mono-label text-xs text-yellow-300">3 SET • 18 OYUN • 90 SN</span>
+                <span class="font-mono-label text-xs text-yellow-400/90 bg-yellow-950/80 px-2 py-0.5 rounded border border-yellow-500/40 flex items-center gap-1 ml-auto sm:ml-0">
+                  <i data-lucide="calendar-days" class="w-3.5 h-3.5"></i> ${todayDateStr}
+                </span>
               </div>
               <h3 class="font-headline font-extrabold text-xl text-white flex items-center gap-2 mt-1">
                 <i data-lucide="calendar" class="w-5 h-5 text-yellow-400"></i> GÜNÜN YARIŞMASI
@@ -1017,9 +1050,9 @@
       document.getElementById('scoreboard-total').textContent = '0';
 
       if (mode === GAME_MODES.DAILY) {
-        appState.maxStages = 18; // 3 Set x 6 Oyun
+        appState.maxStages = 18;
         appState.seed = getTodaySeedString();
-        appState.roundDuration = 90; // Günün Yarışması 90 saniyeye sabitlendi
+        appState.roundDuration = 90;
       } else if (mode === GAME_MODES.WORD_ONLY || mode === GAME_MODES.MATH_ONLY) {
         appState.maxStages = 6;
         appState.seed = generateShareableSeed(mode);
@@ -1810,11 +1843,15 @@
       }
     }
 
-    function copyMatchCodeToClipboard(codeStr) {
-      navigator.clipboard.writeText(codeStr).then(() => {
-        alert(`Oda Kodu Kopyalandı: ${codeStr}\n\nArkadaşınız bu kodu girerek tam olarak aynı sorularınızla yarışabilir!`);
+    function copyMatchCodeToClipboard(textToCopy, isDailyMsg = false) {
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        if (isDailyMsg) {
+          alert(`Skor Mesajınız Kopyalandı:\n"${textToCopy}"\n\nArkadaşlarınıza gönderip meydan okuyabilirsiniz!`);
+        } else {
+          alert(`Oda Kodu Kopyalandı: ${textToCopy}\n\nArkadaşınız bu kodu girerek tam olarak aynı sorularınızla yarışabilir!`);
+        }
       }).catch(() => {
-        alert(`Oda Kodunuz: ${codeStr}`);
+        alert(textToCopy);
       });
     }
 
@@ -1852,6 +1889,37 @@
         `;
       }
 
+      let shareCardHtml = '';
+      if (appState.mode === GAME_MODES.DAILY) {
+        const dailyShareText = `🏆 Bir Kelime Bir İşlem (${getTodayFormattedDate()}) Günün Yarışması'nı ${total} Puan ile tamamladım! Sen kaç puan alacaksın?`;
+        shareCardHtml = `
+          <div class="neon-panel-gold p-4 rounded flex flex-col items-center gap-3">
+            <div class="flex items-center gap-2 text-xs font-mono-label text-yellow-300">
+              <i data-lucide="share-2" class="w-4 h-4"></i> SKORUNU ARKADAŞLARINLA PAYLAŞ!
+            </div>
+            <p class="text-xs text-gray-300">Bugünkü Günün Yarışması skorunu kopyalayıp arkadaşlarına meydan oku!</p>
+            <button onclick="copyMatchCodeToClipboard('${dailyShareText}', true)" class="btn-gold px-5 py-2.5 text-xs flex items-center gap-2 font-bold">
+              <i data-lucide="copy" class="w-4 h-4"></i> SKOR MESAJINI KOPYALA
+            </button>
+          </div>
+        `;
+      } else {
+        shareCardHtml = `
+          <div class="neon-panel-cyan p-4 rounded flex flex-col items-center gap-3">
+            <div class="flex items-center gap-2 text-xs font-mono-label text-cyan-300">
+              <i data-lucide="share-2" class="w-4 h-4"></i> ARKADAŞINA MEYDAN OKU!
+            </div>
+            <p class="text-xs text-gray-300">Aşağıdaki kodu kopyalayıp arkadaşına gönder. Aynı sorularla eşit olarak yarışsın!</p>
+            <div class="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded border border-cyan-500/50">
+              <span class="font-mono-label text-sm text-white font-bold tracking-widest">${shareCode}</span>
+              <button onclick="copyMatchCodeToClipboard('${shareCode}', false)" class="btn-cyan px-3 py-1 text-xs flex items-center gap-1 ml-2">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i> KOPYALA
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
       container.innerHTML = `
         <div class="max-w-2xl mx-auto neon-panel p-8 text-center flex flex-col gap-6 animate-fade-in">
           <h2 class="font-headline font-extrabold text-3xl text-white">TEBRİKLER! YARIŞMA BİTTİ</h2>
@@ -1863,20 +1931,7 @@
           </div>
 
           ${dailyBreakdownHtml}
-
-          <div class="neon-panel-cyan p-4 rounded flex flex-col items-center gap-3">
-            <div class="flex items-center gap-2 text-xs font-mono-label text-cyan-300">
-              <i data-lucide="share-2" class="w-4 h-4"></i> ARKADAŞINA MEYDAN OKU!
-            </div>
-            <p class="text-xs text-gray-300">Aşağıdaki kodu kopyalayıp arkadaşına gönder. Aynı sorularla eşit olarak yarışsın!</p>
-            
-            <div class="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded border border-cyan-500/50">
-              <span class="font-mono-label text-sm text-white font-bold tracking-widest">${shareCode}</span>
-              <button onclick="copyMatchCodeToClipboard('${shareCode}')" class="btn-cyan px-3 py-1 text-xs flex items-center gap-1 ml-2">
-                <i data-lucide="copy" class="w-3.5 h-3.5"></i> KOPYALA
-              </button>
-            </div>
-          </div>
+          ${shareCardHtml}
 
           <button onclick="renderMainMenu()" class="btn-gold py-3.5 text-sm font-bold">ANA MENÜYE DÖN</button>
         </div>
