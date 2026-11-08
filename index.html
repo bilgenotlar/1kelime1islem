@@ -521,7 +521,7 @@
       <!-- Modal Başlığı -->
       <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
         <h3 class="font-headline font-extrabold text-lg sm:text-xl text-cyan-300 flex items-center gap-2">
-          <i data-lucide="book-open" class="w-5 h-5 text-cyan-400"></i> MAVİBLUE STÜDYO OYUN REHBERİ
+          <i data-lucide="book-open" class="w-5 h-5 text-cyan-400"></i> MAVİBLUE STÜDYO BİR KELİME BİR İŞLEM OYUN REHBERİ
         </h3>
         <button onclick="closeRulesModal()" class="text-gray-400 hover:text-white p-1">
           <i data-lucide="x" class="w-5 h-5"></i>
@@ -605,7 +605,7 @@
           </div>
         </div>
 
-        <!-- Bölüm 4: Oda Kodu ve Kısayollar -->
+<!-- Bölüm 4: Oda Kodu ve Kısayollar -->
         <div class="flex flex-col gap-2 border-t border-gray-800 pt-3">
           <h4 class="font-headline font-bold text-sm text-purple-300 flex items-center gap-1.5">
             <i data-lucide="keyboard" class="w-4 h-4"></i> 4. KLAVYE KISAYOLLARI & ODA KODLARI
@@ -615,7 +615,26 @@
           • <strong>Oda Kodu Mantığı:</strong> Arkadaşınızdan gelen hazır kodu <i>Oda Kodu ile Rekabet</i> kutusuna yapıştırıp TAMAM'a basarsanız oyun 90 saniye sabit süreyle adil rekabet modunda başlar.</p>
         </div>
 
+        <!-- YENİ EKLENEN BÖLÜM: Görsel İnfografik Kılavuz Bağlantısı -->
+        <div class="p-3 rounded bg-surface-container-high border border-cyan-500/40 flex items-center justify-between gap-2 mt-1">
+          <div class="flex items-center gap-2">
+            <i data-lucide="image" class="w-4 h-4 text-cyan-400 shrink-0"></i>
+            <span class="font-mono-label text-[11px] text-gray-300">Kuralları <strong>görsel infografik</strong> olarak incelemek ister misiniz?</span>
+          </div>
+          <button onclick="closeRulesModal(); openGuideImageModal();" class="btn-cyan px-3 py-1.5 text-[11px] font-bold shrink-0 flex items-center gap-1">
+            <i data-lucide="sparkles" class="w-3 h-3"></i> GÖRSEL KILAVUZ
+          </button>
+        </div>
+
       </div>
+
+      <!-- Kapat Butonu -->
+      <button onclick="closeRulesModal()" class="btn-cyan w-full py-2.5 text-xs font-bold mt-1">
+        ANLADIM VE KAPAT
+      </button>
+
+    </div>
+  </div>
 
       <!-- Kapat Butonu -->
       <button onclick="closeRulesModal()" class="btn-cyan w-full py-2.5 text-xs font-bold mt-1">
@@ -2273,7 +2292,10 @@
       });
     }
 
-    function openRulesModal() { document.getElementById('modal-rules').classList.remove('hidden'); }
+    function openRulesModal() { 
+  document.getElementById('modal-rules').classList.remove('hidden'); 
+  if (window.lucide) lucide.createIcons();
+}
     function closeRulesModal() { document.getElementById('modal-rules').classList.add('hidden'); }
 
     window.addEventListener('keydown', (e) => {
