@@ -1092,7 +1092,7 @@
     }
 
     /* ==========================================================================
-       ODA KODU İLE REKABET MODU (GÜNCELLENMİŞ AKILLI KOD DÜZELTME & İKİ AŞAMALI BUTON)
+       ODA KODU İLE REKABET MODU (4 STANDARTLI YENİ METİN VE MOD ALGILAMA)
        ========================================================================== */
     function resetSeedButtonState() {
       const confirmBtn = document.getElementById('btn-seed-confirm');
@@ -1117,16 +1117,24 @@
       if (!input) return;
 
       let rawVal = trToUpperCase(input.value.trim());
+      const randomNum = Math.floor(Math.random() * 900) + 100;
 
       if (!rawVal) {
-        const randomWord = CATCHY_WORDS[Math.floor(Math.random() * CATCHY_WORDS.length)];
-        const randomNum = Math.floor(Math.random() * 90) + 10;
-        rawVal = `${randomWord}-${randomNum}`;
-      } 
-      // Kod zaten tire içeriyorsa veya rakamla bitiyorsa (örn: ZİHİN440) doğrudan kabul et!
-      else if (!rawVal.includes('-') && !/\d+$/.test(rawVal)) {
-        const randomNum = Math.floor(Math.random() * 90) + 10;
-        rawVal = `${rawVal}-${randomNum}`;
+        // Hiçbir şey yazılmadıysa rastgele Karma Oda Kodu oluştur
+        const w1 = CATCHY_WORDS[Math.floor(Math.random() * CATCHY_WORDS.length)];
+        rawVal = `${w1}-${randomNum}-${w1}`;
+      } else {
+        const parts = rawVal.split('-');
+        const isMatchOnly = (parts.length === 3 && /^\d+$/.test(parts[0]) && /^\d+$/.test(parts[2]));
+        const isWordOnly = (parts.length === 2 && /^\d+$/.test(parts[1]));
+        const isTournament = (parts.length === 2 && !/^\d+$/.test(parts[1]));
+        const isDirectCustomRoom = (parts.length === 3 && !/^\d+$/.test(parts[0]) && /^\d+$/.test(parts[1]));
+
+        // Eğer mevcut standartlardan hiçbirine uymuyorsa (örn: sadece "ZİHİN" veya "KAPLAN" girildiyse)
+        // 4. Standart formatına dönüştür: KELİME-SAYI-KELİME (Karma Turnuva)
+        if (!isMatchOnly && !isWordOnly && !isTournament && !isDirectCustomRoom) {
+          rawVal = `${rawVal}-${randomNum}-${rawVal}`;
+        }
       }
 
       input.value = rawVal;
@@ -1164,46 +1172,43 @@
     }
 
     function startCustomSeedMode() {
-  const input = document.getElementById('custom-seed-input');
-  let rawVal = (input && input.value.trim()) ? trToUpperCase(input.value) : generateShareableSeed(GAME_MODES.TOURNAMENT);
+      const input = document.getElementById('custom-seed-input');
+      let rawVal = (input && input.value.trim()) ? trToUpperCase(input.value) : generateShareableSeed(GAME_MODES.TOURNAMENT);
 
-  let detectedMode = GAME_MODES.TOURNAMENT;
-  const hyphenCount = (rawVal.match(/-/g) || []).length;
+      let detectedMode = GAME_MODES.TOURNAMENT;
+      const parts = rawVal.split('-');
 
-  // Yeni Mod Algılama Mantığı
-  if (hyphenCount >= 2) {
-    // Örn: 100-ZİHİN-500 (İşlem Oyunu)
-    detectedMode = GAME_MODES.MATH_ONLY;
-  } else if (hyphenCount === 1) {
-    // Eğer 1 tire varsa ve tireden sonrası tamamen sayı ise: Kelime Oyunu (Örn: ZİHİN-863)
-    // Eğer tireden sonrası kelime ise: Karma Şampiyona (Örn: ZİHİN-KAPLAN)
-    const parts = rawVal.split('-');
-    if (/^\d+$/.test(parts[1])) {
-      detectedMode = GAME_MODES.WORD_ONLY;
-    } else {
-      detectedMode = GAME_MODES.TOURNAMENT;
+      // YENİ DÖRT STANDARTLI ALGILAMA MANTIĞI
+      if (parts.length === 3 && /^\d+$/.test(parts[0]) && /^\d+$/.test(parts[2])) {
+        // STANDART 3: SAYI-KELİME-SAYI -> İŞLEM OYUNU (Örn: 100-ZİHİN-500)
+        detectedMode = GAME_MODES.MATH_ONLY;
+      } else if (parts.length === 2 && /^\d+$/.test(parts[1])) {
+        // STANDART 2: KELİME-SAYI -> KELİME OYUNU (Örn: ZİHİN-440)
+        detectedMode = GAME_MODES.WORD_ONLY;
+      } else if (parts.length === 3 || parts.length === 2) {
+        // STANDART 1 & 4: KELİME-KELİME VEYA KELİME-SAYI-KELİME -> KARMA ŞAMPİYONA (Örn: ZİHİN-KAPLAN veya ZİHİN-234-ZİHİN)
+        detectedMode = GAME_MODES.TOURNAMENT;
+      } else {
+        // YEDEK/VARSAYILAN: Karma Şampiyona
+        detectedMode = GAME_MODES.TOURNAMENT;
+      }
+
+      appState.mode = GAME_MODES.CUSTOM_SEED;
+      appState.customSubType = detectedMode;
+      appState.seed = rawVal;
+      appState.currentStageIndex = 0;
+      appState.totalScore = 0;
+      appState.dailySetScores = [0, 0, 0];
+      appState.history = [];
+      appState.maxStages = (detectedMode === GAME_MODES.TOURNAMENT) ? 8 : 6;
+      appState.roundDuration = 90;
+
+      document.getElementById('scoreboard-total').textContent = '0';
+      renderTimerModeInUI();
+      
+      currentPRNG = Mulberry32(appState.seed);
+      loadCurrentStage();
     }
-  } else {
-    // Tiresiz eski formatlar veya doğrudan girilen kelimeler
-    detectedMode = GAME_MODES.WORD_ONLY;
-  }
-
-  appState.mode = GAME_MODES.CUSTOM_SEED;
-  appState.customSubType = detectedMode;
-  appState.seed = rawVal;
-  appState.currentStageIndex = 0;
-  appState.totalScore = 0;
-  appState.dailySetScores = [0, 0, 0];
-  appState.history = [];
-  appState.maxStages = (detectedMode === GAME_MODES.TOURNAMENT) ? 8 : 6;
-  appState.roundDuration = 90;
-
-  document.getElementById('scoreboard-total').textContent = '0';
-  renderTimerModeInUI();
-  
-  currentPRNG = Mulberry32(appState.seed);
-  loadCurrentStage();
-}
 
     function loadCurrentStage() {
       stopTimer();
@@ -1944,7 +1949,7 @@
       else finishTournament();
     }
 
-    /* GÜNCELLENMİŞ STANDART KOD ÜRETİCİ */
+    /* GÜNCELLENMİŞ 4 STANDARTLI KOD ÜRETİCİ */
     function generateShareableSeed(mode) {
       const activeMode = (mode === GAME_MODES.CUSTOM_SEED) ? appState.customSubType : (mode || appState.mode);
 
@@ -1954,11 +1959,11 @@
       const num2 = Math.floor(Math.random() * 900) + 100;
 
       if (activeMode === GAME_MODES.WORD_ONLY) {
-        return `${w1}-${num1}`; // Artık tire içeriyor (Örn: ZİHİN-440)
+        return `${w1}-${num1}`; // Standart 2: KELİME-SAYI (Sadece Kelime)
       } else if (activeMode === GAME_MODES.MATH_ONLY) {
-        return `${num1}-${w1}-${num2}`;
+        return `${num1}-${w1}-${num2}`; // Standart 3: SAYI-KELİME-SAYI (Sadece İşlem)
       } else {
-        return `${w1}-${w2}`;
+        return `${w1}-${w2}`; // Standart 1: KELİME-KELİME (Karma Turnuva)
       }
     }
 
