@@ -957,7 +957,7 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left border-t border-gray-800 pt-4">
             
-            <!-- ODA KODU İLE REKABET (AKILLI İKİ AŞAMALI BUTON KARTI) -->
+            <!-- ODA KODU İLE REKABET (AKILLI KOD GİRİŞİ VE İKİ AŞAMALI BUTON KARTI) -->
             <div class="neon-panel-gold p-4 flex flex-col gap-3">
               <div class="flex items-center justify-between">
                 <span class="font-headline font-bold text-sm text-yellow-300 flex items-center gap-1.5">
@@ -969,7 +969,7 @@
               <p class="text-xs text-gray-300">Arkadaşınızın kodunu girin veya yeni bir kelime yazıp kodunuzu oluşturun:</p>
               
               <div class="flex items-center gap-2">
-                <input type="text" id="custom-seed-input" oninput="resetSeedButtonState()" placeholder="Örn: VOLKAN veya VOLKAN-33" class="flex-1 bg-surface-container-low border border-yellow-500/50 rounded px-3 py-2 text-xs text-white uppercase font-mono-label focus:outline-none focus:border-yellow-400">
+                <input type="text" id="custom-seed-input" oninput="resetSeedButtonState()" placeholder="Örn: ZİHİN-440 veya ZİHİN" class="flex-1 bg-surface-container-low border border-yellow-500/50 rounded px-3 py-2 text-xs text-white uppercase font-mono-label focus:outline-none focus:border-yellow-400">
                 
                 <!-- 1. Aşama Butonu -->
                 <button type="button" id="btn-seed-confirm" onclick="confirmCustomSeedInput()" class="btn-cyan px-4 py-2 text-xs font-bold shrink-0">TAMAM</button>
@@ -1092,7 +1092,7 @@
     }
 
     /* ==========================================================================
-       ODA KODU İLE REKABET MODU (4 STANDARTLI YENİ METİN VE MOD ALGILAMA)
+       ODA KODU İLE REKABET MODU (HAZIR KOD İLE DOĞRUDAN BAŞLAMA DÜZELTMESİ)
        ========================================================================== */
     function resetSeedButtonState() {
       const confirmBtn = document.getElementById('btn-seed-confirm');
@@ -1120,29 +1120,41 @@
       const randomNum = Math.floor(Math.random() * 900) + 100;
 
       if (!rawVal) {
-        // Hiçbir şey yazılmadıysa rastgele Karma Oda Kodu oluştur
+        // Boş bırakılırsa rastgele yeni bir Karma Oda Kodu oluştur
         const w1 = CATCHY_WORDS[Math.floor(Math.random() * CATCHY_WORDS.length)];
         rawVal = `${w1}-${randomNum}-${w1}`;
+        input.value = rawVal;
+        showGeneratedSeedInfo(rawVal);
       } else {
         const parts = rawVal.split('-');
-        const isMatchOnly = (parts.length === 3 && /^\d+$/.test(parts[0]) && /^\d+$/.test(parts[2]));
+        
+        // Dört Bilinen Standart Koda Tam Uyup Uymadığını Kontrol Et:
+        const isMathOnly = (parts.length === 3 && /^\d+$/.test(parts[0]) && /^\d+$/.test(parts[2]));
         const isWordOnly = (parts.length === 2 && /^\d+$/.test(parts[1]));
         const isTournament = (parts.length === 2 && !/^\d+$/.test(parts[1]));
-        const isDirectCustomRoom = (parts.length === 3 && !/^\d+$/.test(parts[0]) && /^\d+$/.test(parts[1]));
+        const isCustomRoom = (parts.length === 3 && !/^\d+$/.test(parts[0]) && /^\d+$/.test(parts[1]));
 
-        // Eğer mevcut standartlardan hiçbirine uymuyorsa (örn: sadece "ZİHİN" veya "KAPLAN" girildiyse)
-        // 4. Standart formatına dönüştür: KELİME-SAYI-KELİME (Karma Turnuva)
-        if (!isMatchOnly && !isWordOnly && !isTournament && !isDirectCustomRoom) {
+        const isPredefinedValidCode = (isMathOnly || isWordOnly || isTournament || isCustomRoom);
+
+        if (isPredefinedValidCode) {
+          // SENARYO A: Başkasından gelen TAM HAZIR BİR KOD girilmiş!
+          // Doğrudan oyuna başla!
+          startCustomSeedMode();
+        } else {
+          // SENARYO B: Kullanıcı kendi yeni kelimesini girmiş (Örn: "ZİHİN")
+          // 4. Standart formatına dönüştür: KELİME-SAYI-KELİME
           rawVal = `${rawVal}-${randomNum}-${rawVal}`;
+          input.value = rawVal;
+          showGeneratedSeedInfo(rawVal);
         }
       }
+    }
 
-      input.value = rawVal;
-
+    function showGeneratedSeedInfo(formattedCode) {
       const infoBox = document.getElementById('seed-generated-info');
       const displayEl = document.getElementById('formatted-seed-display');
       if (infoBox && displayEl) {
-        displayEl.textContent = rawVal;
+        displayEl.textContent = formattedCode;
         infoBox.classList.remove('hidden');
       }
 
@@ -1178,7 +1190,7 @@
       let detectedMode = GAME_MODES.TOURNAMENT;
       const parts = rawVal.split('-');
 
-      // YENİ DÖRT STANDARTLI ALGILAMA MANTIĞI
+      // DÖRT STANDARTLI UYUMLU ALGILAMA MANTIĞI
       if (parts.length === 3 && /^\d+$/.test(parts[0]) && /^\d+$/.test(parts[2])) {
         // STANDART 3: SAYI-KELİME-SAYI -> İŞLEM OYUNU (Örn: 100-ZİHİN-500)
         detectedMode = GAME_MODES.MATH_ONLY;
@@ -1949,7 +1961,7 @@
       else finishTournament();
     }
 
-    /* GÜNCELLENMİŞ 4 STANDARTLI KOD ÜRETİCİ */
+    /* 4 STANDARTLI KOD ÜRETİCİ */
     function generateShareableSeed(mode) {
       const activeMode = (mode === GAME_MODES.CUSTOM_SEED) ? appState.customSubType : (mode || appState.mode);
 
