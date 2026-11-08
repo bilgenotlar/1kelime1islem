@@ -1092,7 +1092,7 @@
     }
 
     /* ==========================================================================
-       ODA KODU İLE REKABET MODU (AKILLI KOD DÜZELTME & İKİ AŞAMALI BUTON)
+       ODA KODU İLE REKABET MODU (GÜNCELLENMİŞ AKILLI KOD DÜZELTME & İKİ AŞAMALI BUTON)
        ========================================================================== */
     function resetSeedButtonState() {
       const confirmBtn = document.getElementById('btn-seed-confirm');
@@ -1122,7 +1122,9 @@
         const randomWord = CATCHY_WORDS[Math.floor(Math.random() * CATCHY_WORDS.length)];
         const randomNum = Math.floor(Math.random() * 90) + 10;
         rawVal = `${randomWord}-${randomNum}`;
-      } else if (!rawVal.includes('-')) {
+      } 
+      // Kod zaten tire içeriyorsa veya rakamla bitiyorsa (örn: ZİHİN440) doğrudan kabul et!
+      else if (!rawVal.includes('-') && !/\d+$/.test(rawVal)) {
         const randomNum = Math.floor(Math.random() * 90) + 10;
         rawVal = `${rawVal}-${randomNum}`;
       }
@@ -1932,6 +1934,7 @@
       else finishTournament();
     }
 
+    /* GÜNCELLENMİŞ STANDART KOD ÜRETİCİ */
     function generateShareableSeed(mode) {
       const activeMode = (mode === GAME_MODES.CUSTOM_SEED) ? appState.customSubType : (mode || appState.mode);
 
@@ -1941,7 +1944,7 @@
       const num2 = Math.floor(Math.random() * 900) + 100;
 
       if (activeMode === GAME_MODES.WORD_ONLY) {
-        return `${w1}${num1}`;
+        return `${w1}-${num1}`; // Artık tire içeriyor (Örn: ZİHİN-440)
       } else if (activeMode === GAME_MODES.MATH_ONLY) {
         return `${num1}-${w1}-${num2}`;
       } else {
