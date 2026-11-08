@@ -514,19 +514,114 @@
     </div>
   </div>
 
+  <!-- MODAL: KAPSAMLI OYUN VE STÜDYO REHBERİ -->
   <div id="modal-rules" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center p-4 hidden">
-    <div class="neon-panel p-6 max-w-lg w-full flex flex-col gap-4 shadow-2xl border border-gray-700 max-h-[85vh] overflow-y-auto">
-      <div class="flex items-center justify-between border-b border-gray-700 pb-2">
-        <h3 class="font-headline font-bold text-lg text-cyan-300 flex items-center gap-2"><i data-lucide="book-open" class="w-5 h-5"></i> KURALLAR</h3>
-        <button onclick="closeRulesModal()" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+    <div class="neon-panel p-5 sm:p-6 max-w-2xl w-full flex flex-col gap-4 shadow-2xl border border-cyan-500/50 max-h-[85vh]">
+      
+      <!-- Modal Başlığı -->
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <h3 class="font-headline font-extrabold text-lg sm:text-xl text-cyan-300 flex items-center gap-2">
+          <i data-lucide="book-open" class="w-5 h-5 text-cyan-400"></i> MAVİBLUE STÜDYO OYUN REHBERİ
+        </h3>
+        <button onclick="closeRulesModal()" class="text-gray-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
       </div>
-      <div class="text-xs text-gray-300 flex flex-col gap-3 leading-relaxed">
-        <p>• <strong>Günün Yarışması:</strong> Toplam 3 Set (18 Etap). Tüm oyuncular eşit şartlarda sabit <strong>90 saniye</strong> süreyle yarışır. 1. Set standart, 2. Set 1.5 katı, 3. Set ise 2 katı puan kazandırır.</p>
-        <p>• <strong>Oda Kodu ile Rekabet:</strong> Kodlu tüm meydan okumalarda eşitlik için süre <strong>90 saniye</strong>ye sabitlenir.</p>
-        <p>• <strong>Kelime Etapları:</strong> Türk Dil Kurumu uyumlu txt sözlüğü ile doğrulama yapılır. Harf sayısı kadar puan kazanırsınız. 9 harfli kelimeler 15 puandır.</p>
-        <p>• <strong>İşlem Etapları:</strong> Hedef sayıya tam ulaşan 10 puan alır. Yakınlaşma derecesine göre puanlama yapılır.</p>
+
+      <!-- Rehber İçerik Alanı (Kaydırılabilir) -->
+      <div class="overflow-y-auto pr-1 text-xs text-gray-300 flex flex-col gap-5 leading-relaxed">
+        
+        <!-- Bölüm 1: Oyun Modları -->
+        <div class="flex flex-col gap-2">
+          <h4 class="font-headline font-bold text-sm text-yellow-300 flex items-center gap-1.5">
+            <i data-lucide="trophy" class="w-4 h-4"></i> 1. YARIŞMA MODLARI & ETAP YAPISI
+          </h4>
+          <p>MaviBlue stüdyosunda 5 farklı yarışma modu bulunmaktadır:</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
+            <div class="p-2.5 rounded bg-surface-container-low border border-gray-800">
+              <strong class="text-pink-400 font-headline block mb-0.5">Karma Şampiyona (8 Etap)</strong>
+              <span>4 Kelime + 4 İşlem etabı. Hem dil hem matematik becerilerini dengeli test eder.</span>
+            </div>
+            <div class="p-2.5 rounded bg-surface-container-low border border-gray-800">
+              <strong class="text-cyan-300 font-headline block mb-0.5">Sadece Kelime Oyunu (6 Etap)</strong>
+              <span>Yalnızca TDK sözlüğü ile kelime türetmeye odaklı zihin jimnastiği.</span>
+            </div>
+            <div class="p-2.5 rounded bg-surface-container-low border border-gray-800">
+              <strong class="text-emerald-400 font-headline block mb-0.5">Sadece İşlem Oyunu (6 Etap)</strong>
+              <span>Yalnızca sayılarla hedef değere ulaşmaya odaklanan matematik yarışı.</span>
+            </div>
+            <div class="p-2.5 rounded bg-surface-container-low border border-gray-800">
+              <strong class="text-yellow-300 font-headline block mb-0.5">Günün Yarışması (18 Etap)</strong>
+              <span>3 Set x 6 Etap. Sabit 90 saniye süreyle her gün güncellenen katlamalı turnuva.</span>
+            </div>
+          </div>
+          <div class="p-2.5 rounded bg-yellow-950/40 border border-yellow-500/30 text-yellow-200 mt-1">
+            <strong>🔥 Günün Yarışması Katlama Çarpanları:</strong><br>
+            • 1. Set (1–6. Etaplar): Standard Puan ($x1.0$)<br>
+            • 2. Set (7–12. Etaplar): %50 Ekstra Puan ($x1.5$)<br>
+            • 3. Set (13–18. Etaplar): Çift Puan ($x2.0$)
+          </div>
+        </div>
+
+        <!-- Bölüm 2: Kelime Etapları ve Joker -->
+        <div class="flex flex-col gap-2 border-t border-gray-800 pt-3">
+          <h4 class="font-headline font-bold text-sm text-cyan-300 flex items-center gap-1.5">
+            <i data-lucide="type" class="w-4 h-4"></i> 2. KELİME ETAPLARI & JOKER HARF
+          </h4>
+          <p>Amaç, sunulan harflerle TDK uyumlu en uzun kelimeyi bulmaktır.</p>
+          <ul class="list-disc list-inside space-y-1 text-gray-300 pl-1">
+            <li><strong>Harf Havuzu:</strong> 3 Ünlü + 5 Ünsüz harf çekilir. 9. harf otomatik <strong>Joker (?)</strong> harftir.</li>
+            <li><strong>Joker Kullanımı:</strong> <span class="text-yellow-300">?</span> simgesine tıklayarak istediğiniz Türkçe harfi seçip kelimenize dahil edebilirsiniz.</li>
+            <li><strong>Sözlük Şartı:</strong> Kelimenin en az 2 harfli ve TDK uyumlu 60.000+ kelimelik resmi listede bulunması zorunludur.</li>
+            <li><strong>Puanlama:</strong> 2–8 harfli geçerli kelimeler <strong>harf sayısı kadar</strong> puan verir. 9 harfli tam isabet kelimeler <strong>15 Bonus Puan</strong> kazandırır!</li>
+          </ul>
+        </div>
+
+        <!-- Bölüm 3: İşlem Etapları ve Puanlama Tablosu -->
+        <div class="flex flex-col gap-2 border-t border-gray-800 pt-3">
+          <h4 class="font-headline font-bold text-sm text-emerald-400 flex items-center gap-1.5">
+            <i data-lucide="binary" class="w-4 h-4"></i> 3. İŞLEM ETAPLARI VE DETAYLI PUANLAMA
+          </h4>
+          <p>5 küçük ($1–9$), 1 büyük ($10, 25, 50, 75, 100$) sayı ile 3 basamaklı hedef sayıya ulaşmaya çalışılır.</p>
+          <div class="overflow-x-auto my-1">
+            <table class="w-full text-left font-mono-label text-[11px] border-collapse">
+              <thead>
+                <tr class="border-b border-gray-700 bg-surface-container-low text-cyan-300">
+                  <th class="p-1.5">Hedef Sayı Farkı</th>
+                  <th class="p-1.5">Kazanılan Puan</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-800/60">
+                <tr><td class="p-1.5 text-emerald-400">Tam İsabet (Fark = 0)</td><td class="p-1.5 font-bold text-emerald-400">10 Puan</td></tr>
+                <tr><td class="p-1.5">1 Farklı Yaklaşma</td><td class="p-1.5 font-bold">9 Puan</td></tr>
+                <tr><td class="p-1.5">2 Farklı Yaklaşma</td><td class="p-1.5 font-bold">8 Puan</td></tr>
+                <tr><td class="p-1.5">3 Farklı Yaklaşma</td><td class="p-1.5 font-bold">7 Puan</td></tr>
+                <tr><td class="p-1.5">4 Farklı Yaklaşma</td><td class="p-1.5 font-bold">6 Puan</td></tr>
+                <tr><td class="p-1.5">5 Farklı Yaklaşma</td><td class="p-1.5 font-bold">5 Puan</td></tr>
+                <tr><td class="p-1.5">6 – 10 Farklı Yaklaşma</td><td class="p-1.5 font-bold text-yellow-400">3 Puan</td></tr>
+                <tr><td class="p-1.5 text-red-400">11+ Fark veya İşlemsiz</td><td class="p-1.5 text-red-400">0 Puan</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Bölüm 4: Oda Kodu ve Kısayollar -->
+        <div class="flex flex-col gap-2 border-t border-gray-800 pt-3">
+          <h4 class="font-headline font-bold text-sm text-purple-300 flex items-center gap-1.5">
+            <i data-lucide="keyboard" class="w-4 h-4"></i> 4. KLAVYE KISAYOLLARI & ODA KODLARI
+          </h4>
+          <p>• <strong>Klavye İle Kelime Yazma:</strong> Kelime etabında doğrudan klavyeden harflere basarak kelimenizi yazabilirsiniz.<br>
+          • <strong>Backspace / Enter:</strong> Backspace son harfi siler, Enter kelimeyi onaylar.<br>
+          • <strong>Oda Kodu Mantığı:</strong> Arkadaşınızdan gelen hazır kodu <i>Oda Kodu ile Rekabet</i> kutusuna yapıştırıp TAMAM'a basarsanız oyun 90 saniye sabit süreyle adil rekabet modunda başlar.</p>
+        </div>
+
       </div>
-      <button onclick="closeRulesModal()" class="btn-cyan w-full py-2.5 text-xs font-bold mt-1">ANLADIM</button>
+
+      <!-- Kapat Butonu -->
+      <button onclick="closeRulesModal()" class="btn-cyan w-full py-2.5 text-xs font-bold mt-1">
+        ANLADIM VE KAPAT
+      </button>
+
     </div>
   </div>
 
@@ -919,7 +1014,7 @@
             </div>
 
             <button onclick="startMode('${GAME_MODES.DAILY}')" class="btn-gold px-6 py-3.5 text-xs font-extrabold shrink-0 flex items-center gap-2 text-base z-10">
-              <i data-lucide="play" class="w-5 h-5"></i> ${todayScore ? 'TEKRAR OYNA' : 'BAŞLA (x2 PUAN)'}
+              <i data-lucide="play" class="w-5 h-5"></i> ${todayScore ? 'TEKRAR OYNA' : 'BAŞLA'}
             </button>
           </div>
 
