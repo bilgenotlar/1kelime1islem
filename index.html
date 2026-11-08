@@ -327,7 +327,7 @@
     <header class="neon-panel p-3 sm:p-4 flex flex-col gap-3">
       <div class="flex items-center justify-between gap-2 flex-wrap">
         
-        <!-- Sol Taraf: Logo ve Üstünde Yarı Yarıya Küçük Canlı Yayın Rozeti -->
+        <!-- Sol Taraf: Logo ve Üstünde Küçük Canlı Yayın Rozeti -->
         <div class="flex flex-col gap-1">
           <div class="flex items-center gap-1.5 px-1.5 py-0.5 rounded bg-red-950/70 border border-red-500/50 text-red-400 font-mono-label text-[10px] uppercase tracking-widest animate-pulse w-max">
             <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
@@ -1073,6 +1073,7 @@
       loadCurrentStage();
     }
 
+    /* ODA KODU İLE REKABET MODU (DÜZELTİLMİŞ ETAP TÜRÜ SIRALAMASI) */
     function startCustomSeedMode() {
       const input = document.getElementById('custom-seed-input');
       let rawVal = (input && input.value.trim()) ? trToUpperCase(input.value) : generateShareableSeed(GAME_MODES.TOURNAMENT);
@@ -1088,12 +1089,21 @@
         detectedMode = GAME_MODES.WORD_ONLY;
       }
 
+      appState.mode = GAME_MODES.CUSTOM_SEED;
       appState.customSubType = detectedMode;
+      appState.seed = rawVal;
+      appState.currentStageIndex = 0;
+      appState.totalScore = 0;
+      appState.dailySetScores = [0, 0, 0];
+      appState.history = [];
+      appState.maxStages = (detectedMode === GAME_MODES.TOURNAMENT) ? 8 : 6;
       appState.roundDuration = 90;
+
+      document.getElementById('scoreboard-total').textContent = '0';
       renderTimerModeInUI();
       
-      appState.seed = rawVal;
-      startMode(GAME_MODES.CUSTOM_SEED);
+      currentPRNG = Mulberry32(appState.seed);
+      loadCurrentStage();
     }
 
     function loadCurrentStage() {
@@ -1111,10 +1121,16 @@
       renderStageTrackerHeader();
 
       let isWordStage = false;
-      if (effectiveMode === GAME_MODES.WORD_ONLY) isWordStage = true;
-      else if (effectiveMode === GAME_MODES.MATH_ONLY) isWordStage = false;
-      else if (appState.mode === GAME_MODES.PRACTICE) isWordStage = (appState.practiceType === 'word');
-      else isWordStage = (stageIndex % 2 === 0);
+      if (effectiveMode === GAME_MODES.WORD_ONLY) {
+        isWordStage = true;
+      } else if (effectiveMode === GAME_MODES.MATH_ONLY) {
+        isWordStage = false;
+      } else if (appState.mode === GAME_MODES.PRACTICE) {
+        isWordStage = (appState.practiceType === 'word');
+      } else {
+        // Karma ve Kodlu Oda Rekabetinde: Çift indeksler Kelime, Tek indeksler İşlem
+        isWordStage = (stageIndex % 2 === 0);
+      }
 
       const mult = getCurrentMultiplier();
       const multStr = mult > 1 ? ` (ÇARPAN: x${mult})` : '';
@@ -1912,7 +1928,7 @@
             <div class="flex items-center gap-2 text-xs font-mono-label text-cyan-300">
               <i data-lucide="share-2" class="w-4 h-4"></i> ARKADAŞINA MEYDAN OKU!
             </div>
-            <p class="text-xs text-gray-300">Aşağıdaki kodu kopyalayıp arkadaşına gönder. Aynı sorularla eşit olarak yarışsın!</p>
+            <p class="text-xs text-gray-300">Aşağıdaki kodu kopyalayıp arkadaşına gönder. Eşit şartlarda yarışın!</p>
             <div class="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded border border-cyan-500/50">
               <span class="font-mono-label text-sm text-white font-bold tracking-widest">${shareCode}</span>
               <button onclick="copyMatchCodeToClipboard('${shareCode}', false)" class="btn-cyan px-3 py-1 text-xs flex items-center gap-1 ml-2">
