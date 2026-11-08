@@ -1164,36 +1164,46 @@
     }
 
     function startCustomSeedMode() {
-      const input = document.getElementById('custom-seed-input');
-      let rawVal = (input && input.value.trim()) ? trToUpperCase(input.value) : generateShareableSeed(GAME_MODES.TOURNAMENT);
+  const input = document.getElementById('custom-seed-input');
+  let rawVal = (input && input.value.trim()) ? trToUpperCase(input.value) : generateShareableSeed(GAME_MODES.TOURNAMENT);
 
-      let detectedMode = GAME_MODES.TOURNAMENT;
-      const hyphenCount = (rawVal.match(/-/g) || []).length;
+  let detectedMode = GAME_MODES.TOURNAMENT;
+  const hyphenCount = (rawVal.match(/-/g) || []).length;
 
-      if (hyphenCount >= 2) {
-        detectedMode = GAME_MODES.MATH_ONLY;
-      } else if (hyphenCount === 1) {
-        detectedMode = GAME_MODES.TOURNAMENT;
-      } else {
-        detectedMode = GAME_MODES.WORD_ONLY;
-      }
-
-      appState.mode = GAME_MODES.CUSTOM_SEED;
-      appState.customSubType = detectedMode;
-      appState.seed = rawVal;
-      appState.currentStageIndex = 0;
-      appState.totalScore = 0;
-      appState.dailySetScores = [0, 0, 0];
-      appState.history = [];
-      appState.maxStages = (detectedMode === GAME_MODES.TOURNAMENT) ? 8 : 6;
-      appState.roundDuration = 90;
-
-      document.getElementById('scoreboard-total').textContent = '0';
-      renderTimerModeInUI();
-      
-      currentPRNG = Mulberry32(appState.seed);
-      loadCurrentStage();
+  // Yeni Mod Algılama Mantığı
+  if (hyphenCount >= 2) {
+    // Örn: 100-ZİHİN-500 (İşlem Oyunu)
+    detectedMode = GAME_MODES.MATH_ONLY;
+  } else if (hyphenCount === 1) {
+    // Eğer 1 tire varsa ve tireden sonrası tamamen sayı ise: Kelime Oyunu (Örn: ZİHİN-863)
+    // Eğer tireden sonrası kelime ise: Karma Şampiyona (Örn: ZİHİN-KAPLAN)
+    const parts = rawVal.split('-');
+    if (/^\d+$/.test(parts[1])) {
+      detectedMode = GAME_MODES.WORD_ONLY;
+    } else {
+      detectedMode = GAME_MODES.TOURNAMENT;
     }
+  } else {
+    // Tiresiz eski formatlar veya doğrudan girilen kelimeler
+    detectedMode = GAME_MODES.WORD_ONLY;
+  }
+
+  appState.mode = GAME_MODES.CUSTOM_SEED;
+  appState.customSubType = detectedMode;
+  appState.seed = rawVal;
+  appState.currentStageIndex = 0;
+  appState.totalScore = 0;
+  appState.dailySetScores = [0, 0, 0];
+  appState.history = [];
+  appState.maxStages = (detectedMode === GAME_MODES.TOURNAMENT) ? 8 : 6;
+  appState.roundDuration = 90;
+
+  document.getElementById('scoreboard-total').textContent = '0';
+  renderTimerModeInUI();
+  
+  currentPRNG = Mulberry32(appState.seed);
+  loadCurrentStage();
+}
 
     function loadCurrentStage() {
       stopTimer();
