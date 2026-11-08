@@ -957,15 +957,33 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left border-t border-gray-800 pt-4">
             
+            <!-- ODA KODU İLE REKABET (AKILLI İKİ AŞAMALI BUTON KARTI) -->
             <div class="neon-panel-gold p-4 flex flex-col gap-3">
               <div class="flex items-center justify-between">
-                <span class="font-headline font-bold text-sm text-yellow-300 flex items-center gap-1.5"><i data-lucide="key" class="w-4 h-4 text-yellow-400"></i> ODA KODU İLE REKABET</span>
+                <span class="font-headline font-bold text-sm text-yellow-300 flex items-center gap-1.5">
+                  <i data-lucide="key" class="w-4 h-4 text-yellow-400"></i> ODA KODU İLE REKABET
+                </span>
                 <span class="text-[10px] font-mono-label bg-yellow-950 text-yellow-300 px-2 py-0.5 rounded border border-yellow-500/30">90 SN SABİT SÜRE</span>
               </div>
-              <p class="text-xs text-gray-300">Arkadaşınızın kodunu girin (Örn: PARİS26, VOLKAN433):</p>
+              
+              <p class="text-xs text-gray-300">Arkadaşınızın kodunu girin veya yeni bir kelime yazıp kodunuzu oluşturun:</p>
+              
               <div class="flex items-center gap-2">
-                <input type="text" id="custom-seed-input" placeholder="Örn: PARİS26" class="flex-1 bg-surface-container-low border border-yellow-500/50 rounded px-3 py-2 text-xs text-white uppercase font-mono-label focus:outline-none focus:border-yellow-400">
-                <button onclick="startCustomSeedMode()" class="btn-gold px-4 py-2 text-xs font-bold shrink-0">GİR VE OYNA</button>
+                <input type="text" id="custom-seed-input" oninput="resetSeedButtonState()" placeholder="Örn: VOLKAN veya VOLKAN-33" class="flex-1 bg-surface-container-low border border-yellow-500/50 rounded px-3 py-2 text-xs text-white uppercase font-mono-label focus:outline-none focus:border-yellow-400">
+                
+                <!-- 1. Aşama Butonu -->
+                <button type="button" id="btn-seed-confirm" onclick="confirmCustomSeedInput()" class="btn-cyan px-4 py-2 text-xs font-bold shrink-0">TAMAM</button>
+                
+                <!-- 2. Aşama Butonu (Başlangıçta Pasif) -->
+                <button type="button" id="btn-seed-play" onclick="startCustomSeedMode()" disabled class="btn-gold px-4 py-2 text-xs font-bold shrink-0 opacity-40 cursor-not-allowed">GİR VE OYNA</button>
+              </div>
+
+              <!-- Dinamik Bilgilendirme ve Kopyalama Kutusu -->
+              <div id="seed-generated-info" class="hidden flex items-center justify-between bg-yellow-950/60 border border-yellow-500/40 p-2 rounded text-xs font-mono-label text-yellow-300 mt-1">
+                <span>Arkadaşına göndereceğin oda kodu: <strong id="formatted-seed-display" class="text-white font-bold underline"></strong></span>
+                <button type="button" onclick="copyFormattedSeed()" class="text-cyan-400 hover:text-white underline text-[11px] ml-2 flex items-center gap-1">
+                  <i data-lucide="copy" class="w-3 h-3"></i> Kopyala
+                </button>
               </div>
             </div>
 
@@ -1073,7 +1091,76 @@
       loadCurrentStage();
     }
 
-    /* ODA KODU İLE REKABET MODU (DÜZELTİLMİŞ ETAP TÜRÜ SIRALAMASI) */
+    /* ==========================================================================
+       ODA KODU İLE REKABET MODU (AKILLI KOD DÜZELTME & İKİ AŞAMALI BUTON)
+       ========================================================================== */
+    function resetSeedButtonState() {
+      const confirmBtn = document.getElementById('btn-seed-confirm');
+      const playBtn = document.getElementById('btn-seed-play');
+      const infoBox = document.getElementById('seed-generated-info');
+
+      if (confirmBtn) {
+        confirmBtn.disabled = false;
+        confirmBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+      }
+      if (playBtn) {
+        playBtn.disabled = true;
+        playBtn.classList.add('opacity-40', 'cursor-not-allowed');
+      }
+      if (infoBox) {
+        infoBox.classList.add('hidden');
+      }
+    }
+
+    function confirmCustomSeedInput() {
+      const input = document.getElementById('custom-seed-input');
+      if (!input) return;
+
+      let rawVal = trToUpperCase(input.value.trim());
+
+      if (!rawVal) {
+        const randomWord = CATCHY_WORDS[Math.floor(Math.random() * CATCHY_WORDS.length)];
+        const randomNum = Math.floor(Math.random() * 90) + 10;
+        rawVal = `${randomWord}-${randomNum}`;
+      } else if (!rawVal.includes('-')) {
+        const randomNum = Math.floor(Math.random() * 90) + 10;
+        rawVal = `${rawVal}-${randomNum}`;
+      }
+
+      input.value = rawVal;
+
+      const infoBox = document.getElementById('seed-generated-info');
+      const displayEl = document.getElementById('formatted-seed-display');
+      if (infoBox && displayEl) {
+        displayEl.textContent = rawVal;
+        infoBox.classList.remove('hidden');
+      }
+
+      const confirmBtn = document.getElementById('btn-seed-confirm');
+      const playBtn = document.getElementById('btn-seed-play');
+
+      if (confirmBtn) {
+        confirmBtn.disabled = true;
+        confirmBtn.classList.add('opacity-40', 'cursor-not-allowed');
+      }
+      if (playBtn) {
+        playBtn.disabled = false;
+        playBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+        playBtn.focus();
+      }
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function copyFormattedSeed() {
+      const displayEl = document.getElementById('formatted-seed-display');
+      if (displayEl && displayEl.textContent) {
+        navigator.clipboard.writeText(displayEl.textContent).then(() => {
+          alert(`Oda Kodu Kopyalandı: ${displayEl.textContent}\n\nArkadaşınıza bu kodu göndererek aynı sorularla yarışabilirsiniz!`);
+        });
+      }
+    }
+
     function startCustomSeedMode() {
       const input = document.getElementById('custom-seed-input');
       let rawVal = (input && input.value.trim()) ? trToUpperCase(input.value) : generateShareableSeed(GAME_MODES.TOURNAMENT);
