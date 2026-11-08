@@ -1172,6 +1172,8 @@
       if (roundModal) roundModal.classList.add('hidden');
 
       appState.practiceType = type;
+      // Her yeni antrenman talebinde tohumu (seed) yeniliyoruz
+      appState.seed = `PRACTICE_${type.toUpperCase()}_${Date.now()}_${Math.floor(Math.random() * 99999)}`;
       startMode(GAME_MODES.PRACTICE);
     }
 
@@ -1194,6 +1196,11 @@
       } else if (mode === GAME_MODES.TOURNAMENT) {
         appState.maxStages = 8;
         appState.seed = generateShareableSeed(mode);
+        appState.roundDuration = appState.userDefaultDuration;
+      } else if (mode === GAME_MODES.PRACTICE) {
+        appState.maxStages = 1;
+        // ANTRENMAN MODU İÇİN ANLIK RASTGELE SEED ÜRETİMİ (A,A,A B,B,B,B,B HATASINI ÇÖZER)
+        appState.seed = `PRACTICE_${Date.now()}_${Math.floor(Math.random() * 99999)}`;
         appState.roundDuration = appState.userDefaultDuration;
       } else {
         appState.roundDuration = appState.userDefaultDuration;
