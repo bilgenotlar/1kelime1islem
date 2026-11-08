@@ -375,9 +375,9 @@
         </div>
       </div>
 
-      <div class="flex items-center justify-between gap-1 sm:gap-2 overflow-x-auto pt-1 border-t border-gray-800/80">
-        <span class="font-mono-label text-xs text-gray-400 uppercase tracking-wider shrink-0 mr-1">ETAPLAR:</span>
-        <div id="stages-track" class="flex items-center gap-1.5 flex-nowrap w-full justify-between"></div>
+      <!-- Header Alt Şeridi: Ana Menüde Duyuru Metni, Oyunda Etap Takip Şeridi -->
+      <div id="header-sub-bar" class="flex items-center justify-between gap-1 sm:gap-2 overflow-x-auto pt-1.5 border-t border-gray-800/80 text-xs font-mono-label text-cyan-300">
+        <!-- Dinamik İçerik JavaScript Tarafından Doldurulacak -->
       </div>
     </header>
 
@@ -518,17 +518,15 @@
   <div id="modal-rules" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center p-4 hidden">
     <div class="neon-panel p-5 sm:p-6 max-w-2xl w-full flex flex-col gap-4 shadow-2xl border border-cyan-500/50 max-h-[85vh]">
       
-      <!-- Modal Başlığı -->
       <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
         <h3 class="font-headline font-extrabold text-lg sm:text-xl text-cyan-300 flex items-center gap-2">
-          <i data-lucide="book-open" class="w-5 h-5 text-cyan-400"></i> MAVİBLUE STÜDYO BİR KELİME BİR İŞLEM OYUN REHBERİ
+          <i data-lucide="book-open" class="w-5 h-5 text-cyan-400"></i> MAVİBLUE STÜDYO OYUN REHBERİ
         </h3>
         <button onclick="closeRulesModal()" class="text-gray-400 hover:text-white p-1">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
-      <!-- Rehber İçerik Alanı (Kaydırılabilir) -->
       <div class="overflow-y-auto pr-1 text-xs text-gray-300 flex flex-col gap-5 leading-relaxed">
         
         <!-- Bölüm 1: Oyun Modları -->
@@ -557,9 +555,9 @@
           </div>
           <div class="p-2.5 rounded bg-yellow-950/40 border border-yellow-500/30 text-yellow-200 mt-1">
             <strong>🔥 Günün Yarışması Katlama Çarpanları:</strong><br>
-            • 1. Set (1–6. Etaplar): Standard Puan ($x1.0$)<br>
-            • 2. Set (7–12. Etaplar): %50 Ekstra Puan ($x1.5$)<br>
-            • 3. Set (13–18. Etaplar): Çift Puan ($x2.0$)
+            • 1. Set (1–6. Etaplar): Standard Puan (x1.0)<br>
+            • 2. Set (7–12. Etaplar): %50 Ekstra Puan (x1.5)<br>
+            • 3. Set (13–18. Etaplar): Çift Puan (x2.0)
           </div>
         </div>
 
@@ -582,7 +580,7 @@
           <h4 class="font-headline font-bold text-sm text-emerald-400 flex items-center gap-1.5">
             <i data-lucide="binary" class="w-4 h-4"></i> 3. İŞLEM ETAPLARI VE DETAYLI PUANLAMA
           </h4>
-          <p>5 küçük ($1–9$), 1 büyük ($10, 25, 50, 75, 100$) sayı ile 3 basamaklı hedef sayıya ulaşmaya çalışılır.</p>
+          <p>5 küçük (1–9), 1 büyük (10, 25, 50, 75, 100) sayı ile 3 basamaklı hedef sayıya ulaşmaya çalışılır.</p>
           <div class="overflow-x-auto my-1">
             <table class="w-full text-left font-mono-label text-[11px] border-collapse">
               <thead>
@@ -605,17 +603,17 @@
           </div>
         </div>
 
-<!-- Bölüm 4: Oda Kodu ve Kısayollar -->
+        <!-- Bölüm 4: Oda Kodu ve Kısayollar -->
         <div class="flex flex-col gap-2 border-t border-gray-800 pt-3">
           <h4 class="font-headline font-bold text-sm text-purple-300 flex items-center gap-1.5">
             <i data-lucide="keyboard" class="w-4 h-4"></i> 4. KLAVYE KISAYOLLARI & ODA KODLARI
           </h4>
           <p>• <strong>Klavye İle Kelime Yazma:</strong> Kelime etabında doğrudan klavyeden harflere basarak kelimenizi yazabilirsiniz.<br>
           • <strong>Backspace / Enter:</strong> Backspace son harfi siler, Enter kelimeyi onaylar.<br>
-          • <strong>Oda Kodu Mantığı:</strong> Arkadaşınızdan gelen hazır kodu <i>Oda Kodu ile Rekabet</i> kutusuna yapıştırıp TAMAM'a basarsanız oyun 90 saniye sabit süreyle adil rekabet modunda başlar. Dilerseniz birazdan başlayacağınız oyunu arkadaşınıza göndererek ona meydan okuyabilirsiniz. Bu durumda kendi kodunuzu üretmelisiniz. İlgili satıra sadece alfabedeki harflerden oluşan bir kelime girin (örneğin: DERYA). Sistem otomatik olarak KOD-RAKAM-KOD üretecektir (örnek için DERYA-342-DERYA). Bu üretilen kodu arkadaşınıza gönderin. Birazdan başlayacağınız oyundaki kelime ve işlem modlarının aynısı arkadaşlarınızın oyununda da üretilecektir. Böylece aynı oyunda elde ettiğiniz skorları karşılaştırabilirsiniz. </p>
+          • <strong>Oda Kodu Mantığı:</strong> Arkadaşınızdan gelen hazır kodu <i>Oda Kodu ile Rekabet</i> kutusuna yapıştırıp TAMAM'a basarsanız oyun 90 saniye sabit süreyle adil rekabet modunda başlar. Dilerseniz birazdan başlayacağınız oyunu arkadaşınıza göndererek ona meydan okuyabilirsiniz. Bu durumda kendi kodunuzu üretmelisiniz. İlgili satıra sadece alfabedeki harflerden oluşan bir kelime girin (örneğin: DERYA). Sistem otomatik olarak KOD-RAKAM-KOD üretecektir (örnek için DERYA-342-DERYA). Bu üretilen kodu arkadaşınıza gönderin. Birazdan başlayacağınız oyundaki kelime ve işlem modlarının aynısı arkadaşlarınızın oyununda da üretilecektir. Böylece aynı oyunda elde ettiğiniz skorları karşılaştırabilirsiniz.</p>
         </div>
 
-        <!-- YENİ EKLENEN BÖLÜM: Görsel İnfografik Kılavuz Bağlantısı -->
+        <!-- Görsel İnfografik Kılavuz Bağlantısı -->
         <div class="p-3 rounded bg-surface-container-high border border-cyan-500/40 flex items-center justify-between gap-2 mt-1">
           <div class="flex items-center gap-2">
             <i data-lucide="image" class="w-4 h-4 text-cyan-400 shrink-0"></i>
@@ -628,15 +626,6 @@
 
       </div>
 
-      <!-- Kapat Butonu -->
-      <button onclick="closeRulesModal()" class="btn-cyan w-full py-2.5 text-xs font-bold mt-1">
-        ANLADIM VE KAPAT
-      </button>
-
-    </div>
-  </div>
-
-      <!-- Kapat Butonu -->
       <button onclick="closeRulesModal()" class="btn-cyan w-full py-2.5 text-xs font-bold mt-1">
         ANLADIM VE KAPAT
       </button>
@@ -917,7 +906,6 @@
     let timerInterval = null;
     let draftTimerInterval = null;
 
-    // Deterministik Tohum Algoritması (PRNG)
     function Mulberry32(seedStr) {
       let h = 0;
       for (let i = 0; i < seedStr.length; i++) h = Math.imul(31, h) + seedStr.charCodeAt(i) | 0;
@@ -996,11 +984,21 @@
       appState.dailySetScores = [0, 0, 0];
       renderTimerModeInUI();
 
+      // Ana Menüdeyken Header Alt Şeridine Çağrı Cümlesini Yerleştir (Ortalanmış ve Büyütülmüş)
+      const subBar = document.getElementById('header-sub-bar');
+      if (subBar) {
+        subBar.innerHTML = `
+          <div class="flex items-center justify-center gap-2 text-xs sm:text-sm font-mono-label text-cyan-300 w-full py-0.5">
+            <i data-lucide="sparkles" class="w-4 h-4 text-pink-400 shrink-0"></i>
+            <span class="font-semibold tracking-wide">Günün Yarışması ile katlanan puan heyecanını yaşayın veya klasik liglerde yarışın.</span>
+          </div>
+        `;
+      }
+
       const container = document.getElementById('main-stage-container');
       if (!container) return;
 
       document.getElementById('footer-status-text').textContent = 'HAZIR • YARIŞMA MODUNU SEÇİNİZ';
-      renderStageTrackerHeader();
 
       const todayScore = localStorage.getItem(`daily_score_${getTodaySeedString()}`);
       const todayDateStr = getTodayFormattedDate();
@@ -1012,7 +1010,6 @@
               <i data-lucide="award" class="w-4 h-4"></i> YARIŞMA STÜDYOSU V2.0
             </div>
             <h2 class="font-headline font-extrabold text-2xl sm:text-3xl text-white tracking-tight">OYNAMAK İSTEDİĞİNİZ MODU SEÇİN</h2>
-            <p class="text-sm text-gray-300 mt-2 max-w-lg mx-auto">Günün Yarışması ile katlanan puan heyecanını yaşayın veya klasik liglerde yarışın.</p>
           </div>
 
           <!-- GÜNÜN YARIŞMASI ÖZEL KARTI -->
@@ -1071,7 +1068,7 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left border-t border-gray-800 pt-4">
             
-            <!-- ODA KODU İLE REKABET (AKILLI KOD GİRİŞİ VE İKİ AŞAMALI BUTON KARTI) -->
+            <!-- ODA KODU İLE REKABET -->
             <div class="neon-panel-gold p-4 flex flex-col gap-3">
               <div class="flex items-center justify-between">
                 <span class="font-headline font-bold text-sm text-yellow-300 flex items-center gap-1.5">
@@ -1080,19 +1077,15 @@
                 <span class="text-[10px] font-mono-label bg-yellow-950 text-yellow-300 px-2 py-0.5 rounded border border-yellow-500/30">90 SN SABİT SÜRE</span>
               </div>
               
-              <p class="text-xs text-gray-300">Arkadaşınızın gönderdiği kodu girin veya kendi oyun kodunuzu oluşturun (sadece alfabedeki harfleri kullanın):</p>
+              <p class="text-xs text-gray-300">Arkadaşınızın kodunu girin veya yeni bir kelime yazıp kodunuzu oluşturun:</p>
               
               <div class="flex items-center gap-2">
                 <input type="text" id="custom-seed-input" oninput="resetSeedButtonState()" placeholder="Örn: ZİHİN-440 veya ZİHİN" class="flex-1 bg-surface-container-low border border-yellow-500/50 rounded px-3 py-2 text-xs text-white uppercase font-mono-label focus:outline-none focus:border-yellow-400">
                 
-                <!-- 1. Aşama Butonu -->
                 <button type="button" id="btn-seed-confirm" onclick="confirmCustomSeedInput()" class="btn-cyan px-4 py-2 text-xs font-bold shrink-0">TAMAM</button>
-                
-                <!-- 2. Aşama Butonu (Başlangıçta Pasif) -->
                 <button type="button" id="btn-seed-play" onclick="startCustomSeedMode()" disabled class="btn-gold px-4 py-2 text-xs font-bold shrink-0 opacity-40 cursor-not-allowed">GİR VE OYNA</button>
               </div>
 
-              <!-- Dinamik Bilgilendirme ve Kopyalama Kutusu -->
               <div id="seed-generated-info" class="hidden flex items-center justify-between bg-yellow-950/60 border border-yellow-500/40 p-2 rounded text-xs font-mono-label text-yellow-300 mt-1">
                 <span>Arkadaşına göndereceğin oda kodu: <strong id="formatted-seed-display" class="text-white font-bold underline"></strong></span>
                 <button type="button" onclick="copyFormattedSeed()" class="text-cyan-400 hover:text-white underline text-[11px] ml-2 flex items-center gap-1">
@@ -1119,8 +1112,8 @@
     }
 
     function renderStageTrackerHeader() {
-      const track = document.getElementById('stages-track');
-      if (!track) return;
+      const subBar = document.getElementById('header-sub-bar');
+      if (!subBar) return;
 
       let stageLabels = [];
       const total = appState.maxStages || 8;
@@ -1138,23 +1131,28 @@
         });
       }
 
-      track.innerHTML = stageLabels.map((s, idx) => {
-        let stateClass = 'stage-pill';
-        if (idx === appState.currentStageIndex) stateClass += ' is-active';
-        else if (idx < appState.currentStageIndex) stateClass += ' is-done';
+      subBar.innerHTML = `
+        <span class="font-mono-label text-xs text-gray-400 uppercase tracking-wider shrink-0 mr-1">ETAPLAR:</span>
+        <div id="stages-track" class="flex items-center gap-1.5 flex-nowrap w-full justify-between">
+          ${stageLabels.map((s, idx) => {
+            let stateClass = 'stage-pill';
+            if (idx === appState.currentStageIndex) stateClass += ' is-active';
+            else if (idx < appState.currentStageIndex) stateClass += ' is-done';
 
-        let extraBadge = '';
-        if (appState.mode === GAME_MODES.DAILY) {
-          if (idx === 6) extraBadge = ' <span class="text-yellow-400 text-[9px] font-bold">[x1.5]</span>';
-          if (idx === 12) extraBadge = ' <span class="text-pink-400 text-[9px] font-bold">[x2.0]</span>';
-        }
+            let extraBadge = '';
+            if (appState.mode === GAME_MODES.DAILY) {
+              if (idx === 6) extraBadge = ' <span class="text-yellow-400 text-[9px] font-bold">[x1.5]</span>';
+              if (idx === 12) extraBadge = ' <span class="text-pink-400 text-[9px] font-bold">[x2.0]</span>';
+            }
 
-        return `
-          <div class="${stateClass}" title="Etap ${idx + 1}">
-            <span>${s.label}${idx + 1}</span>${extraBadge}
-          </div>
-        `;
-      }).join('');
+            return `
+              <div class="${stateClass}" title="Etap ${idx + 1}">
+                <span>${s.label}${idx + 1}</span>${extraBadge}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
     }
 
     function openPracticeModal() {
@@ -1234,7 +1232,6 @@
       const randomNum = Math.floor(Math.random() * 900) + 100;
 
       if (!rawVal) {
-        // Boş bırakılırsa rastgele yeni bir Karma Oda Kodu oluştur
         const w1 = CATCHY_WORDS[Math.floor(Math.random() * CATCHY_WORDS.length)];
         rawVal = `${w1}-${randomNum}-${w1}`;
         input.value = rawVal;
@@ -1242,7 +1239,6 @@
       } else {
         const parts = rawVal.split('-');
         
-        // Dört Bilinen Standart Koda Tam Uyup Uymadığını Kontrol Et:
         const isMathOnly = (parts.length === 3 && /^\d+$/.test(parts[0]) && /^\d+$/.test(parts[2]));
         const isWordOnly = (parts.length === 2 && /^\d+$/.test(parts[1]));
         const isTournament = (parts.length === 2 && !/^\d+$/.test(parts[1]));
@@ -1251,12 +1247,8 @@
         const isPredefinedValidCode = (isMathOnly || isWordOnly || isTournament || isCustomRoom);
 
         if (isPredefinedValidCode) {
-          // SENARYO A: Başkasından gelen TAM HAZIR BİR KOD girilmiş!
-          // Doğrudan oyuna başla!
           startCustomSeedMode();
         } else {
-          // SENARYO B: Kullanıcı kendi yeni kelimesini girmiş (Örn: "ZİHİN")
-          // 4. Standart formatına dönüştür: KELİME-SAYI-KELİME
           rawVal = `${rawVal}-${randomNum}-${rawVal}`;
           input.value = rawVal;
           showGeneratedSeedInfo(rawVal);
@@ -1304,18 +1296,13 @@
       let detectedMode = GAME_MODES.TOURNAMENT;
       const parts = rawVal.split('-');
 
-      // DÖRT STANDARTLI UYUMLU ALGILAMA MANTIĞI
       if (parts.length === 3 && /^\d+$/.test(parts[0]) && /^\d+$/.test(parts[2])) {
-        // STANDART 3: SAYI-KELİME-SAYI -> İŞLEM OYUNU (Örn: 100-ZİHİN-500)
         detectedMode = GAME_MODES.MATH_ONLY;
       } else if (parts.length === 2 && /^\d+$/.test(parts[1])) {
-        // STANDART 2: KELİME-SAYI -> KELİME OYUNU (Örn: ZİHİN-440)
         detectedMode = GAME_MODES.WORD_ONLY;
       } else if (parts.length === 3 || parts.length === 2) {
-        // STANDART 1 & 4: KELİME-KELİME VEYA KELİME-SAYI-KELİME -> KARMA ŞAMPİYONA (Örn: ZİHİN-KAPLAN veya ZİHİN-234-ZİHİN)
         detectedMode = GAME_MODES.TOURNAMENT;
       } else {
-        // YEDEK/VARSAYILAN: Karma Şampiyona
         detectedMode = GAME_MODES.TOURNAMENT;
       }
 
@@ -1358,7 +1345,6 @@
       } else if (appState.mode === GAME_MODES.PRACTICE) {
         isWordStage = (appState.practiceType === 'word');
       } else {
-        // Karma ve Kodlu Oda Rekabetinde: Çift indeksler Kelime, Tek indeksler İşlem
         isWordStage = (stageIndex % 2 === 0);
       }
 
@@ -2075,7 +2061,6 @@
       else finishTournament();
     }
 
-    /* 4 STANDARTLI KOD ÜRETİCİ */
     function generateShareableSeed(mode) {
       const activeMode = (mode === GAME_MODES.CUSTOM_SEED) ? appState.customSubType : (mode || appState.mode);
 
@@ -2085,11 +2070,11 @@
       const num2 = Math.floor(Math.random() * 900) + 100;
 
       if (activeMode === GAME_MODES.WORD_ONLY) {
-        return `${w1}-${num1}`; // Standart 2: KELİME-SAYI (Sadece Kelime)
+        return `${w1}-${num1}`;
       } else if (activeMode === GAME_MODES.MATH_ONLY) {
-        return `${num1}-${w1}-${num2}`; // Standart 3: SAYI-KELİME-SAYI (Sadece İşlem)
+        return `${num1}-${w1}-${num2}`;
       } else {
-        return `${w1}-${w2}`; // Standart 1: KELİME-KELİME (Karma Turnuva)
+        return `${w1}-${w2}`;
       }
     }
 
@@ -2293,9 +2278,9 @@
     }
 
     function openRulesModal() { 
-  document.getElementById('modal-rules').classList.remove('hidden'); 
-  if (window.lucide) lucide.createIcons();
-}
+      document.getElementById('modal-rules').classList.remove('hidden'); 
+      if (window.lucide) lucide.createIcons();
+    }
     function closeRulesModal() { document.getElementById('modal-rules').classList.add('hidden'); }
 
     window.addEventListener('keydown', (e) => {
