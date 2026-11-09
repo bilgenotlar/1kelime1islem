@@ -2334,7 +2334,7 @@
     }
     function closeRulesModal() { document.getElementById('modal-rules').classList.add('hidden'); }
 
-    /* Driver.js İnteraktif Tanıtım Turu (6 Aşamalı Özel Senaryo) */
+   /* Driver.js İnteraktif Tanıtım Turu (6 Aşamalı Tam Uyumlu Senaryo) */
     function startInteractiveDemo() {
       if (typeof driver === 'undefined' || !driver.js) {
         alert("Tanıtım kütüphanesi yükleniyor, lütfen birkaç saniye sonra tekrar deneyin.");
@@ -2387,10 +2387,11 @@
             }
           },
           {
-            element: 'button[onclick*="startMode(\'WORD_ONLY\')"]',
+            // Kelime Oyunu ve İşlem Oyunu kartlarını yan yana içeren grid yapısı
+            element: 'button[onclick*="startMode(\'WORD_ONLY\')"].parentElement',
             popover: {
-              title: '5. Kelime ve İşlem Oyunları (Odak Modları)',
-              description: 'Sadece kelime türetmeye veya sadece sayılarla hedef sayıya ulaşmaya odaklanan 6 etaplık özel branş yarışmalarıdır.',
+              title: '5. Kelime ve İşlem Oyunları (Branş Modları)',
+              description: 'Sadece kelime türetmeye (6 Etap) veya sadece sayılarla hedef sayıya ulaşmaya (6 Etap) odaklanan özel branş yarışmalarıdır. İlgi alanınıza göre seçip yarışabilirsiniz.',
               side: 'top',
               align: 'center'
             }
