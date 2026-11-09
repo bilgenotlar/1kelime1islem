@@ -1045,7 +1045,7 @@
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-pink-950/60 border border-pink-500/50 text-pink-300 font-mono-label text-xs uppercase mb-3">
               <i data-lucide="award" class="w-4 h-4"></i> YARIŞMA STÜDYOSU V2.0
               <button onclick="startInteractiveDemo()" class="btn-cyan px-2 py-0.5 text-[10px] font-bold inline-flex items-center gap-1 ml-2">
-                <i data-lucide="play-circle" class="w-3 h-3"></i> TANITIM İZLE (DEMO)
+                <i data-lucide="play-circle" class="w-3 h-3"></i> TANITIM İZLE
               </button>
             </div>
             <h2 class="font-headline font-extrabold text-2xl sm:text-3xl text-white tracking-tight">OYNAMAK İSTEDİĞİNİZ MODU SEÇİN</h2>
@@ -2064,6 +2064,29 @@
         actionButtons = `<button onclick="proceedToNextStage()" class="btn-cyan w-full py-3.5 text-sm font-bold">SONRAKİ ETAP (${record.stageIndex + 2} / ${maxStg}) ➔</button>`;
       }
 
+      // Bilgisayar çözümü adım adım liste düzeni
+      let solverStepsHtml = '';
+      if (!isWord) {
+        if (record.bestSolver && record.bestSolver.steps && record.bestSolver.steps.length > 0) {
+          solverStepsHtml = `
+            <div class="flex flex-col gap-1.5 mt-1 font-mono-label text-xs">
+              ${record.bestSolver.steps.map((st, idx) => `
+                <div class="flex items-center gap-2 text-gray-200 bg-black/40 px-3 py-1.5 rounded border border-cyan-900/40">
+                  <span class="text-cyan-400 font-bold">${idx + 1}. Adım:</span>
+                  <span>${st}</span>
+                </div>
+              `).join('')}
+              <div class="flex items-center justify-between text-emerald-300 font-bold bg-emerald-950/40 px-3 py-1.5 rounded border border-emerald-500/30 mt-1">
+                <span>Ulaşılan Sonuç:</span>
+                <span class="text-sm font-extrabold">${record.bestSolver.val}</span>
+              </div>
+            </div>
+          `;
+        } else {
+          solverStepsHtml = `<span class="font-mono-label text-xs text-gray-400">Çözüm üretilemedi.</span>`;
+        }
+      }
+
       card.innerHTML = `
         <div class="flex items-center justify-between border-b border-gray-800 pb-3">
           <h3 class="font-headline font-extrabold text-xl text-white">
@@ -2084,9 +2107,10 @@
 
         <div class="p-4 rounded bg-surface-container-low border border-gray-800 flex flex-col gap-2">
           <span class="font-mono-label text-xs text-cyan-300">BİLGİSAYAR ÇÖZÜMÜ:</span>
-          <div class="flex items-center gap-2 flex-wrap">
-            ${isWord ? (record.bestWords.map(w => `<span class="px-2 py-1 rounded bg-cyan-950 border border-cyan-500/40 text-cyan-200 font-bold text-xs">${w}</span>`).join('')) : `<span class="font-mono-label text-xs text-cyan-200">${record.bestSolver.steps.join('  ➔  ')} (Sonuç: ${record.bestSolver.val})</span>`}
-          </div>
+          ${isWord 
+            ? `<div class="flex items-center gap-2 flex-wrap">${record.bestWords.map(w => `<span class="px-2 py-1 rounded bg-cyan-950 border border-cyan-500/40 text-cyan-200 font-bold text-xs">${w}</span>`).join('')}</div>`
+            : solverStepsHtml
+          }
         </div>
 
         <div class="flex items-center justify-end gap-3 pt-3 border-t border-gray-800">
