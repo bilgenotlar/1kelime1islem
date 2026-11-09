@@ -2101,6 +2101,11 @@
     function finishTournament() {
       stopTimer();
       stopDraftTimer();
+      
+      // Tüm etapların tamamlandığını belirterek header şeridini yeşile döndür
+      appState.currentStageIndex = appState.maxStages;
+      renderStageTrackerHeader();
+
       document.getElementById('modal-round-result').classList.add('hidden');
       const container = document.getElementById('main-stage-container');
       if (!container) return;
