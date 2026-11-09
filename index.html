@@ -137,10 +137,12 @@
       transform: translateY(-1px);
     }
     .btn-neon:disabled {
-      opacity: 0.4;
+      opacity: 0.3;
       cursor: not-allowed;
       border-color: var(--outline-variant);
       color: var(--on-surface-variant);
+      box-shadow: none !important;
+      transform: none !important;
     }
 
     .btn-cyan {
@@ -160,6 +162,14 @@
       color: #fff;
       transform: translateY(-1px);
     }
+    .btn-cyan:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      border-color: var(--outline-variant);
+      color: var(--on-surface-variant);
+      box-shadow: none !important;
+      transform: none !important;
+    }
 
     .btn-gold {
       background: var(--surface-container);
@@ -177,6 +187,40 @@
       box-shadow: var(--glow-tertiary);
       color: #fff;
       transform: translateY(-1px);
+    }
+    .btn-gold:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      border-color: var(--outline-variant);
+      color: var(--on-surface-variant);
+      box-shadow: none !important;
+      transform: none !important;
+    }
+
+    .btn-quit-styled {
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      text-transform: uppercase;
+      transition: all var(--dur-short) var(--ease-out);
+    }
+    .btn-quit-styled:not(:disabled) {
+      background-color: rgba(69, 10, 10, 0.7);
+      border: 1px solid rgba(220, 38, 38, 0.6);
+      color: #fca5a5;
+      cursor: pointer;
+    }
+    .btn-quit-styled:not(:disabled):hover {
+      background-color: rgba(127, 29, 29, 0.8);
+      color: #ffffff;
+      border-color: #ef4444;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+    }
+    .btn-quit-styled:disabled {
+      background-color: rgba(30, 20, 25, 0.4);
+      border: 1px solid rgba(80, 50, 60, 0.3);
+      color: #6b5860;
+      cursor: not-allowed;
+      opacity: 0.4;
     }
 
     .letter-tile {
@@ -389,7 +433,7 @@
           </div>
 
           <div class="flex items-center gap-1.5">
-            <button id="btn-pause" onclick="togglePauseGame()" title="Yarışmayı Duraklat" class="btn-neon p-2 flex items-center justify-center text-xs">
+            <button id="btn-pause" onclick="togglePauseGame()" title="Yarışmayı Duraklat" disabled class="btn-neon p-2 flex items-center justify-center text-xs">
               <i data-lucide="pause" class="w-4 h-4"></i>
             </button>
             <button id="btn-sound" onclick="toggleAudio()" title="Ses Aç/Kapat" class="btn-cyan p-2 flex items-center justify-center text-xs">
@@ -402,7 +446,7 @@
             <button id="btn-settings" onclick="openSettingsModal()" title="Ayarlar" class="btn-neon p-2 flex items-center justify-center text-xs">
               <i data-lucide="settings" class="w-4 h-4"></i>
             </button>
-            <button id="btn-quit" onclick="promptAbandonGame()" title="Yarışmayı Terk Et" class="px-3 py-2 rounded bg-red-950/60 border border-red-600/60 text-red-400 font-mono-label text-xs uppercase hover:bg-red-900/60 hover:text-white transition flex items-center gap-1.5">
+            <button id="btn-quit" onclick="promptAbandonGame()" title="Yarışmayı Terk Et" disabled class="btn-quit-styled px-3 py-2 text-xs flex items-center gap-1.5">
               <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
               <span class="hide-mobile">TERK ET</span>
             </button>
@@ -933,6 +977,7 @@
       timerRemaining: 60,
       isPaused: false,
       isTimerRunning: false,
+      isGameActive: false, // Oyunun aktif devam edip etmediğini tutan kontrol
       history: [],
       stageData: null,
       practiceType: 'word',
@@ -994,6 +1039,18 @@
       return 2;
     }
 
+    function updateActionHeaderButtons() {
+      const btnQuit = document.getElementById('btn-quit');
+      const btnPause = document.getElementById('btn-pause');
+
+      if (btnQuit) {
+        btnQuit.disabled = !appState.isGameActive;
+      }
+      if (btnPause) {
+        btnPause.disabled = !appState.isGameActive;
+      }
+    }
+
     async function initGame() {
       await loadDictionaryFile();
       updateSoundUI();
@@ -1015,6 +1072,9 @@
     function renderMainMenu() {
       stopTimer();
       stopDraftTimer();
+      appState.isGameActive = false;
+      updateActionHeaderButtons();
+
       appState.roundDuration = appState.userDefaultDuration;
       appState.seed = '';
       appState.dailySetScores = [0, 0, 0];
@@ -1224,6 +1284,9 @@
       appState.totalScore = 0;
       appState.dailySetScores = [0, 0, 0];
       appState.history = [];
+      appState.isGameActive = true;
+      updateActionHeaderButtons();
+
       document.getElementById('scoreboard-total').textContent = '0';
 
       if (mode === GAME_MODES.DAILY) {
@@ -1364,6 +1427,9 @@
       appState.history = [];
       appState.maxStages = (detectedMode === GAME_MODES.TOURNAMENT) ? 8 : 6;
       appState.roundDuration = 90;
+
+      appState.isGameActive = true;
+      updateActionHeaderButtons();
 
       document.getElementById('scoreboard-total').textContent = '0';
       renderTimerModeInUI();
@@ -2166,6 +2232,8 @@
     function finishTournament() {
       stopTimer();
       stopDraftTimer();
+      appState.isGameActive = false;
+      updateActionHeaderButtons();
       
       // Tüm etapların tamamlandığını belirterek header şeridini yeşile döndür
       appState.currentStageIndex = appState.maxStages;
@@ -2306,13 +2374,17 @@
     }
 
     function togglePauseGame() {
+      if (!appState.isGameActive) return;
       if (!appState.isTimerRunning && !appState.isPaused && (!appState.stageData || !appState.stageData.isDrafting)) return;
       appState.isPaused = !appState.isPaused;
       const modal = document.getElementById('modal-pause');
       if (modal) modal.classList.toggle('hidden', !appState.isPaused);
     }
 
-    function promptAbandonGame() { document.getElementById('modal-abandon').classList.remove('hidden'); }
+    function promptAbandonGame() {
+      if (!appState.isGameActive) return;
+      document.getElementById('modal-abandon').classList.remove('hidden');
+    }
     function closeAbandonModal() { document.getElementById('modal-abandon').classList.add('hidden'); }
     function confirmAbandonGame() {
       closeAbandonModal();
