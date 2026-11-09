@@ -2334,7 +2334,7 @@
     }
     function closeRulesModal() { document.getElementById('modal-rules').classList.add('hidden'); }
 
-    /* Driver.js İnteraktif Tanıtım Turu */
+    /* Driver.js İnteraktif Tanıtım Turu (6 Aşamalı Özel Senaryo) */
     function startInteractiveDemo() {
       if (typeof driver === 'undefined' || !driver.js) {
         alert("Tanıtım kütüphanesi yükleniyor, lütfen birkaç saniye sonra tekrar deneyin.");
@@ -2354,25 +2354,16 @@
             element: '#btn-footer-rules',
             popover: {
               title: '1. Oyun Rehberi & Kurallar',
-              description: 'Oyunun tüm modları, puanlama cetveli ve kısayollar hakkında detaylı bilgiye sayfanın altındaki Kurallar butonundan ulaşabilirsiniz.',
+              description: 'Oyunun tüm modları, puanlama cetveli ve klavye kısayolları hakkında detaylı bilgiye sayfanın en altındaki Kurallar butonundan ulaşabilirsiniz.',
               side: 'top',
               align: 'end'
             }
           },
           {
-            element: '#custom-seed-input',
-            popover: {
-              title: '2. Oda Kodu ve Özel Rekabet',
-              description: 'Buraya arkadaşınızdan gelen kodu yapıştırabilir veya kendi kelimenizi (örn: DERYA) yazarak arkadaşınıza göndereceğiniz özel oda kodunu üretebilirsiniz.',
-              side: 'top',
-              align: 'start'
-            }
-          },
-          {
             element: '#btn-settings',
             popover: {
-              title: '3. Süre ve Stüdyo Ayarları',
-              description: 'Üst paneldeki Ayarlar simgesinden tek kişilik yarışma sürelerinizi (45, 60 veya 90 saniye) dilediğiniz gibi özelleştirebilirsiniz.',
+              title: '2. Süre ve Stüdyo Ayarları',
+              description: 'Üst paneldeki Ayarlar simgesinden tek kişilik yarışma sürelerinizi (45, 60 veya 90 saniye) ve ses efektlerini dilediğiniz gibi özelleştirebilirsiniz.',
               side: 'bottom',
               align: 'end'
             }
@@ -2380,10 +2371,37 @@
           {
             element: '.neon-panel-gold',
             popover: {
-              title: '4. Günün Yarışması (Özel Mod)',
-              description: 'Her gün yenilenen 3 setlik bu modda katlamalı puan çarpanları (x1.0, x1.5, x2.0) ile günün şampiyonu olmak için yarışırsınız!',
+              title: '3. Günün Yarışması (Özel Mod)',
+              description: 'Her gün yenilenen 3 set (18 etap) süren bu turnuvada katlamalı puan çarpanları (x1.0, x1.5, x2.0) ile günün şampiyonu olmak için yarışırsınız!',
               side: 'bottom',
               align: 'center'
+            }
+          },
+          {
+            element: 'button[onclick*="startMode(\'TOURNAMENT\')"]',
+            popover: {
+              title: '4. Karma Şampiyona (Klasik Mod)',
+              description: 'Televizyondaki klasik "Bir Kelime Bir İşlem" formatıdır. 4 Kelime ve 4 İşlem etabı olmak üzere toplam 8 etaplık dengeli bir zihin şampiyonluğudur.',
+              side: 'top',
+              align: 'start'
+            }
+          },
+          {
+            element: 'button[onclick*="startMode(\'WORD_ONLY\')"]',
+            popover: {
+              title: '5. Kelime ve İşlem Oyunları (Odak Modları)',
+              description: 'Sadece kelime türetmeye veya sadece sayılarla hedef sayıya ulaşmaya odaklanan 6 etaplık özel branş yarışmalarıdır.',
+              side: 'top',
+              align: 'center'
+            }
+          },
+          {
+            element: '#custom-seed-input',
+            popover: {
+              title: '6. Oda Kodu ve Özel Rekabet',
+              description: 'Arkadaşınızdan gelen kodu buraya yapıştırıp aynı sorularla yarışabilir veya kendi kelimenizi (örn: DERYA) yazarak arkadaşınıza özel meydan okuma kodu üretebilirsiniz.',
+              side: 'top',
+              align: 'start'
             }
           }
         ]
