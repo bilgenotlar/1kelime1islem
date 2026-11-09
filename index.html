@@ -137,12 +137,10 @@
       transform: translateY(-1px);
     }
     .btn-neon:disabled {
-      opacity: 0.3;
+      opacity: 0.4;
       cursor: not-allowed;
       border-color: var(--outline-variant);
       color: var(--on-surface-variant);
-      box-shadow: none !important;
-      transform: none !important;
     }
 
     .btn-cyan {
@@ -162,14 +160,6 @@
       color: #fff;
       transform: translateY(-1px);
     }
-    .btn-cyan:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-      border-color: var(--outline-variant);
-      color: var(--on-surface-variant);
-      box-shadow: none !important;
-      transform: none !important;
-    }
 
     .btn-gold {
       background: var(--surface-container);
@@ -187,40 +177,6 @@
       box-shadow: var(--glow-tertiary);
       color: #fff;
       transform: translateY(-1px);
-    }
-    .btn-gold:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-      border-color: var(--outline-variant);
-      color: var(--on-surface-variant);
-      box-shadow: none !important;
-      transform: none !important;
-    }
-
-    .btn-quit-styled {
-      border-radius: var(--rounded);
-      font-family: var(--font-label);
-      text-transform: uppercase;
-      transition: all var(--dur-short) var(--ease-out);
-    }
-    .btn-quit-styled:not(:disabled) {
-      background-color: rgba(69, 10, 10, 0.7);
-      border: 1px solid rgba(220, 38, 38, 0.6);
-      color: #fca5a5;
-      cursor: pointer;
-    }
-    .btn-quit-styled:not(:disabled):hover {
-      background-color: rgba(127, 29, 29, 0.8);
-      color: #ffffff;
-      border-color: #ef4444;
-      box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
-    }
-    .btn-quit-styled:disabled {
-      background-color: rgba(30, 20, 25, 0.4);
-      border: 1px solid rgba(80, 50, 60, 0.3);
-      color: #6b5860;
-      cursor: not-allowed;
-      opacity: 0.4;
     }
 
     .letter-tile {
@@ -424,33 +380,46 @@
           </div>
         </div>
 
-        <div class="flex items-center gap-2 sm:gap-4">
-          <div class="px-3 py-1.5 rounded bg-surface-container-low border border-pink-500/40 flex items-center gap-2 shadow-inner">
+        <!-- Sağ Taraf: İstenen Sıralama (Skor > Pause > Terk Et > Ses > Ayarlar > Kılavuz) -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          
+          <!-- 1. TOPLAM SKOR -->
+          <div id="btn-header-score" class="px-3 py-1.5 rounded bg-surface-container-low border border-pink-500/40 flex items-center gap-2 shadow-inner">
             <i data-lucide="trophy" class="w-4 h-4 text-pink-400"></i>
-            <span class="font-mono-label text-xs text-gray-400 hide-mobile">TOPLAM SKOR:</span>
+            <span class="font-mono-label text-xs text-gray-400 hide-mobile">SKOR:</span>
             <span id="scoreboard-total" class="font-headline font-bold text-lg sm:text-xl text-pink-400" style="text-shadow: 0 0 8px #ff2d78;">0</span>
-            <span class="font-mono-label text-xs text-gray-400">PUAN</span>
+            <span class="font-mono-label text-xs text-gray-400">P</span>
           </div>
 
           <div class="flex items-center gap-1.5">
-            <button id="btn-pause" onclick="togglePauseGame()" title="Yarışmayı Duraklat" disabled class="btn-neon p-2 flex items-center justify-center text-xs">
+            <!-- 2. PAUSE (DURAKLAT) -->
+            <button id="btn-pause" onclick="togglePauseGame()" title="Yarışmayı Duraklat" disabled class="btn-neon p-2 flex items-center justify-center text-xs opacity-40 cursor-not-allowed">
               <i data-lucide="pause" class="w-4 h-4"></i>
             </button>
+
+            <!-- 3. TERK ET -->
+            <button id="btn-quit" onclick="promptAbandonGame()" title="Yarışmayı Terk Et" disabled class="px-3 py-2 rounded bg-red-950/40 border border-red-600/40 text-red-400/50 font-mono-label text-xs uppercase cursor-not-allowed opacity-40 transition flex items-center gap-1.5">
+              <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+              <span class="hide-mobile">TERK ET</span>
+            </button>
+
+            <!-- 4. SES -->
             <button id="btn-sound" onclick="toggleAudio()" title="Ses Aç/Kapat" class="btn-cyan p-2 flex items-center justify-center text-xs">
               <i id="sound-icon" data-lucide="volume-2" class="w-4 h-4"></i>
             </button>
+
+            <!-- 5. AYARLAR -->
+            <button id="btn-settings" onclick="openSettingsModal()" title="Ayarlar" class="btn-neon p-2 flex items-center justify-center text-xs">
+              <i data-lucide="settings" class="w-4 h-4"></i>
+            </button>
+
+            <!-- 6. KILAVUZ -->
             <button id="btn-guide" onclick="openGuideImageModal()" title="Görsel Kılavuz" class="btn-cyan px-2.5 py-2 flex items-center justify-center text-xs gap-1">
               <i data-lucide="image" class="w-4 h-4 text-cyan-400"></i>
               <span class="hide-mobile font-mono-label text-xs">KILAVUZ</span>
             </button>
-            <button id="btn-settings" onclick="openSettingsModal()" title="Ayarlar" class="btn-neon p-2 flex items-center justify-center text-xs">
-              <i data-lucide="settings" class="w-4 h-4"></i>
-            </button>
-            <button id="btn-quit" onclick="promptAbandonGame()" title="Yarışmayı Terk Et" disabled class="btn-quit-styled px-3 py-2 text-xs flex items-center gap-1.5">
-              <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
-              <span class="hide-mobile">TERK ET</span>
-            </button>
           </div>
+
         </div>
       </div>
 
@@ -977,7 +946,7 @@
       timerRemaining: 60,
       isPaused: false,
       isTimerRunning: false,
-      isGameActive: false, // Oyunun aktif devam edip etmediğini tutan kontrol
+      isGameActive: false, // Oyunun aktif olup olmadığını takip eder
       history: [],
       stageData: null,
       practiceType: 'word',
@@ -986,6 +955,40 @@
 
     let timerInterval = null;
     let draftTimerInterval = null;
+
+    // Header Butonlarının Aktiflik / Pasiflik Yönetimi
+    function updateActionHeaderButtons() {
+      const pauseBtn = document.getElementById('btn-pause');
+      const quitBtn = document.getElementById('btn-quit');
+
+      if (appState.isGameActive) {
+        if (pauseBtn) {
+          pauseBtn.disabled = false;
+          pauseBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+        }
+        if (quitBtn) {
+          quitBtn.disabled = false;
+          quitBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+          quitBtn.classList.replace('bg-red-950/40', 'bg-red-950/60');
+          quitBtn.classList.replace('border-red-600/40', 'border-red-600/60');
+          quitBtn.classList.replace('text-red-400/50', 'text-red-400');
+          quitBtn.classList.add('hover:bg-red-900/60', 'hover:text-white');
+        }
+      } else {
+        if (pauseBtn) {
+          pauseBtn.disabled = true;
+          pauseBtn.classList.add('opacity-40', 'cursor-not-allowed');
+        }
+        if (quitBtn) {
+          quitBtn.disabled = true;
+          quitBtn.classList.add('opacity-40', 'cursor-not-allowed');
+          quitBtn.classList.replace('bg-red-950/60', 'bg-red-950/40');
+          quitBtn.classList.replace('border-red-600/60', 'border-red-600/40');
+          quitBtn.classList.replace('text-red-400', 'text-red-400/50');
+          quitBtn.classList.remove('hover:bg-red-900/60', 'hover:text-white');
+        }
+      }
+    }
 
     function Mulberry32(seedStr) {
       let h = 0;
@@ -1039,18 +1042,6 @@
       return 2;
     }
 
-    function updateActionHeaderButtons() {
-      const btnQuit = document.getElementById('btn-quit');
-      const btnPause = document.getElementById('btn-pause');
-
-      if (btnQuit) {
-        btnQuit.disabled = !appState.isGameActive;
-      }
-      if (btnPause) {
-        btnPause.disabled = !appState.isGameActive;
-      }
-    }
-
     async function initGame() {
       await loadDictionaryFile();
       updateSoundUI();
@@ -1080,7 +1071,7 @@
       appState.dailySetScores = [0, 0, 0];
       renderTimerModeInUI();
 
-      // Ana Menüdeyken Header Alt Şeridine Çağrı Cümlesini Yerleştir (Ortalanmış ve Büyütülmüş)
+      // Ana Menüdeyken Header Alt Şeridine Duyuru Metnini Yerleştir
       const subBar = document.getElementById('header-sub-bar');
       if (subBar) {
         subBar.innerHTML = `
@@ -1144,7 +1135,7 @@
               <span class="text-[10px] font-mono-label text-pink-400 mt-3 block">8 ETAP • KARMA</span>
             </button>
 
-            <!-- KELİME VE İŞLEM OYUNLARINI BİRLİKTE ÇERÇEVELEYEN GRİD (DEMO 5. ADIM İÇİN) -->
+            <!-- KELİME VE İŞLEM OYUNLARINI BİRLİKTE ÇERÇEVELEYEN GRİD -->
             <div id="branch-modes-grid" class="col-span-1 sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button onclick="startMode('${GAME_MODES.WORD_ONLY}')" class="neon-panel-cyan p-4 hover:border-cyan-400 hover:shadow-[0_0_16px_rgba(0,255,204,0.3)] transition cursor-pointer group flex flex-col justify-between">
                 <div>
@@ -1179,7 +1170,7 @@
                 <span class="text-[10px] font-mono-label bg-yellow-950 text-yellow-300 px-2 py-0.5 rounded border border-yellow-500/30">90 SN SABİT SÜRE</span>
               </div>
               
-              <p class="text-xs text-gray-300">Arkadaşınızın gönderdiği kodu girin veya birazdan başlayacağınız oyunu arkadaşınızla paylaşmak istiyorsanız kendi oda kodunuzu girin (sadece alfabedeki harfleri kullanarak 6 karakter uzunluğunda bir kelime yazın) ve sistemin otomatik üreteceği kodu gönderin:</p>
+              <p class="text-xs text-gray-300">Arkadaşınızın gönderdiği kodu girin veya kendi kodunuzu üretip (6 harfli bir kelime yazıp) arkadaşınızla paylaşın:</p>
               
               <div class="flex items-center gap-2">
                 <input type="text" id="custom-seed-input" oninput="resetSeedButtonState()" placeholder="Örn: ZİHİN-440 veya ZİHİN" class="flex-1 bg-surface-container-low border border-yellow-500/50 rounded px-3 py-2 text-xs text-white uppercase font-mono-label focus:outline-none focus:border-yellow-400">
@@ -1202,7 +1193,7 @@
                   <span class="font-headline font-bold text-sm text-purple-300 group-hover:text-white flex items-center gap-1.5"><i data-lucide="zap" class="w-4 h-4 text-purple-400"></i> HIZLI ANTRENMAN</span>
                   <span class="text-[10px] font-mono-label bg-purple-900/40 text-purple-300 px-2 py-0.5 rounded">TEK ETAP</span>
                 </div>
-                <p class="text-xs text-gray-300">Skor kaydı tutulmadan tek etaplık hızlı antrenmanlar yapın. Bu bölümde kelime veya işlem oyunları bağımsız olarak bulunmaktadır. Dilediğiniz çeşit oyunu istediğiniz kadar oynar, yarışmalara kendinizi hazır tutarsınız.</p>
+                <p class="text-xs text-gray-300">Skor kaydı tutulmadan tek etaplık hızlı antrenmanlar yapın.</p>
               </div>
               <span class="text-[10px] font-mono-label text-purple-300 mt-2 block">SERİ ANTRENMAN DÖNGÜSÜ</span>
             </button>
@@ -1273,7 +1264,6 @@
       if (roundModal) roundModal.classList.add('hidden');
 
       appState.practiceType = type;
-      // Her yeni antrenman talebinde tohumu (seed) yeniliyoruz
       appState.seed = `PRACTICE_${type.toUpperCase()}_${Date.now()}_${Math.floor(Math.random() * 99999)}`;
       startMode(GAME_MODES.PRACTICE);
     }
@@ -1284,7 +1274,7 @@
       appState.totalScore = 0;
       appState.dailySetScores = [0, 0, 0];
       appState.history = [];
-      appState.isGameActive = true;
+      appState.isGameActive = true; // Oyunu aktifleşti
       updateActionHeaderButtons();
 
       document.getElementById('scoreboard-total').textContent = '0';
@@ -1303,7 +1293,6 @@
         appState.roundDuration = appState.userDefaultDuration;
       } else if (mode === GAME_MODES.PRACTICE) {
         appState.maxStages = 1;
-        // ANTRENMAN MODU İÇİN ANLIK RASTGELE SEED ÜRETİMİ
         appState.seed = `PRACTICE_${Date.now()}_${Math.floor(Math.random() * 99999)}`;
         appState.roundDuration = appState.userDefaultDuration;
       } else {
@@ -1316,7 +1305,7 @@
     }
 
     /* ==========================================================================
-       ODA KODU İLE REKABET MODU (HAZIR KOD İLE DOĞRUDAN BAŞLAMA DÜZELTMESİ)
+       ODA KODU İLE REKABET MODU
        ========================================================================== */
     function resetSeedButtonState() {
       const confirmBtn = document.getElementById('btn-seed-confirm');
@@ -1427,7 +1416,6 @@
       appState.history = [];
       appState.maxStages = (detectedMode === GAME_MODES.TOURNAMENT) ? 8 : 6;
       appState.roundDuration = 90;
-
       appState.isGameActive = true;
       updateActionHeaderButtons();
 
@@ -1586,7 +1574,7 @@
             </div>
             <div class="flex items-center gap-2 font-mono-label text-xs text-yellow-300 bg-yellow-950/50 px-3 py-1 rounded border border-yellow-500/40">
               <i data-lucide="clock" class="w-4 h-4 text-yellow-400 animate-spin"></i>
-              Harf Seçimi İçin Kalan Süre: <strong id="draft-timer-sec" class="text-sm font-bold text-yellow-400">${data.draftTimeRemaining}</strong> sn
+              Kalan Süre: <strong id="draft-timer-sec" class="text-sm font-bold text-yellow-400">${data.draftTimeRemaining}</strong> sn
             </div>
           </div>
 
@@ -2130,7 +2118,6 @@
         actionButtons = `<button onclick="proceedToNextStage()" class="btn-cyan w-full py-3.5 text-sm font-bold">SONRAKİ ETAP (${record.stageIndex + 2} / ${maxStg}) ➔</button>`;
       }
 
-      // Bilgisayar çözümü adım adım liste düzeni
       let solverStepsHtml = '';
       if (!isWord) {
         if (record.bestSolver && record.bestSolver.steps && record.bestSolver.steps.length > 0) {
@@ -2232,10 +2219,7 @@
     function finishTournament() {
       stopTimer();
       stopDraftTimer();
-      appState.isGameActive = false;
-      updateActionHeaderButtons();
       
-      // Tüm etapların tamamlandığını belirterek header şeridini yeşile döndür
       appState.currentStageIndex = appState.maxStages;
       renderStageTrackerHeader();
 
@@ -2433,7 +2417,7 @@
     }
     function closeRulesModal() { document.getElementById('modal-rules').classList.add('hidden'); }
 
-    /* Driver.js İnteraktif Tanıtım Turu (6 Aşamalı Tam Uyumlu Senaryo) */
+    /* Driver.js İnteraktif Tanıtım Turu */
     function startInteractiveDemo() {
       if (typeof driver === 'undefined' || !driver.js) {
         alert("Tanıtım kütüphanesi yükleniyor, lütfen birkaç saniye sonra tekrar deneyin.");
@@ -2450,19 +2434,37 @@
         progressText: 'Adım {{current}} / {{total}}',
         steps: [
           {
-            element: '#btn-footer-rules',
+            element: '#btn-header-score',
             popover: {
-              title: '1. Oyun Rehberi & Kurallar',
-              description: 'Oyunun tüm modları, puanlama cetveli ve klavye kısayolları hakkında detaylı bilgiye sayfanın en altındaki Kurallar butonundan ulaşabilirsiniz.',
-              side: 'top',
-              align: 'end'
+              title: '1. Canlı Skor Tablosu',
+              description: 'Yarışma boyunca topladığınız güncel puanlar burada anlık olarak gösterilir.',
+              side: 'bottom',
+              align: 'start'
+            }
+          },
+          {
+            element: '#btn-pause',
+            popover: {
+              title: '2. Duraklat (Pause)',
+              description: 'Yarışma modundayken süreyi duraklatmanızı sağlar. Ana sayfadayken pasif durumdadır.',
+              side: 'bottom',
+              align: 'center'
+            }
+          },
+          {
+            element: '#btn-quit',
+            popover: {
+              title: '3. Terk Et Butonu',
+              description: 'Devam eden bir yarışmayı sonlandırıp ana menüye dönmek için kullanılır. Sadece yarışma esnasında aktifleşir.',
+              side: 'bottom',
+              align: 'center'
             }
           },
           {
             element: '#btn-settings',
             popover: {
-              title: '2. Süre ve Stüdyo Ayarları',
-              description: 'Üst paneldeki Ayarlar simgesinden tek kişilik yarışma sürelerinizi (45, 60 veya 90 saniye) ve ses efektlerini dilediğiniz gibi özelleştirebilirsiniz.',
+              title: '4. Süre ve Stüdyo Ayarları',
+              description: 'Ayarlar simgesinden yarışma sürelerinizi (45, 60 veya 90 saniye) ve ses efektlerini özelleştirebilirsiniz.',
               side: 'bottom',
               align: 'end'
             }
@@ -2470,26 +2472,17 @@
           {
             element: '.neon-panel-gold',
             popover: {
-              title: '3. Günün Yarışması (Özel Mod)',
+              title: '5. Günün Yarışması (Özel Mod)',
               description: 'Her gün yenilenen 3 set (18 etap) süren bu turnuvada katlamalı puan çarpanları (x1.0, x1.5, x2.0) ile günün şampiyonu olmak için yarışırsınız!',
               side: 'bottom',
               align: 'center'
             }
           },
           {
-            element: 'button[onclick*="startMode(\'TOURNAMENT\')"]',
-            popover: {
-              title: '4. Karma Şampiyona (Klasik Mod)',
-              description: 'Televizyondaki klasik "Bir Kelime Bir İşlem" formatıdır. 4 Kelime ve 4 İşlem etabı olmak üzere toplam 8 etaplık dengeli bir zihin şampiyonluğudur.',
-              side: 'top',
-              align: 'start'
-            }
-          },
-          {
             element: '#branch-modes-grid',
             popover: {
-              title: '5. Kelime ve İşlem Oyunları (Branş Modları)',
-              description: 'Sadece kelime türetmeye (6 Etap) veya sadece sayılarla hedef sayıya ulaşmaya (6 Etap) odaklanan özel branş yarışmalarıdır. İlgi alanınıza göre seçip yarışabilirsiniz.',
+              title: '6. Kelime ve İşlem Oyunları',
+              description: 'Sadece kelime türetmeye (6 Etap) veya sadece sayılarla hedef sayıya ulaşmaya (6 Etap) odaklanan özel branş yarışmalarıdır.',
               side: 'top',
               align: 'center'
             }
@@ -2497,8 +2490,8 @@
           {
             element: '#custom-seed-input',
             popover: {
-              title: '6. Oda Kodu ve Özel Rekabet',
-              description: 'Arkadaşınızdan gelen kodu buraya yapıştırıp aynı sorularla yarışabilir veya kendi kelimenizi (örn: DERYA) yazarak arkadaşınıza özel meydan okuma kodu üretebilirsiniz.',
+              title: '7. Oda Kodu ve Özel Rekabet',
+              description: 'Arkadaşınızdan gelen kodu buraya yapıştırıp aynı sorularla yarışabilir veya kendi özel kodunuzu üretebilirsiniz.',
               side: 'top',
               align: 'start'
             }
