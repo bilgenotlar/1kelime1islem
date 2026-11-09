@@ -1084,25 +1084,28 @@
               <span class="text-[10px] font-mono-label text-pink-400 mt-3 block">8 ETAP • KARMA</span>
             </button>
 
-            <button onclick="startMode('${GAME_MODES.WORD_ONLY}')" class="neon-panel-cyan p-4 hover:border-cyan-400 hover:shadow-[0_0_16px_rgba(0,255,204,0.3)] transition cursor-pointer group flex flex-col justify-between">
-              <div>
-                <div class="flex items-center justify-between mb-2">
-                  <span class="font-headline font-bold text-sm text-cyan-300 group-hover:text-white flex items-center gap-1.5"><i data-lucide="type" class="w-4 h-4 text-cyan-400"></i> KELİME OYUNU</span>
+            <!-- KELİME VE İŞLEM OYUNLARINI BİRLİKTE ÇERÇEVELEYEN GRİD (DEMO 5. ADIM İÇİN) -->
+            <div id="branch-modes-grid" class="col-span-1 sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button onclick="startMode('${GAME_MODES.WORD_ONLY}')" class="neon-panel-cyan p-4 hover:border-cyan-400 hover:shadow-[0_0_16px_rgba(0,255,204,0.3)] transition cursor-pointer group flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="font-headline font-bold text-sm text-cyan-300 group-hover:text-white flex items-center gap-1.5"><i data-lucide="type" class="w-4 h-4 text-cyan-400"></i> KELİME OYUNU</span>
+                  </div>
+                  <p class="text-xs text-gray-300">Sadece kelime türetmeye odaklı 6 etaplık zihin jimnastiği.</p>
                 </div>
-                <p class="text-xs text-gray-300">Sadece kelime türetmeye odaklı 6 etaplık zihin jimnastiği.</p>
-              </div>
-              <span class="text-[10px] font-mono-label text-cyan-300 mt-3 block">6 ETAP • KELİME</span>
-            </button>
+                <span class="text-[10px] font-mono-label text-cyan-300 mt-3 block">6 ETAP • KELİME</span>
+              </button>
 
-            <button onclick="startMode('${GAME_MODES.MATH_ONLY}')" class="neon-panel p-4 hover:border-emerald-400 hover:shadow-[0_0_16px_rgba(52,211,153,0.3)] transition cursor-pointer group flex flex-col justify-between">
-              <div>
-                <div class="flex items-center justify-between mb-2">
-                  <span class="font-headline font-bold text-sm text-emerald-400 group-hover:text-white flex items-center gap-1.5"><i data-lucide="binary" class="w-4 h-4 text-emerald-400"></i> İŞLEM OYUNU</span>
+              <button onclick="startMode('${GAME_MODES.MATH_ONLY}')" class="neon-panel p-4 hover:border-emerald-400 hover:shadow-[0_0_16px_rgba(52,211,153,0.3)] transition cursor-pointer group flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="font-headline font-bold text-sm text-emerald-400 group-hover:text-white flex items-center gap-1.5"><i data-lucide="binary" class="w-4 h-4 text-emerald-400"></i> İŞLEM OYUNU</span>
+                  </div>
+                  <p class="text-xs text-gray-300">Sadece hedef sayılara ulaşmaya odaklı 6 etaplık matematik yarışı.</p>
                 </div>
-                <p class="text-xs text-gray-300">Sadece hedef sayılara ulaşmaya odaklı 6 etaplık matematik yarışı.</p>
-              </div>
-              <span class="text-[10px] font-mono-label text-emerald-400 mt-3 block">6 ETAP • İŞLEM</span>
-            </button>
+                <span class="text-[10px] font-mono-label text-emerald-400 mt-3 block">6 ETAP • İŞLEM</span>
+              </button>
+            </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left border-t border-gray-800 pt-4">
@@ -2334,7 +2337,7 @@
     }
     function closeRulesModal() { document.getElementById('modal-rules').classList.add('hidden'); }
 
-   /* Driver.js İnteraktif Tanıtım Turu (6 Aşamalı Tam Uyumlu Senaryo) */
+    /* Driver.js İnteraktif Tanıtım Turu (6 Aşamalı Tam Uyumlu Senaryo) */
     function startInteractiveDemo() {
       if (typeof driver === 'undefined' || !driver.js) {
         alert("Tanıtım kütüphanesi yükleniyor, lütfen birkaç saniye sonra tekrar deneyin.");
@@ -2387,8 +2390,7 @@
             }
           },
           {
-            // Kelime Oyunu ve İşlem Oyunu kartlarını yan yana içeren grid yapısı
-            element: 'button[onclick*="startMode(\'WORD_ONLY\')"].parentElement',
+            element: '#branch-modes-grid',
             popover: {
               title: '5. Kelime ve İşlem Oyunları (Branş Modları)',
               description: 'Sadece kelime türetmeye (6 Etap) veya sadece sayılarla hedef sayıya ulaşmaya (6 Etap) odaklanan özel branş yarışmalarıdır. İlgi alanınıza göre seçip yarışabilirsiniz.',
