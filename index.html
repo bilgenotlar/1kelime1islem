@@ -2221,6 +2221,32 @@
       });
     }
 
+    // DETAYLI KARNEYİ PANOYA KOPYALAMA FONKSİYONU
+    function copyDetailedReportToClipboard() {
+      const durationStr = `${appState.roundDuration} Saniye`;
+      let text = `🏆 MAVİBLUE BİR KELİME BİR İŞLEM\n`;
+      text += `📊 Detaylı Yarışma Karnesi\n`;
+      text += `⏱️ Süre Ayarı: ${durationStr}\n`;
+      text += `🌟 Toplam Skor: ${appState.totalScore} Puan\n\n`;
+
+      appState.history.forEach((rec, i) => {
+        const isWord = (rec.stageType === 'word');
+        if (isWord) {
+          text += `${i + 1}. Etap (Kelime): ${rec.letters.join(' ')} ➔ ${rec.userAnswer} (+${rec.pointsAwarded} P)\n`;
+        } else {
+          text += `${i + 1}. Etap (İşlem): ${rec.initialNumbers.join(', ')} | Hedef: ${rec.target} ➔ ${rec.userValue} (+${rec.pointsAwarded} P)\n`;
+        }
+      });
+
+      text += `\n⚡ Sen de meydan okumaya var mısın?`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Karne Kopyalandı! 📋\n\nMetin panoya kopyalandı. WhatsApp veya mesaj uygulamanıza gidip 'Yapıştır' diyerek arkadaşlarınızla kolayca paylaşabilirsiniz.");
+      }).catch(() => {
+        alert(text);
+      });
+    }
+
     function finishTournament() {
       stopTimer();
       stopDraftTimer();
@@ -2259,9 +2285,7 @@
         `;
       }
 
-      // --------------------------------------------------------------------------
-      // DETAYLI YARIŞMA KARNESİ (YENİ ÖZELLİK)
-      // --------------------------------------------------------------------------
+      // DETAYLI YARIŞMA KARNESİ LİSTESİ
       const historyRecapHtml = appState.history.map((rec, i) => {
         const isWord = (rec.stageType === 'word');
         
@@ -2354,11 +2378,19 @@
               <h4 class="font-headline font-bold text-sm text-cyan-300 flex items-center gap-2">
                 <i data-lucide="list-checks" class="w-4 h-4 text-cyan-400"></i> DETAYLI YARIŞMA KARNESİ
               </h4>
-              <span class="font-mono-label text-xs text-gray-400">${appState.history.length} ETAP</span>
+              <span class="font-mono-label text-xs text-yellow-300 bg-yellow-950/60 px-2 py-0.5 rounded border border-yellow-500/30">
+                ⏱️ SÜRE: ${appState.roundDuration} SN
+              </span>
             </div>
+
             <div class="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1">
               ${historyRecapHtml}
             </div>
+
+            <!-- KARNEYİ METİN OLARAK KOPYALAMA BUTONU -->
+            <button onclick="copyDetailedReportToClipboard()" class="btn-cyan w-full py-2.5 text-xs font-bold flex items-center justify-center gap-2 mt-2">
+              <i data-lucide="copy" class="w-4 h-4"></i> DETAYLI KARNEYİ KOPYALA
+            </button>
           </div>
 
           <button onclick="renderMainMenu()" class="btn-gold py-3.5 text-sm font-bold">ANA MENÜYE DÖN</button>
