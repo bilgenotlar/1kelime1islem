@@ -2221,12 +2221,15 @@
       });
     }
 
-    // DETAYLI KARNEYİ PANOYA KOPYALAMA FONKSİYONU
+    // DETAYLI KARNEYİ PANOYA KOPYALAMA FONKSİYONU (ODA KODU EKLENDİ)
     function copyDetailedReportToClipboard() {
       const durationStr = `${appState.roundDuration} Saniye`;
+      const shareCode = appState.seed || generateShareableSeed(appState.mode);
+
       let text = `🏆 MAVİBLUE BİR KELİME BİR İŞLEM\n`;
       text += `📊 Detaylı Yarışma Karnesi\n`;
       text += `⏱️ Süre Ayarı: ${durationStr}\n`;
+      text += `🔑 Oda Kodu: ${shareCode}\n`;
       text += `🌟 Toplam Skor: ${appState.totalScore} Puan\n\n`;
 
       appState.history.forEach((rec, i) => {
@@ -2238,10 +2241,10 @@
         }
       });
 
-      text += `\n⚡ Sen de meydan okumaya var mısın?`;
+      text += `\n⚡ Oda Koduyla Aynı Sorularda Yarışmak İçin Kodu Gir: ${shareCode}`;
 
       navigator.clipboard.writeText(text).then(() => {
-        alert("Karne Kopyalandı! 📋\n\nMetin panoya kopyalandı. WhatsApp veya mesaj uygulamanıza gidip 'Yapıştır' diyerek arkadaşlarınızla kolayca paylaşabilirsiniz.");
+        alert("Karne Kopyalandı! 📋\n\nMetin panoya kopyalandı. Oda kodunuz da metnin en altına eklendi. WhatsApp veya mesaj uygulamanıza gidip 'Yapıştır' diyerek arkadaşlarınızla paylaşabilirsiniz.");
       }).catch(() => {
         alert(text);
       });
