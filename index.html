@@ -618,6 +618,7 @@
           <ul class="list-disc list-inside space-y-1 text-gray-300 pl-1">
             <li><strong>Harf Havuzu:</strong> 3 Ünlü + 5 Ünsüz harf çekilir. 9. harf otomatik <strong>Joker (?)</strong> harftir.</li>
             <li><strong>Joker Kullanımı:</strong> <span class="text-yellow-300">?</span> simgesine tıklayarak istediğiniz Türkçe harfi seçip kelimenize dahil edebilirsiniz.</li>
+            <li><strong>Harfleri Karıştırma:</strong> Kelime yazma ekranındaki <strong>KARIŞTIR</strong> butonuna basarak (veya Klavyeden <strong>SPACE/Boşluk</strong> tuşuna basarak) harflerin sırasını rastgele değiştirebilirsiniz.</li>
             <li><strong>Sözlük Şartı:</strong> Kelimenin en az 2 harfli ve TDK uyumlu kelime listesinde bulunması zorunludur.</li>
             <li><strong>Puanlama:</strong> 2–8 harfli geçerli kelimeler <strong>harf sayısı kadar</strong> puan verir. 9 harfli tam isabet kelimeler <strong>15 Bonus Puan</strong> kazandırır!</li>
           </ul>
@@ -657,8 +658,8 @@
             <i data-lucide="keyboard" class="w-4 h-4"></i> 4. KLAVYE KULLANIMI, ODA KODLARI İLE REKABET VE ANTRENMAN
           </h4>
           <p>• <strong>Klavye İle Kelime Yazma:</strong> Kelime etabında doğrudan klavyeden harflere basarak kelimenizi yazabilirsiniz.<br>
-          • <strong>Backspace / Enter:</strong> Backspace son harfi siler, Enter kelimeyi onaylar.<br>
-          • <strong>Oda Kodu Mantığı:</strong> Arkadaşınızdan gelen hazır kodu <i>Oda Kodu ile Rekabet</i> kutusuna yapıştırıp TAMAM'a basarsanız oyun 90 saniye sabit süreyle adil rekabet modunda başlar. Dilerseniz birazdan başlayacağınız oyunu arkadaşınıza göndererek ona meydan okuyabilirsiniz. Bu durumda kendi kodunuzu üretmelisiniz. İlgili satıra sadece alfabedeki harflerden oluşan bir kelime girin (örneğin: DERYA). Sistem otomatik olarak KOD-RAKAM-KOD üretecektir (örnek için DERYA-342-DERYA). Bu üretilen kodu arkadaşınıza gönderin. Birazdan başlayacağınız oyundaki kelime ve işlem modlarının aynısı arkadaşlarınızın oyununda da üretilecektir. Böylece aynı oyunda elde ettiğiniz skorları karşılaştırabilirsiniz.<br>
+          • <strong>Backspace / Space / Enter:</strong> Backspace son harfi siler, <strong>Space (Boşluk) harfleri karıştırır</strong>, Enter kelimeyi onaylar.<br>
+          • <strong>Oda Kodu Mantığı:</strong> Arkadaşınızdan gelen hazır kodu <i>Oda Kodu ile Rekabet</i> kutusuna yapıştırıp TAMAM'a basarsanız oyun 90 saniye sabit süreyle adil rekabet modunda başlar. Dilerseniz birazdan başlayacağınız oyunu arkadaşınıza göndererek ona meydan okuyabilirsiniz.<br>
 		  • <strong>Antrenman:</strong> Puan stresine girmeden kendinizi test edebileceğiniz bu bölümde Kelime veya İşlem Oyununu dilediğiniz kadar oynayabilirsiniz.</p>
         </div>
 
@@ -888,6 +889,7 @@
     function soundCardPick() { playTone(680, 'sine', 0.08, 0.12); }
     function soundTileClick() { playTone(440, 'triangle', 0.06, 0.1); }
     function soundRemove() { playTone(260, 'sine', 0.08, 0.1); }
+    function soundShuffle() { playTone(520, 'sine', 0.1, 0.12); }
     function soundGong() {
       if (isMuted) return;
       try {
@@ -1468,7 +1470,7 @@
     }
 
     /* ==========================================================================
-       5. KELİME ETABI AKIŞI
+       5. KELİME ETABI AKIŞI VE HARF KARIŞTIRMA (SHUFFLE)
        ========================================================================== */
     function setupWordStage() {
       const isCustomSeed = (appState.mode === GAME_MODES.CUSTOM_SEED || appState.mode === GAME_MODES.DAILY);
@@ -1670,6 +1672,22 @@
       startStageTimer();
     }
 
+    // YENİ EKLEME: HARFLERİ RASTGELE KARIŞTIRMA (SHUFFLE) FONKSİYONU
+    function shuffleRackLetters() {
+      if (!appState.stageData || appState.stageData.type !== 'word') return;
+      const letters = appState.stageData.letters;
+      if (!letters || letters.length === 0) return;
+
+      // Fisher-Yates Algoritması ile Karıştırma
+      for (let i = letters.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [letters[i], letters[j]] = [letters[j], letters[i]];
+      }
+
+      soundShuffle();
+      renderWordSolvingView();
+    }
+
     function renderWordSolvingView() {
       const container = document.getElementById('main-stage-container');
       if (!container) return;
@@ -1716,8 +1734,14 @@
             </div>
           </div>
 
-          <div class="neon-panel p-4 sm:p-6 flex flex-col gap-3 text-center">
-            <span class="font-mono-label text-xs text-gray-400 uppercase tracking-wider">VERİLEN HARFLER</span>
+          <div class="neon-panel p-4 sm:p-6 flex flex-col gap-3 text-center relative">
+            <div class="flex items-center justify-between w-full">
+              <span class="font-mono-label text-xs text-gray-400 uppercase tracking-wider">VERİLEN HARFLER</span>
+              <!-- KARIŞTIR (SHUFFLE) BUTONU -->
+              <button onclick="shuffleRackLetters()" title="Harfleri Karıştır (Kısayol: SPACE)" class="btn-gold px-3 py-1 text-[11px] font-bold flex items-center gap-1.5 shadow-sm">
+                <i data-lucide="shuffle" class="w-3.5 h-3.5"></i> KARIŞTIR
+              </button>
+            </div>
             <div class="flex items-center justify-center gap-1.5 sm:gap-2.5 flex-wrap">${rackHtml}</div>
           </div>
 
@@ -2221,7 +2245,6 @@
       });
     }
 
-    // DETAYLI KARNEYİ PANOYA KOPYALAMA FONKSİYONU (ODA KODU EKLENDİ)
     function copyDetailedReportToClipboard() {
       const durationStr = `${appState.roundDuration} Saniye`;
       const shareCode = appState.seed || generateShareableSeed(appState.mode);
@@ -2288,7 +2311,6 @@
         `;
       }
 
-      // DETAYLI YARIŞMA KARNESİ LİSTESİ
       const historyRecapHtml = appState.history.map((rec, i) => {
         const isWord = (rec.stageType === 'word');
         
@@ -2375,7 +2397,6 @@
           ${dailyBreakdownHtml}
           ${shareCardHtml}
 
-          <!-- DETAYLI ETAP ÖZET KARNESİ -->
           <div class="neon-panel p-4 flex flex-col gap-3 text-left">
             <div class="flex items-center justify-between border-b border-gray-800 pb-2">
               <h4 class="font-headline font-bold text-sm text-cyan-300 flex items-center gap-2">
@@ -2390,7 +2411,6 @@
               ${historyRecapHtml}
             </div>
 
-            <!-- KARNEYİ METİN OLARAK KOPYALAMA BUTONU -->
             <button onclick="copyDetailedReportToClipboard()" class="btn-cyan w-full py-2.5 text-xs font-bold flex items-center justify-center gap-2 mt-2">
               <i data-lucide="copy" class="w-4 h-4"></i> DETAYLI KARNEYİ KOPYALA
             </button>
@@ -2600,13 +2620,17 @@
       driverObj.drive();
     }
 
+    // YENİ GÜNCELLEME: Space Tuşuna Harfleri Karıştırma (Shuffle) Fonksiyonu Eklendi
     window.addEventListener('keydown', (e) => {
       if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
       const stage = appState.stageData;
       if (!stage || appState.isPaused) return;
 
       if (stage.type === 'word' && !stage.isDrafting) {
-        if (e.key === 'Backspace') {
+        if (e.key === 'Space' || e.code === 'Space' || e.key === ' ') {
+          e.preventDefault();
+          shuffleRackLetters();
+        } else if (e.key === 'Backspace') {
           e.preventDefault();
           removeLastLetter();
         } else if (e.key === 'Enter') {
