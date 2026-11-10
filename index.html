@@ -1,0 +1,2611 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="tool">
+  <meta name="design-style" content="neon_noir">
+  <title>Bir Kelime Bir İşlem — MaviBlue Yarışma Stüdyosu</title>
+
+  <!-- Google Fonts: Sora, Inter, Space Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+
+  <!-- Driver.js CSS ve JS (İnteraktif Otomatik Demo İçin) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: #0a0a12;
+      --surface-container-low: #111118;
+      --surface-container: #141422;
+      --surface-container-high: #1e1e30;
+      --on-surface: #e8e0f0;
+      --on-surface-variant: #a098b0;
+      --outline: #5a5068;
+      --outline-variant: #302840;
+      --primary: #ff2d78;
+      --on-primary: #1a0010;
+      --primary-container: #b3004e;
+      --on-primary-container: #ffe0ec;
+      --secondary: #00ffcc;
+      --tertiary: #ffe04a;
+      --error: #ff4444;
+      --on-error: #1a0000;
+      --font-headline: 'Sora', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-label: 'Space Mono', monospace;
+      --rounded: 0.25rem;
+      --rounded-lg: 0.5rem;
+      --glow-primary: 0 0 16px color-mix(in srgb, var(--primary) 40%, transparent);
+      --glow-secondary: 0 0 16px color-mix(in srgb, var(--secondary) 35%, transparent);
+      --glow-tertiary: 0 0 16px color-mix(in srgb, var(--tertiary) 40%, transparent);
+      --neon-border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
+      --neon-border-lit: 1px solid color-mix(in srgb, var(--primary) 60%, transparent);
+      --neon-inset: inset 0 0 12px color-mix(in srgb, var(--primary) 10%, transparent);
+      --scanlines: repeating-linear-gradient(to bottom, transparent 0 3px, color-mix(in srgb, var(--on-surface) 2%, transparent) 3px 4px);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      background-image: var(--scanlines);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      min-height: 100vh;
+    }
+
+    .page-grid {
+      display: grid;
+      gap: 1rem;
+      padding: 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .page-grid * { min-width: 0; }
+    .font-headline { font-family: var(--font-headline); }
+    .font-mono-label { font-family: var(--font-label); }
+
+    /* MAVİBLUE LOGO ÖZEL CSS */
+    .maviblue-logo {
+      font-family: var(--font-headline);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      display: inline-flex;
+      align-items: center;
+      user-select: none;
+    }
+    .maviblue-logo .part-mavi {
+      color: #00f0ff;
+      text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+    }
+    .maviblue-logo .part-blue {
+      color: #3b82f6;
+      text-shadow: 0 0 10px rgba(59, 130, 246, 0.6);
+    }
+
+    .neon-panel {
+      background: var(--surface-container);
+      border: var(--neon-border);
+      box-shadow: var(--neon-inset);
+      border-radius: var(--rounded-lg);
+    }
+    .neon-panel-cyan {
+      background: var(--surface-container);
+      border: 1px solid color-mix(in srgb, var(--secondary) 30%, transparent);
+      box-shadow: inset 0 0 12px color-mix(in srgb, var(--secondary) 10%, transparent);
+      border-radius: var(--rounded-lg);
+    }
+    .neon-panel-gold {
+      background: var(--surface-container);
+      border: 1px solid color-mix(in srgb, var(--tertiary) 35%, transparent);
+      box-shadow: inset 0 0 14px color-mix(in srgb, var(--tertiary) 12%, transparent);
+      border-radius: var(--rounded-lg);
+    }
+
+    .btn-neon {
+      background: var(--surface-container);
+      color: var(--primary);
+      border: var(--neon-border-lit);
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: all var(--dur-short) var(--ease-out);
+      cursor: pointer;
+    }
+    .btn-neon:hover:not(:disabled) {
+      border-color: var(--primary);
+      box-shadow: var(--glow-primary);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    .btn-neon:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      border-color: var(--outline-variant);
+      color: var(--on-surface-variant);
+    }
+
+    .btn-cyan {
+      background: var(--surface-container);
+      color: var(--secondary);
+      border: 1px solid color-mix(in srgb, var(--secondary) 60%, transparent);
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: all var(--dur-short) var(--ease-out);
+      cursor: pointer;
+    }
+    .btn-cyan:hover:not(:disabled) {
+      border-color: var(--secondary);
+      box-shadow: var(--glow-secondary);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .btn-gold {
+      background: var(--surface-container);
+      color: var(--tertiary);
+      border: 1px solid color-mix(in srgb, var(--tertiary) 60%, transparent);
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: all var(--dur-short) var(--ease-out);
+      cursor: pointer;
+    }
+    .btn-gold:hover:not(:disabled) {
+      border-color: var(--tertiary);
+      box-shadow: var(--glow-tertiary);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .letter-tile {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: clamp(2.75rem, 5vw, 4rem);
+      height: clamp(3.25rem, 6vw, 4.75rem);
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: clamp(1.25rem, 2.5vw, 2rem);
+      background: linear-gradient(180deg, #1f1f33 0%, #131322 100%);
+      border: 1px solid color-mix(in srgb, var(--outline) 70%, transparent);
+      border-bottom: 3px solid color-mix(in srgb, var(--primary) 80%, transparent);
+      border-radius: var(--rounded);
+      color: #ffffff;
+      cursor: pointer;
+      user-select: none;
+      transition: all var(--dur-micro) var(--ease-out);
+    }
+    .letter-tile:hover:not(.is-used):not(.is-empty) {
+      transform: translateY(-3px);
+      border-color: var(--primary);
+      box-shadow: var(--glow-primary);
+    }
+    .letter-tile.is-used { opacity: 0.25; cursor: not-allowed; transform: none; border-bottom-color: var(--outline-variant); }
+    .letter-tile.is-joker { border-bottom-color: var(--tertiary); color: var(--tertiary); text-shadow: 0 0 6px var(--tertiary); }
+    .letter-tile.is-empty { background: transparent; border: 1px dashed var(--outline); border-bottom: 1px dashed var(--outline); color: var(--on-surface-variant); cursor: default; }
+
+    .word-slot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: clamp(2.25rem, 4.5vw, 3.5rem);
+      height: clamp(2.75rem, 5.5vw, 4.25rem);
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: clamp(1.25rem, 2.2vw, 1.85rem);
+      background: var(--surface-container-high);
+      border: 1px solid var(--primary);
+      box-shadow: var(--neon-inset);
+      border-radius: var(--rounded);
+      color: #fff;
+      cursor: pointer;
+      animation: popIn 0.18s var(--ease-out);
+    }
+    .word-slot:hover { background: var(--primary-container); }
+
+    .number-tile {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: clamp(3.2rem, 6vw, 4.75rem);
+      height: clamp(3.2rem, 6vw, 4.75rem);
+      padding: 0 0.5rem;
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: clamp(1.2rem, 2.5vw, 1.9rem);
+      background: linear-gradient(180deg, #1b2838 0%, #111a26 100%);
+      border: 1px solid color-mix(in srgb, var(--secondary) 50%, transparent);
+      border-bottom: 3px solid var(--secondary);
+      border-radius: var(--rounded);
+      color: #ffffff;
+      cursor: pointer;
+      user-select: none;
+      transition: all var(--dur-micro) var(--ease-out);
+    }
+    .number-tile:hover:not(.is-used) { transform: translateY(-3px); box-shadow: var(--glow-secondary); border-color: var(--secondary); }
+    .number-tile.is-used { opacity: 0.22; cursor: not-allowed; border-bottom-color: var(--outline-variant); transform: none; }
+    .number-tile.is-selected { background: color-mix(in srgb, var(--secondary) 25%, #111a26); border-color: var(--secondary); box-shadow: var(--glow-secondary); transform: translateY(-2px); }
+
+    .op-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: clamp(2.8rem, 5vw, 3.8rem);
+      height: clamp(2.8rem, 5vw, 3.8rem);
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 1.5rem;
+      background: var(--surface-container-high);
+      border: 1px solid var(--outline);
+      border-radius: var(--rounded);
+      color: var(--on-surface);
+      cursor: pointer;
+      transition: all var(--dur-micro) var(--ease-out);
+    }
+    .op-btn:hover:not(:disabled) { border-color: var(--secondary); color: var(--secondary); box-shadow: var(--glow-secondary); }
+    .op-btn.is-active { background: color-mix(in srgb, var(--secondary) 30%, transparent); border-color: var(--secondary); color: #ffffff; box-shadow: var(--glow-secondary); }
+    .op-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    .target-led {
+      font-family: var(--font-label);
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      letter-spacing: 0.1em;
+      color: var(--tertiary);
+      text-shadow: 0 0 16px color-mix(in srgb, var(--tertiary) 70%, transparent);
+      line-height: 1;
+    }
+
+    .timer-ring {
+      font-family: var(--font-label);
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .timer-ring.is-urgent { color: var(--error); animation: pulseAlert 0.8s infinite alternate; }
+
+    @keyframes pulseAlert {
+      from { transform: scale(1); filter: drop-shadow(0 0 4px var(--error)); }
+      to { transform: scale(1.06); filter: drop-shadow(0 0 16px var(--error)); }
+    }
+    @keyframes popIn {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .stage-pill {
+      font-family: var(--font-label);
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--rounded);
+      border: 1px solid var(--outline-variant);
+      background: var(--surface-container-low);
+      color: var(--on-surface-variant);
+      transition: all var(--dur-micro) var(--ease-out);
+    }
+    .stage-pill.is-active {
+      border-color: var(--primary);
+      background: color-mix(in srgb, var(--primary) 20%, transparent);
+      color: #ffffff;
+      box-shadow: 0 0 8px color-mix(in srgb, var(--primary) 40%, transparent);
+    }
+    .stage-pill.is-done { border-color: var(--secondary); color: var(--secondary); }
+    .modal-overlay { background: rgba(8, 8, 14, 0.85); backdrop-filter: blur(6px); }
+
+    /* DRIVER.JS STÜDYO NEON UYUMU */
+    .driver-popover {
+      background-color: #141422 !important;
+      color: #e8e0f0 !important;
+      border: 1px solid #00ffcc !important;
+      box-shadow: 0 0 16px rgba(0, 255, 204, 0.3) !important;
+      font-family: 'Inter', sans-serif !important;
+    }
+    .driver-popover-title {
+      font-family: 'Sora', sans-serif !important;
+      color: #ffe04a !important;
+      font-weight: 800 !important;
+    }
+    .driver-popover-description {
+      color: #d1d5db !important;
+      font-size: 0.8rem !important;
+    }
+    .driver-popover-btn {
+      background-color: #1e1e30 !important;
+      color: #00ffcc !important;
+      border: 1px solid #00ffcc !important;
+      text-shadow: none !important;
+      font-family: 'Space Mono', monospace !important;
+      font-size: 0.75rem !important;
+      border-radius: 0.25rem !important;
+    }
+    .driver-popover-btn:hover {
+      background-color: #00ffcc !important;
+      color: #000 !important;
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--surface-container-low); }
+    ::-webkit-scrollbar-thumb { background: var(--outline); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+    @media (max-width: 640px) {
+      .page-grid { padding: 0.25rem; gap: 0.5rem; }
+      .hide-mobile { display: none !important; }
+    }
+  </style>
+</head>
+<body class="selection:bg-pink-900 selection:text-white">
+
+  <div class="page-grid min-h-screen flex flex-col justify-between">
+    <!-- Header -->
+    <header class="neon-panel p-3 sm:p-4 flex flex-col gap-3">
+      <div class="flex items-center justify-between gap-2 flex-wrap">
+        
+        <!-- Sol Taraf: Logo ve Üstünde Küçük Canlı Yayın Rozeti -->
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center gap-1.5 px-1.5 py-0.5 rounded bg-red-950/70 border border-red-500/50 text-red-400 font-mono-label text-[10px] uppercase tracking-widest animate-pulse w-max">
+            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+            CANLI YAYIN
+          </div>
+
+          <div>
+            <h1 class="font-headline font-extrabold text-lg sm:text-xl text-white tracking-tight flex items-center gap-2">
+              <span class="maviblue-logo text-xl sm:text-2xl mr-1">
+                <span class="part-mavi">Mavi</span><span class="part-blue">Blue</span>
+              </span>
+              BİR KELİME BİR İŞLEM
+            </h1>
+            <p class="font-mono-label text-xs text-gray-400 tracking-wider">YARIŞMA STÜDYOSU • ZİHİN ŞAMPİYONASI</p>
+          </div>
+        </div>
+
+        <!-- Sağ Taraf: Sıralama (Skor > Pause > Terk Et > Ses > Ayarlar > Kılavuz) -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          
+          <!-- 1. SKOR / SON SKOR -->
+          <div id="btn-header-score" class="px-3 py-1.5 rounded bg-surface-container-low border border-pink-500/40 flex items-center gap-2 shadow-inner">
+            <i data-lucide="trophy" class="w-4 h-4 text-pink-400"></i>
+            <span id="scoreboard-label" class="font-mono-label text-xs text-gray-400 hide-mobile">SON SKOR:</span>
+            <span id="scoreboard-total" class="font-headline font-bold text-lg sm:text-xl text-pink-400" style="text-shadow: 0 0 8px #ff2d78;">0</span>
+            <span class="font-mono-label text-xs text-gray-400">P</span>
+          </div>
+
+          <div class="flex items-center gap-1.5">
+            <!-- 2. PAUSE (DURAKLAT) -->
+            <button id="btn-pause" onclick="togglePauseGame()" title="Yarışmayı Duraklat" disabled class="btn-neon p-2 flex items-center justify-center text-xs opacity-40 cursor-not-allowed">
+              <i data-lucide="pause" class="w-4 h-4"></i>
+            </button>
+
+            <!-- 3. TERK ET -->
+            <button id="btn-quit" onclick="promptAbandonGame()" title="Yarışmayı Terk Et" disabled class="px-3 py-2 rounded bg-red-950/40 border border-red-600/40 text-red-400/50 font-mono-label text-xs uppercase cursor-not-allowed opacity-40 transition flex items-center gap-1.5">
+              <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+              <span class="hide-mobile">TERK ET</span>
+            </button>
+
+            <!-- 4. SES -->
+            <button id="btn-sound" onclick="toggleAudio()" title="Ses Aç/Kapat" class="btn-cyan p-2 flex items-center justify-center text-xs">
+              <i id="sound-icon" data-lucide="volume-2" class="w-4 h-4"></i>
+            </button>
+
+            <!-- 5. AYARLAR -->
+            <button id="btn-settings" onclick="openSettingsModal()" title="Ayarlar" class="btn-neon p-2 flex items-center justify-center text-xs">
+              <i data-lucide="settings" class="w-4 h-4"></i>
+            </button>
+
+            <!-- 6. KILAVUZ -->
+            <button id="btn-guide" onclick="openGuideImageModal()" title="Görsel Kılavuz" class="btn-cyan px-2.5 py-2 flex items-center justify-center text-xs gap-1">
+              <i data-lucide="image" class="w-4 h-4 text-cyan-400"></i>
+              <span class="hide-mobile font-mono-label text-xs">KILAVUZ</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Header Alt Şeridi -->
+      <div id="header-sub-bar" class="flex items-center justify-between gap-1 sm:gap-2 overflow-x-auto pt-1.5 border-t border-gray-800/80 text-xs font-mono-label text-cyan-300">
+        <!-- Dinamik İçerik JavaScript Tarafından Doldurulacak -->
+      </div>
+    </header>
+
+    <main id="main-stage-container" class="my-auto py-2">
+      <span id="stage-timer-display" class="hidden" aria-hidden="true">60</span>
+    </main>
+
+    <footer class="neon-panel p-2.5 sm:p-3 flex items-center justify-between text-xs text-gray-400 font-mono-label flex-wrap gap-2">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+        <span id="footer-status-text">HAZIR • YARIŞMA MODUNU SEÇİNİZ</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <span>SÜRE AYARI: <strong id="footer-timer-mode" class="text-white">60 SN</strong></span>
+        <span>SÖZLÜK: <strong id="dictionary-status" class="text-emerald-400">YÜKLENİYOR...</strong></span>
+        <button id="btn-footer-rules" onclick="openRulesModal()" class="text-cyan-400 hover:underline flex items-center gap-1">
+          <i data-lucide="help-circle" class="w-3.5 h-3.5"></i> Kurallar
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Modals -->
+  <div id="modal-guide-image" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center p-4 hidden">
+    <div class="neon-panel p-4 max-w-md w-full flex flex-col gap-3 shadow-2xl border border-cyan-500/50 max-h-[90vh]">
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-2">
+        <h3 class="font-headline font-bold text-base text-cyan-300 flex items-center gap-2">
+          <i data-lucide="sparkles" class="w-4 h-4 text-cyan-400"></i> GÖRSEL OYUN KILAVUZU
+        </h3>
+        <button onclick="closeGuideImageModal()" class="text-gray-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      
+      <div class="overflow-y-auto rounded border border-gray-800 flex justify-center bg-black/40 p-2">
+        <img src="kilavuz.jpg" alt="Bir Kelime Bir İşlem Kılavuzu" class="w-full h-auto max-h-[70vh] object-contain rounded" />
+      </div>
+
+      <button onclick="closeGuideImageModal()" class="btn-cyan w-full py-2 text-xs font-bold mt-1">
+        KAPAT
+      </button>
+    </div>
+  </div>
+
+  <div id="modal-pause" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center p-4 hidden">
+    <div class="neon-panel p-6 max-w-md w-full text-center flex flex-col items-center gap-4 border-2 border-yellow-500/50 shadow-2xl">
+      <div class="w-14 h-14 rounded-full bg-yellow-500/20 border border-yellow-400 flex items-center justify-center text-yellow-400">
+        <i data-lucide="pause" class="w-8 h-8"></i>
+      </div>
+      <h2 class="font-headline font-bold text-2xl text-white">YARIŞMA DURAKLATILDI</h2>
+      <p class="text-sm text-gray-300">Süre durduruldu. Hazır olduğunuzda devam edebilirsiniz.</p>
+      <div class="flex items-center gap-3 w-full mt-2">
+        <button onclick="togglePauseGame()" class="btn-cyan flex-1 py-3 text-sm font-bold flex items-center justify-center gap-2">
+          <i data-lucide="play" class="w-4 h-4"></i> DEVAM ET
+        </button>
+        <button onclick="promptAbandonGame()" class="px-4 py-3 rounded bg-red-950 border border-red-500 text-red-300 font-mono-label text-xs uppercase">
+          TERK ET
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-abandon" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center p-4 hidden">
+    <div class="neon-panel p-6 max-w-md w-full text-center flex flex-col items-center gap-4 border-2 border-red-500/70 shadow-2xl">
+      <div class="w-14 h-14 rounded-full bg-red-500/20 border border-red-500 flex items-center justify-center text-red-400">
+        <i data-lucide="alert-triangle" class="w-8 h-8"></i>
+      </div>
+      <h2 class="font-headline font-bold text-2xl text-white">YARIŞMAYI TERK ET?</h2>
+      <p class="text-sm text-red-200 bg-red-950/40 p-3 rounded border border-red-500/30">
+        İlerlemeniz ve tüm puanlarınız sıfırlanacaktır.
+      </p>
+      <div class="flex items-center gap-3 w-full mt-2">
+        <button onclick="closeAbandonModal()" class="btn-cyan flex-1 py-3 text-xs font-bold">VAZGEÇ</button>
+        <button onclick="confirmAbandonGame()" class="px-5 py-3 rounded bg-red-600 text-white font-mono-label text-xs uppercase font-bold">EVET, TERK ET</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-joker" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center p-4 hidden">
+    <div class="neon-panel-gold p-6 max-w-lg w-full flex flex-col gap-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-yellow-500/30 pb-2">
+        <h3 class="font-headline font-bold text-lg text-yellow-300 flex items-center gap-2">
+          <i data-lucide="sparkles" class="w-5 h-5"></i> JOKER HARFİ SEÇİNİZ
+        </h3>
+        <button onclick="closeJokerModal()" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div id="joker-alphabet-grid" class="grid grid-cols-6 sm:grid-cols-8 gap-2 py-2"></div>
+    </div>
+  </div>
+
+  <div id="modal-practice-select" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center p-4 hidden">
+    <div class="neon-panel p-6 max-w-md w-full flex flex-col gap-5 text-center shadow-2xl border-2 border-purple-500/60">
+      <div class="flex items-center justify-between border-b border-purple-500/30 pb-3">
+        <h3 class="font-headline font-bold text-lg text-purple-300 flex items-center gap-2">
+          <i data-lucide="zap" class="w-5 h-5"></i> ANTRENMAN TÜRÜ SEÇİN
+        </h3>
+        <button onclick="closePracticeModal()" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <p class="text-xs text-gray-300 font-mono-label">Hangi türde antrenman yapmak istersiniz?</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <button onclick="startPracticeMode('word')" class="btn-neon p-4 text-xs font-bold flex flex-col items-center gap-2">
+          <i data-lucide="type" class="w-6 h-6"></i> KELİME ANTRENMANI
+        </button>
+        <button onclick="startPracticeMode('math')" class="btn-cyan p-4 text-xs font-bold flex flex-col items-center gap-2">
+          <i data-lucide="binary" class="w-6 h-6"></i> İŞLEM ANTRENMANI
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-round-result" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center p-4 hidden">
+    <div id="round-result-card" class="neon-panel p-6 max-w-xl w-full flex flex-col gap-4 shadow-2xl border-2 border-pink-500/60 max-h-[90vh] overflow-y-auto"></div>
+  </div>
+
+  <div id="modal-settings" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center p-4 hidden">
+    <div class="neon-panel p-6 max-w-md w-full flex flex-col gap-4 shadow-2xl border border-gray-700">
+      <div class="flex items-center justify-between border-b border-gray-700 pb-2">
+        <h3 class="font-headline font-bold text-lg text-white flex items-center gap-2"><i data-lucide="sliders" class="w-5 h-5 text-pink-400"></i> YARIŞMA AYARLARI</h3>
+        <button onclick="closeSettingsModal()" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div class="flex flex-col gap-2">
+        <label class="font-mono-label text-xs text-gray-300 uppercase">Tek Kişilik Oyun Süresi:</label>
+        <div class="grid grid-cols-3 gap-2">
+          <button type="button" onclick="setTimerDuration(45)" id="btn-timer-45" class="py-2.5 rounded font-mono-label text-xs border border-gray-700">45 Saniye</button>
+          <button type="button" onclick="setTimerDuration(60)" id="btn-timer-60" class="py-2.5 rounded font-mono-label text-xs border border-pink-500 bg-pink-950/40 text-pink-300 font-bold">60 Saniye</button>
+          <button type="button" onclick="setTimerDuration(90)" id="btn-timer-90" class="py-2.5 rounded font-mono-label text-xs border border-gray-700">90 Saniye</button>
+        </div>
+      </div>
+      <div class="flex items-center justify-between py-2 border-t border-gray-800">
+        <span class="font-mono-label text-xs text-gray-300">Stüdyo Ses Efektleri:</span>
+        <button type="button" onclick="toggleAudio()" id="btn-settings-sound" class="btn-cyan px-3 py-1 text-xs">AÇIK</button>
+      </div>
+      <button onclick="closeSettingsModal()" class="btn-neon w-full py-2.5 text-xs font-bold mt-2">KAYDET VE KAPAT</button>
+    </div>
+  </div>
+
+  <!-- MODAL: KAPSAMLI OYUN VE STÜDYO REHBERİ -->
+  <div id="modal-rules" class="fixed inset-0 modal-overlay z-50 flex items-center justify-center p-4 hidden">
+    <div class="neon-panel p-5 sm:p-6 max-w-2xl w-full flex flex-col gap-4 shadow-2xl border border-cyan-500/50 max-h-[85vh]">
+      
+      <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+        <h3 class="font-headline font-extrabold text-lg sm:text-xl text-cyan-300 flex items-center gap-2">
+          <i data-lucide="book-open" class="w-5 h-5 text-cyan-400"></i> MAVİBLUE BİR KELİME BİR İŞLEM OYUN REHBERİ
+        </h3>
+        <button onclick="closeRulesModal()" class="text-gray-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="overflow-y-auto pr-1 text-xs text-gray-300 flex flex-col gap-5 leading-relaxed">
+        
+        <!-- Bölüm 1: Oyun Modları -->
+        <div class="flex flex-col gap-2">
+          <h4 class="font-headline font-bold text-sm text-yellow-300 flex items-center gap-1.5">
+            <i data-lucide="trophy" class="w-4 h-4"></i> 1. YARIŞMA MODLARI & ETAP YAPISI
+          </h4>
+          <p>Oyunda 5 farklı yarışma modu bulunmaktadır. Üst menüden ulaşabileceğiniz "Ayarlar" kısmından 45, 60 veya 90 saniyelik süre ayarlarını yapabilirsiniz. Oda kodu girerek açılan yarışmalarda standart süre 90 saniye olarak belirlenmiştir. Yarışma modları aşağıdaki gibidir:</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
+            <div class="p-2.5 rounded bg-surface-container-low border border-gray-800">
+              <strong class="text-pink-400 font-headline block mb-0.5">Karma Şampiyona (8 Etap)</strong>
+              <span>4 Kelime + 4 İşlem etabı. Hem dil hem matematik becerilerini dengeli test eder.</span>
+            </div>
+            <div class="p-2.5 rounded bg-surface-container-low border border-gray-800">
+              <strong class="text-cyan-300 font-headline block mb-0.5">Sadece Kelime Oyunu (6 Etap)</strong>
+              <span>Yalnızca TDK sözlüğü ile kelime türetmeye odaklı zihin jimnastiği.</span>
+            </div>
+            <div class="p-2.5 rounded bg-surface-container-low border border-gray-800">
+              <strong class="text-emerald-400 font-headline block mb-0.5">Sadece İşlem Oyunu (6 Etap)</strong>
+              <span>Yalnızca sayılarla hedef değere ulaşmaya odaklanan matematik yarışı.</span>
+            </div>
+            <div class="p-2.5 rounded bg-surface-container-low border border-gray-800">
+              <strong class="text-yellow-300 font-headline block mb-0.5">Günün Yarışması (18 Etap)</strong>
+              <span>3 Set x 6 Etap. Sabit 90 saniye süreyle her gün güncellenen katlamalı turnuva.</span>
+            </div>
+          </div>
+          <div class="p-2.5 rounded bg-yellow-950/40 border border-yellow-500/30 text-yellow-200 mt-1">
+            <strong>🔥 Günün Yarışması Katlama Çarpanları:</strong><br>
+            • 1. Set (1–6. Etaplar): Standard Puan (x1.0)<br>
+            • 2. Set (7–12. Etaplar): %50 Ekstra Puan (x1.5)<br>
+            • 3. Set (13–18. Etaplar): Çift Puan (x2.0)
+          </div>
+        </div>
+
+        <!-- Bölüm 2: Kelime Etapları ve Joker -->
+        <div class="flex flex-col gap-2 border-t border-gray-800 pt-3">
+          <h4 class="font-headline font-bold text-sm text-cyan-300 flex items-center gap-1.5">
+            <i data-lucide="type" class="w-4 h-4"></i> 2. KELİME ETAPLARI & JOKER HARF
+          </h4>
+          <p>Amaç, sunulan harflerle TDK uyumlu en uzun kelimeyi bulmaktır.</p>
+          <ul class="list-disc list-inside space-y-1 text-gray-300 pl-1">
+            <li><strong>Harf Havuzu:</strong> 3 Ünlü + 5 Ünsüz harf çekilir. 9. harf otomatik <strong>Joker (?)</strong> harftir.</li>
+            <li><strong>Joker Kullanımı:</strong> <span class="text-yellow-300">?</span> simgesine tıklayarak istediğiniz Türkçe harfi seçip kelimenize dahil edebilirsiniz.</li>
+            <li><strong>Sözlük Şartı:</strong> Kelimenin en az 2 harfli ve TDK uyumlu kelime listesinde bulunması zorunludur.</li>
+            <li><strong>Puanlama:</strong> 2–8 harfli geçerli kelimeler <strong>harf sayısı kadar</strong> puan verir. 9 harfli tam isabet kelimeler <strong>15 Bonus Puan</strong> kazandırır!</li>
+          </ul>
+        </div>
+
+        <!-- Bölüm 3: İşlem Etapları ve Puanlama Tablosu -->
+        <div class="flex flex-col gap-2 border-t border-gray-800 pt-3">
+          <h4 class="font-headline font-bold text-sm text-emerald-400 flex items-center gap-1.5">
+            <i data-lucide="binary" class="w-4 h-4"></i> 3. İŞLEM ETAPLARI VE DETAYLI PUANLAMA
+          </h4>
+          <p>5 küçük (1–9), 1 büyük (10, 25, 50, 75, 100) sayı ile 3 basamaklı hedef sayıya ulaşmaya çalışılır.</p>
+          <div class="overflow-x-auto my-1">
+            <table class="w-full text-left font-mono-label text-[11px] border-collapse">
+              <thead>
+                <tr class="border-b border-gray-700 bg-surface-container-low text-cyan-300">
+                  <th class="p-1.5">Hedef Sayı Farkı</th>
+                  <th class="p-1.5">Kazanılan Puan</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-800/60">
+                <tr><td class="p-1.5 text-emerald-400">Tam İsabet (Fark = 0)</td><td class="p-1.5 font-bold text-emerald-400">10 Puan</td></tr>
+                <tr><td class="p-1.5">1 Farklı Yaklaşma</td><td class="p-1.5 font-bold">9 Puan</td></tr>
+                <tr><td class="p-1.5">2 Farklı Yaklaşma</td><td class="p-1.5 font-bold">8 Puan</td></tr>
+                <tr><td class="p-1.5">3 Farklı Yaklaşma</td><td class="p-1.5 font-bold">7 Puan</td></tr>
+                <tr><td class="p-1.5">4 Farklı Yaklaşma</td><td class="p-1.5 font-bold">6 Puan</td></tr>
+                <tr><td class="p-1.5">5 Farklı Yaklaşma</td><td class="p-1.5 font-bold">5 Puan</td></tr>
+                <tr><td class="p-1.5">6 – 10 Farklı Yaklaşma</td><td class="p-1.5 font-bold text-yellow-400">3 Puan</td></tr>
+                <tr><td class="p-1.5 text-red-400">11+ Fark veya İşlemsiz</td><td class="p-1.5 text-red-400">0 Puan</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Bölüm 4: Oda Kodu ve Kısayollar -->
+        <div class="flex flex-col gap-2 border-t border-gray-800 pt-3">
+          <h4 class="font-headline font-bold text-sm text-purple-300 flex items-center gap-1.5">
+            <i data-lucide="keyboard" class="w-4 h-4"></i> 4. KLAVYE KULLANIMI, ODA KODLARI İLE REKABET VE ANTRENMAN
+          </h4>
+          <p>• <strong>Klavye İle Kelime Yazma:</strong> Kelime etabında doğrudan klavyeden harflere basarak kelimenizi yazabilirsiniz.<br>
+          • <strong>Backspace / Enter:</strong> Backspace son harfi siler, Enter kelimeyi onaylar.<br>
+          • <strong>Oda Kodu Mantığı:</strong> Arkadaşınızdan gelen hazır kodu <i>Oda Kodu ile Rekabet</i> kutusuna yapıştırıp TAMAM'a basarsanız oyun 90 saniye sabit süreyle adil rekabet modunda başlar. Dilerseniz birazdan başlayacağınız oyunu arkadaşınıza göndererek ona meydan okuyabilirsiniz. Bu durumda kendi kodunuzu üretmelisiniz. İlgili satıra sadece alfabedeki harflerden oluşan bir kelime girin (örneğin: DERYA). Sistem otomatik olarak KOD-RAKAM-KOD üretecektir (örnek için DERYA-342-DERYA). Bu üretilen kodu arkadaşınıza gönderin. Birazdan başlayacağınız oyundaki kelime ve işlem modlarının aynısı arkadaşlarınızın oyununda da üretilecektir. Böylece aynı oyunda elde ettiğiniz skorları karşılaştırabilirsiniz.<br>
+		  • <strong>Antrenman:</strong> Puan stresine girmeden kendinizi test edebileceğiniz bu bölümde Kelime veya İşlem Oyununu dilediğiniz kadar oynayabilirsiniz.</p>
+        </div>
+
+        <!-- Görsel İnfografik Kılavuz Bağlantısı -->
+        <div class="p-3 rounded bg-surface-container-high border border-cyan-500/40 flex items-center justify-between gap-2 mt-1">
+          <div class="flex items-center gap-2">
+            <i data-lucide="image" class="w-4 h-4 text-cyan-400 shrink-0"></i>
+            <span class="font-mono-label text-[11px] text-gray-300">Kuralları <strong>görsel infografik</strong> olarak incelemek ister misiniz?</span>
+          </div>
+          <button onclick="closeRulesModal(); openGuideImageModal();" class="btn-cyan px-3 py-1.5 text-[11px] font-bold shrink-0 flex items-center gap-1">
+            <i data-lucide="sparkles" class="w-3 h-3"></i> GÖRSEL KILAVUZ
+          </button>
+        </div>
+
+      </div>
+
+      <button onclick="closeRulesModal()" class="btn-cyan w-full py-2.5 text-xs font-bold mt-1">
+        ANLADIM VE KAPAT
+      </button>
+
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       1. TÜRKÇE HARF NORMALİZASYONU VE SÖZLÜK MOTORU
+       ========================================================================== */
+    const TURKISH_VOWELS = ['A', 'E', 'I', 'İ', 'O', 'Ö', 'U', 'Ü'];
+    const TURKISH_CONSONANTS = ['B', 'C', 'Ç', 'D', 'F', 'G', 'Ğ', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R', 'S', 'Ş', 'T', 'V', 'Y', 'Z'];
+    const TURKISH_ALPHABET = [...TURKISH_VOWELS, ...TURKISH_CONSONANTS].sort((a,b) => a.localeCompare(b, 'tr'));
+
+    const VOWEL_WEIGHTS = { 'A': 30, 'E': 26, 'İ': 15, 'I': 10, 'O': 6, 'U': 6, 'Ü': 4, 'Ö': 3 };
+    const CONSONANT_WEIGHTS = {
+      'R': 14, 'L': 13, 'N': 13, 'K': 11, 'T': 10, 'M': 8, 'S': 8, 'D': 7, 'Y': 6,
+      'B': 5, 'Z': 5, 'P': 4, 'C': 4, 'G': 3, 'V': 3, 'Ç': 3, 'Ş': 3, 'H': 2, 'Ğ': 2, 'F': 1, 'J': 1
+    };
+
+    const CATCHY_WORDS = [
+      "VOLKAN", "ROKET", "KAPLAN", "ZİHİN", "FIRTINA", "ZİRVE", 
+      "SÖZLÜK", "İŞLEM", "EFSANE", "KAMYON", "KASIRGA", "PARLAK", 
+      "SİHİR", "DESTAN", "GÜNEŞ", "BULUT", "YILDIZ", "ÇINAR", 
+      "RÜZGAR", "KARTAL", "SANCAR", "TAYFUN", "CEVHER", 
+      "DÜNYA", "YAZILIM", "PUSULA", "KUZEY", "GÜNEY", "KANYON"
+    ];
+
+    function trToUpperCase(str) {
+      if (!str) return '';
+      return str
+        .replace(/^\uFEFF/, '')
+        .replace(/\r/g, '')
+        .trim()
+        .replace(/i/g, 'İ')
+        .replace(/ı/g, 'I')
+        .replace(/ç/g, 'Ç')
+        .replace(/ğ/g, 'Ğ')
+        .replace(/ö/g, 'Ö')
+        .replace(/ş/g, 'Ş')
+        .replace(/ü/g, 'Ü')
+        .toLocaleUpperCase('tr-TR');
+    }
+
+    const WORD_SET = new Set();
+    let isDictionaryLoaded = false;
+
+    async function loadDictionaryFile() {
+      const statusEl = document.getElementById('dictionary-status');
+      try {
+        const response = await fetch('turkce_kelime_listesi.txt');
+        if (!response.ok) throw new Error('TXT okunamadı');
+        const text = await response.text();
+        
+        const lines = text.split('\n');
+        WORD_SET.clear();
+
+        for (let i = 0; i < lines.length; i++) {
+          const cleanWord = trToUpperCase(lines[i]);
+          if (cleanWord.length >= 2 && cleanWord.length <= 9) {
+            WORD_SET.add(cleanWord);
+          }
+        }
+        
+        isDictionaryLoaded = true;
+        if (statusEl) {
+          statusEl.textContent = `TXT SÖZLÜK (${WORD_SET.size.toLocaleString('tr-TR')} KELİME)`;
+          statusEl.className = 'text-emerald-400 font-bold';
+        }
+      } catch (err) {
+        console.warn('Yedek kelime listesine geçiliyor:', err);
+        const fallbackWords = ["BANKA", "ÇINAR", "BASIK", "VAZİFE", "GENEL", "SEMAVER", "VEFALI", "BADANALI", "DİKENLİK", "YOSUN", "PAKETÇİ", "SANSAR", "KATMER", "MATKAP", "DESTAN", "KİREÇLİ", "SÖZCÜK", "YARIŞMA", "SÖZLÜK", "ZİHİN", "İŞLEM", "KELİME"];
+        fallbackWords.forEach(w => WORD_SET.add(trToUpperCase(w)));
+        if (statusEl) {
+          statusEl.textContent = 'VARSAYILAN SÖZLÜK';
+          statusEl.className = 'text-yellow-400 font-bold';
+        }
+      }
+    }
+
+    function isValidTurkishWord(candidate) {
+      if (!candidate) return false;
+      const word = trToUpperCase(candidate);
+      if (word.length < 2 || word.length > 9) return false;
+      return WORD_SET.has(word);
+    }
+
+    function solveBestWords(rackLetters) {
+      const rackCounts = {};
+      let jokerCount = 0;
+      rackLetters.forEach(ch => {
+        if (ch === '?') jokerCount++;
+        else {
+          const normCh = trToUpperCase(ch);
+          rackCounts[normCh] = (rackCounts[normCh] || 0) + 1;
+        }
+      });
+
+      const validList = [];
+      for (const word of WORD_SET) {
+        if (word.length < 2 || word.length > 9) continue;
+        const wCounts = {};
+        for (let i = 0; i < word.length; i++) {
+          const c = word[i];
+          wCounts[c] = (wCounts[c] || 0) + 1;
+        }
+
+        let neededJokers = 0;
+        let possible = true;
+        for (const c in wCounts) {
+          const avail = rackCounts[c] || 0;
+          if (wCounts[c] > avail) {
+            neededJokers += (wCounts[c] - avail);
+            if (neededJokers > jokerCount) {
+              possible = false;
+              break;
+            }
+          }
+        }
+
+        if (possible) {
+          validList.push(word);
+        }
+      }
+
+      validList.sort((a, b) => b.length - a.length || a.localeCompare(b, 'tr'));
+      return validList;
+    }
+
+    /* ==========================================================================
+       2. İŞLEM SOLVER
+       ========================================================================== */
+    function solveNumbers(target, numbers) {
+      let best = { diff: Math.abs(target - numbers[0]), val: numbers[0], steps: [] };
+
+      function search(nums, history) {
+        for (let i = 0; i < nums.length; i++) {
+          const d = Math.abs(target - nums[i]);
+          if (d < best.diff) {
+            best = { diff: d, val: nums[i], steps: [...history] };
+            if (d === 0) return true;
+          }
+        }
+        if (nums.length <= 1) return false;
+
+        for (let i = 0; i < nums.length; i++) {
+          for (let j = i + 1; j < nums.length; j++) {
+            const a = nums[i];
+            const b = nums[j];
+            const remaining = nums.filter((_, idx) => idx !== i && idx !== j);
+
+            if (search([...remaining, a + b], [...history, `${a} + ${b} = ${a + b}`])) return true;
+            if (a > 1 && b > 1) {
+              if (search([...remaining, a * b], [...history, `${a} × ${b} = ${a * b}`])) return true;
+            }
+            if (a !== b) {
+              const big = Math.max(a, b);
+              const small = Math.min(a, b);
+              if (search([...remaining, big - small], [...history, `${big} - ${small} = ${big - small}`])) return true;
+            }
+            if (b > 1 && a % b === 0) {
+              if (search([...remaining, a / b], [...history, `${a} ÷ ${b} = ${a / b}`])) return true;
+            } else if (a > 1 && b % a === 0) {
+              if (search([...remaining, b / a], [...history, `${b} ÷ ${a} = ${b / a}`])) return true;
+            }
+          }
+        }
+        return false;
+      }
+
+      search(numbers, []);
+      return best;
+    }
+
+    /* ==========================================================================
+       3. SES EFEKTLERİ
+       ========================================================================== */
+    let audioCtx = null;
+    let isMuted = false;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) audioCtx = new AudioContextClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playTone(freq, type, duration, gainVal = 0.15) {
+      if (isMuted) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(gainVal, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function soundCardPick() { playTone(680, 'sine', 0.08, 0.12); }
+    function soundTileClick() { playTone(440, 'triangle', 0.06, 0.1); }
+    function soundRemove() { playTone(260, 'sine', 0.08, 0.1); }
+    function soundGong() {
+      if (isMuted) return;
+      try {
+        [220, 277, 330, 440].forEach((freq, idx) => {
+          setTimeout(() => playTone(freq, 'sine', 1.2, 0.2), idx * 40);
+        });
+      } catch (e) {}
+    }
+    function soundSuccess() {
+      if (isMuted) return;
+      try {
+        [440, 554, 659, 880].forEach((f, i) => {
+          setTimeout(() => playTone(f, 'triangle', 0.25, 0.18), i * 80);
+        });
+      } catch (e) {}
+    }
+    function soundFail() { if (!isMuted) playTone(180, 'sawtooth', 0.35, 0.15); }
+    function soundTick() { playTone(800, 'sine', 0.03, 0.04); }
+
+    function toggleAudio() {
+      isMuted = !isMuted;
+      updateSoundUI();
+    }
+
+    function updateSoundUI() {
+      const icon = document.getElementById('sound-icon');
+      const btnSet = document.getElementById('btn-settings-sound');
+      if (icon) {
+        icon.setAttribute('data-lucide', isMuted ? 'volume-x' : 'volume-2');
+        if (window.lucide) lucide.createIcons();
+      }
+      if (btnSet) btnSet.textContent = isMuted ? 'KAPALI' : 'AÇIK';
+    }
+
+    /* ==========================================================================
+       4. OYUN DURUMU VE AKIŞI
+       ========================================================================== */
+    const GAME_MODES = { 
+      TOURNAMENT: 'TOURNAMENT', 
+      WORD_ONLY: 'WORD_ONLY',   
+      MATH_ONLY: 'MATH_ONLY',   
+      DAILY: 'DAILY', 
+      CUSTOM_SEED: 'CUSTOM_SEED', 
+      PRACTICE: 'PRACTICE' 
+    };
+
+    let appState = {
+      mode: GAME_MODES.TOURNAMENT,
+      customSubType: GAME_MODES.TOURNAMENT,
+      seed: '',
+      currentStageIndex: 0,
+      maxStages: 8,
+      totalScore: 0,
+      userDefaultDuration: 60,
+      roundDuration: 60,
+      timerRemaining: 60,
+      isPaused: false,
+      isTimerRunning: false,
+      isGameActive: false,
+      history: [],
+      stageData: null,
+      practiceType: 'word',
+      dailySetScores: [0, 0, 0] 
+    };
+
+    let timerInterval = null;
+    let draftTimerInterval = null;
+
+    // Header Butonlarının ve Skor Etiketinin Yönetimi
+    function updateActionHeaderButtons() {
+      const pauseBtn = document.getElementById('btn-pause');
+      const quitBtn = document.getElementById('btn-quit');
+      const scoreLabel = document.getElementById('scoreboard-label');
+
+      if (appState.isGameActive) {
+        if (scoreLabel) scoreLabel.textContent = "SKOR:";
+
+        if (pauseBtn) {
+          pauseBtn.disabled = false;
+          pauseBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+        }
+        if (quitBtn) {
+          quitBtn.disabled = false;
+          quitBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+          quitBtn.classList.replace('bg-red-950/40', 'bg-red-950/60');
+          quitBtn.classList.replace('border-red-600/40', 'border-red-600/60');
+          quitBtn.classList.replace('text-red-400/50', 'text-red-400');
+          quitBtn.classList.add('hover:bg-red-900/60', 'hover:text-white');
+        }
+      } else {
+        if (scoreLabel) scoreLabel.textContent = "SON SKOR:";
+
+        if (pauseBtn) {
+          pauseBtn.disabled = true;
+          pauseBtn.classList.add('opacity-40', 'cursor-not-allowed');
+        }
+        if (quitBtn) {
+          quitBtn.disabled = true;
+          quitBtn.classList.add('opacity-40', 'cursor-not-allowed');
+          quitBtn.classList.replace('bg-red-950/60', 'bg-red-950/40');
+          quitBtn.classList.replace('border-red-600/60', 'border-red-600/40');
+          quitBtn.classList.replace('text-red-400', 'text-red-400/50');
+          quitBtn.classList.remove('hover:bg-red-900/60', 'hover:text-white');
+        }
+      }
+    }
+
+    function Mulberry32(seedStr) {
+      let h = 0;
+      for (let i = 0; i < seedStr.length; i++) h = Math.imul(31, h) + seedStr.charCodeAt(i) | 0;
+      return function() {
+        h = Math.imul(h ^ h >>> 15, h | 1);
+        h ^= h + Math.imul(h ^ h >>> 7, h | 61);
+        return ((h ^ h >>> 14) >>> 0) / 4294967296;
+      };
+    }
+
+    let currentPRNG = Math.random;
+
+    function getRandomItemWeighted(pool, weights) {
+      let total = 0;
+      for (let i = 0; i < pool.length; i++) total += (weights[pool[i]] || 1);
+      let r = currentPRNG() * total;
+      for (let i = 0; i < pool.length; i++) {
+        r -= (weights[pool[i]] || 1);
+        if (r <= 0) return pool[i];
+      }
+      return pool[0];
+    }
+
+    function getTodaySeedString() {
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const yyyy = today.getFullYear();
+      return `GUNUN-YARISMASI-${dd}${mm}${yyyy}`;
+    }
+
+    function getTodayFormattedDate() {
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const yyyy = today.getFullYear();
+      return `${dd}.${mm}.${yyyy}`;
+    }
+
+    function getCurrentMultiplier() {
+      if (appState.mode !== GAME_MODES.DAILY) return 1.0;
+      if (appState.currentStageIndex < 6) return 1.0;
+      if (appState.currentStageIndex < 12) return 1.5;
+      return 2.0;
+    }
+
+    function getCurrentSetIndex() {
+      if (appState.currentStageIndex < 6) return 0;
+      if (appState.currentStageIndex < 12) return 1;
+      return 2;
+    }
+
+    async function initGame() {
+      await loadDictionaryFile();
+      updateSoundUI();
+      renderTimerModeInUI();
+      renderMainMenu();
+
+      const jGrid = document.getElementById('joker-alphabet-grid');
+      if (jGrid) {
+        jGrid.innerHTML = TURKISH_ALPHABET.map(letter => `
+          <button type="button" onclick="selectJokerReplacement('${letter}')" class="p-2 sm:p-2.5 rounded bg-surface-container font-headline font-bold text-base text-yellow-300 border border-yellow-500/40 hover:bg-yellow-500 hover:text-black transition">
+            ${letter}
+          </button>
+        `).join('');
+      }
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function renderMainMenu() {
+      stopTimer();
+      stopDraftTimer();
+      appState.isGameActive = false;
+      updateActionHeaderButtons();
+
+      appState.roundDuration = appState.userDefaultDuration;
+      appState.seed = '';
+      appState.dailySetScores = [0, 0, 0];
+      renderTimerModeInUI();
+
+      // Ana Menüdeyken Header Alt Şeridine Duyuru Metnini Yerleştir
+      const subBar = document.getElementById('header-sub-bar');
+      if (subBar) {
+        subBar.innerHTML = `
+          <div class="flex items-center justify-center gap-2 text-xs sm:text-sm font-mono-label text-cyan-300 w-full py-0.5">
+            <i data-lucide="sparkles" class="w-4 h-4 text-pink-400 shrink-0"></i>
+            <span class="font-semibold tracking-wide">Günün Yarışması ile katlanan puan heyecanını yaşayın veya klasik liglerde yarışın.</span>
+          </div>
+        `;
+      }
+
+      const container = document.getElementById('main-stage-container');
+      if (!container) return;
+
+      document.getElementById('footer-status-text').textContent = 'HAZIR • YARIŞMA MODUNU SEÇİNİZ';
+
+      const todayScore = localStorage.getItem(`daily_score_${getTodaySeedString()}`);
+      const todayDateStr = getTodayFormattedDate();
+
+      container.innerHTML = `
+        <div class="max-w-3xl mx-auto neon-panel p-6 sm:p-8 flex flex-col gap-6 text-center animate-fade-in">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-pink-950/60 border border-pink-500/50 text-pink-300 font-mono-label text-xs uppercase mb-3">
+              <i data-lucide="award" class="w-4 h-4"></i> YARIŞMA STÜDYOSU V2.0
+              <button onclick="startInteractiveDemo()" class="btn-cyan px-2 py-0.5 text-[10px] font-bold inline-flex items-center gap-1 ml-2">
+                <i data-lucide="play-circle" class="w-3 h-3"></i> TANITIM İZLE
+              </button>
+            </div>
+            <h2 class="font-headline font-extrabold text-2xl sm:text-3xl text-white tracking-tight">OYNAMAK İSTEDİĞİNİZ MODU SEÇİN</h2>
+          </div>
+
+          <!-- GÜNÜN YARIŞMASI ÖZEL KARTI -->
+          <div class="neon-panel-gold p-5 text-left flex flex-col sm:flex-row items-center justify-between gap-4 border-2 border-yellow-500/60 shadow-[0_0_20px_rgba(255,224,74,0.15)] relative overflow-hidden">
+            <div class="flex flex-col gap-1 z-10">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-yellow-400 text-black font-headline font-extrabold text-xs uppercase tracking-wider">ÖZEL MOD</span>
+                <span class="font-mono-label text-xs text-yellow-300">3 SET • 18 OYUN • 90 SN</span>
+                <span class="font-mono-label text-xs text-yellow-400/90 bg-yellow-950/80 px-2 py-0.5 rounded border border-yellow-500/40 flex items-center gap-1 ml-auto sm:ml-0">
+                  <i data-lucide="calendar-days" class="w-3.5 h-3.5"></i> ${todayDateStr}
+                </span>
+              </div>
+              <h3 class="font-headline font-extrabold text-xl text-white flex items-center gap-2 mt-1">
+                <i data-lucide="calendar" class="w-5 h-5 text-yellow-400"></i> GÜNÜN YARIŞMASI
+              </h3>
+              <p class="text-xs text-gray-300 max-w-md">1. Set (x1.0) ➔ 2. Set (x1.5) ➔ 3. Set (x2.0). Bugünün özel sorularıyla rekabete katılın!</p>
+              ${todayScore ? `<div class="mt-2 text-xs font-mono-label text-emerald-400 font-bold">✓ Bugünü Tamamladınız! Skorunuz: ${todayScore} Puan</div>` : ''}
+            </div>
+
+            <button onclick="startMode('${GAME_MODES.DAILY}')" class="btn-gold px-6 py-3.5 text-xs font-extrabold shrink-0 flex items-center gap-2 text-base z-10">
+              <i data-lucide="play" class="w-5 h-5"></i> ${todayScore ? 'TEKRAR OYNA' : 'BAŞLA'}
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
+            <button onclick="startMode('${GAME_MODES.TOURNAMENT}')" class="neon-panel p-4 hover:border-pink-500 hover:shadow-[0_0_16px_rgba(255,45,120,0.3)] transition cursor-pointer group flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-headline font-bold text-sm text-pink-400 group-hover:text-white flex items-center gap-1.5"><i data-lucide="trophy" class="w-4 h-4 text-pink-400"></i> KARMA ŞAMPİYONA</span>
+                </div>
+                <p class="text-xs text-gray-300">Klasik format. 4 Kelime + 4 İşlem (Toplam 8 Etap).</p>
+              </div>
+              <span class="text-[10px] font-mono-label text-pink-400 mt-3 block">8 ETAP • KARMA</span>
+            </button>
+
+            <!-- KELİME VE İŞLEM OYUNLARINI BİRLİKTE ÇERÇEVELEYEN GRİD -->
+            <div id="branch-modes-grid" class="col-span-1 sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button onclick="startMode('${GAME_MODES.WORD_ONLY}')" class="neon-panel-cyan p-4 hover:border-cyan-400 hover:shadow-[0_0_16px_rgba(0,255,204,0.3)] transition cursor-pointer group flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="font-headline font-bold text-sm text-cyan-300 group-hover:text-white flex items-center gap-1.5"><i data-lucide="type" class="w-4 h-4 text-cyan-400"></i> KELİME OYUNU</span>
+                  </div>
+                  <p class="text-xs text-gray-300">Sadece kelime türetmeye odaklı 6 etaplık zihin jimnastiği.</p>
+                </div>
+                <span class="text-[10px] font-mono-label text-cyan-300 mt-3 block">6 ETAP • KELİME</span>
+              </button>
+
+              <button onclick="startMode('${GAME_MODES.MATH_ONLY}')" class="neon-panel p-4 hover:border-emerald-400 hover:shadow-[0_0_16px_rgba(52,211,153,0.3)] transition cursor-pointer group flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="font-headline font-bold text-sm text-emerald-400 group-hover:text-white flex items-center gap-1.5"><i data-lucide="binary" class="w-4 h-4 text-emerald-400"></i> İŞLEM OYUNU</span>
+                  </div>
+                  <p class="text-xs text-gray-300">Sadece hedef sayılara ulaşmaya odaklı 6 etaplık matematik yarışı.</p>
+                </div>
+                <span class="text-[10px] font-mono-label text-emerald-400 mt-3 block">6 ETAP • İŞLEM</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left border-t border-gray-800 pt-4">
+            
+            <!-- ODA KODU İLE REKABET -->
+            <div class="neon-panel-gold p-4 flex flex-col gap-3">
+              <div class="flex items-center justify-between">
+                <span class="font-headline font-bold text-sm text-yellow-300 flex items-center gap-1.5">
+                  <i data-lucide="key" class="w-4 h-4 text-yellow-400"></i> ODA KODU İLE REKABET
+                </span>
+                <span class="text-[10px] font-mono-label bg-yellow-950 text-yellow-300 px-2 py-0.5 rounded border border-yellow-500/30">90 SN SABİT SÜRE</span>
+              </div>
+              
+              <p class="text-xs text-gray-300">Arkadaşınızın gönderdiği kodu girin veya kendi kodunuzu üretip (6 harfli bir kelime yazıp) arkadaşınızla paylaşın:</p>
+              
+              <div class="flex items-center gap-2">
+                <input type="text" id="custom-seed-input" oninput="resetSeedButtonState()" placeholder="Örn: ZİHİN-440 veya ZİHİN" class="flex-1 bg-surface-container-low border border-yellow-500/50 rounded px-3 py-2 text-xs text-white uppercase font-mono-label focus:outline-none focus:border-yellow-400">
+                
+                <button type="button" id="btn-seed-confirm" onclick="confirmCustomSeedInput()" class="btn-cyan px-4 py-2 text-xs font-bold shrink-0">TAMAM</button>
+                <button type="button" id="btn-seed-play" onclick="startCustomSeedMode()" disabled class="btn-gold px-4 py-2 text-xs font-bold shrink-0 opacity-40 cursor-not-allowed">GİR VE OYNA</button>
+              </div>
+
+              <div id="seed-generated-info" class="hidden flex items-center justify-between bg-yellow-950/60 border border-yellow-500/40 p-2 rounded text-xs font-mono-label text-yellow-300 mt-1">
+                <span>Arkadaşına göndereceğin oda kodu: <strong id="formatted-seed-display" class="text-white font-bold underline"></strong></span>
+                <button type="button" onclick="copyFormattedSeed()" class="text-cyan-400 hover:text-white underline text-[11px] ml-2 flex items-center gap-1">
+                  <i data-lucide="copy" class="w-3 h-3"></i> Kopyala
+                </button>
+              </div>
+            </div>
+
+            <button onclick="openPracticeModal()" class="neon-panel p-4 hover:border-purple-400 hover:shadow-[0_0_16px_rgba(179,136,255,0.3)] transition cursor-pointer group flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-headline font-bold text-sm text-purple-300 group-hover:text-white flex items-center gap-1.5"><i data-lucide="zap" class="w-4 h-4 text-purple-400"></i> HIZLI ANTRENMAN</span>
+                  <span class="text-[10px] font-mono-label bg-purple-900/40 text-purple-300 px-2 py-0.5 rounded">TEK ETAP</span>
+                </div>
+                <p class="text-xs text-gray-300">Skor kaydı tutulmadan tek etaplık hızlı antrenmanlar yapın.</p>
+              </div>
+              <span class="text-[10px] font-mono-label text-purple-300 mt-2 block">SERİ ANTRENMAN DÖNGÜSÜ</span>
+            </button>
+
+          </div>
+        </div>
+      `;
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function renderStageTrackerHeader() {
+      const subBar = document.getElementById('header-sub-bar');
+      if (!subBar) return;
+
+      let stageLabels = [];
+      const total = appState.maxStages || 8;
+      const effectiveMode = (appState.mode === GAME_MODES.CUSTOM_SEED) ? appState.customSubType : appState.mode;
+
+      for (let i = 0; i < total; i++) {
+        let isWord = false;
+        if (effectiveMode === GAME_MODES.WORD_ONLY) isWord = true;
+        else if (effectiveMode === GAME_MODES.MATH_ONLY) isWord = false;
+        else isWord = (i % 2 === 0);
+
+        stageLabels.push({
+          type: isWord ? 'word' : 'math',
+          label: `E${i+1}: ${isWord ? 'K' : 'İ'}`
+        });
+      }
+
+      subBar.innerHTML = `
+        <span class="font-mono-label text-xs text-gray-400 uppercase tracking-wider shrink-0 mr-1">ETAPLAR:</span>
+        <div id="stages-track" class="flex items-center gap-1.5 flex-nowrap w-full justify-between">
+          ${stageLabels.map((s, idx) => {
+            let stateClass = 'stage-pill';
+            if (idx === appState.currentStageIndex) stateClass += ' is-active';
+            else if (idx < appState.currentStageIndex) stateClass += ' is-done';
+
+            let extraBadge = '';
+            if (appState.mode === GAME_MODES.DAILY) {
+              if (idx === 6) extraBadge = ' <span class="text-yellow-400 text-[9px] font-bold">[x1.5]</span>';
+              if (idx === 12) extraBadge = ' <span class="text-pink-400 text-[9px] font-bold">[x2.0]</span>';
+            }
+
+            return `
+              <div class="${stateClass}" title="Etap ${idx + 1}">
+                <span>${s.label}${idx + 1}</span>${extraBadge}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function openPracticeModal() {
+      const modal = document.getElementById('modal-practice-select');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closePracticeModal() {
+      const modal = document.getElementById('modal-practice-select');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function startPracticeMode(type) {
+      closePracticeModal();
+      const roundModal = document.getElementById('modal-round-result');
+      if (roundModal) roundModal.classList.add('hidden');
+
+      appState.practiceType = type;
+      appState.seed = `PRACTICE_${type.toUpperCase()}_${Date.now()}_${Math.floor(Math.random() * 99999)}`;
+      startMode(GAME_MODES.PRACTICE);
+    }
+
+    function startMode(mode) {
+      appState.mode = mode;
+      appState.currentStageIndex = 0;
+      appState.totalScore = 0;
+      appState.dailySetScores = [0, 0, 0];
+      appState.history = [];
+      appState.isGameActive = true;
+      updateActionHeaderButtons();
+
+      document.getElementById('scoreboard-total').textContent = '0';
+
+      if (mode === GAME_MODES.DAILY) {
+        appState.maxStages = 18;
+        appState.seed = getTodaySeedString();
+        appState.roundDuration = 90;
+      } else if (mode === GAME_MODES.WORD_ONLY || mode === GAME_MODES.MATH_ONLY) {
+        appState.maxStages = 6;
+        appState.seed = generateShareableSeed(mode);
+        appState.roundDuration = appState.userDefaultDuration;
+      } else if (mode === GAME_MODES.TOURNAMENT) {
+        appState.maxStages = 8;
+        appState.seed = generateShareableSeed(mode);
+        appState.roundDuration = appState.userDefaultDuration;
+      } else if (mode === GAME_MODES.PRACTICE) {
+        appState.maxStages = 1;
+        appState.seed = `PRACTICE_${Date.now()}_${Math.floor(Math.random() * 99999)}`;
+        appState.roundDuration = appState.userDefaultDuration;
+      } else {
+        appState.roundDuration = appState.userDefaultDuration;
+      }
+
+      renderTimerModeInUI();
+      currentPRNG = Mulberry32(appState.seed);
+      loadCurrentStage();
+    }
+
+    /* ==========================================================================
+       ODA KODU İLE REKABET MODU
+       ========================================================================== */
+    function resetSeedButtonState() {
+      const confirmBtn = document.getElementById('btn-seed-confirm');
+      const playBtn = document.getElementById('btn-seed-play');
+      const infoBox = document.getElementById('seed-generated-info');
+
+      if (confirmBtn) {
+        confirmBtn.disabled = false;
+        confirmBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+      }
+      if (playBtn) {
+        playBtn.disabled = true;
+        playBtn.classList.add('opacity-40', 'cursor-not-allowed');
+      }
+      if (infoBox) {
+        infoBox.classList.add('hidden');
+      }
+    }
+
+    function confirmCustomSeedInput() {
+      const input = document.getElementById('custom-seed-input');
+      if (!input) return;
+
+      let rawVal = trToUpperCase(input.value.trim());
+      const randomNum = Math.floor(Math.random() * 900) + 100;
+
+      if (!rawVal) {
+        const w1 = CATCHY_WORDS[Math.floor(Math.random() * CATCHY_WORDS.length)];
+        rawVal = `${w1}-${randomNum}-${w1}`;
+        input.value = rawVal;
+        showGeneratedSeedInfo(rawVal);
+      } else {
+        const parts = rawVal.split('-');
+        
+        const isMathOnly = (parts.length === 3 && /^\d+$/.test(parts[0]) && /^\d+$/.test(parts[2]));
+        const isWordOnly = (parts.length === 2 && /^\d+$/.test(parts[1]));
+        const isTournament = (parts.length === 2 && !/^\d+$/.test(parts[1]));
+        const isCustomRoom = (parts.length === 3 && !/^\d+$/.test(parts[0]) && /^\d+$/.test(parts[1]));
+
+        const isPredefinedValidCode = (isMathOnly || isWordOnly || isTournament || isCustomRoom);
+
+        if (isPredefinedValidCode) {
+          startCustomSeedMode();
+        } else {
+          rawVal = `${rawVal}-${randomNum}-${rawVal}`;
+          input.value = rawVal;
+          showGeneratedSeedInfo(rawVal);
+        }
+      }
+    }
+
+    function showGeneratedSeedInfo(formattedCode) {
+      const infoBox = document.getElementById('seed-generated-info');
+      const displayEl = document.getElementById('formatted-seed-display');
+      if (infoBox && displayEl) {
+        displayEl.textContent = formattedCode;
+        infoBox.classList.remove('hidden');
+      }
+
+      const confirmBtn = document.getElementById('btn-seed-confirm');
+      const playBtn = document.getElementById('btn-seed-play');
+
+      if (confirmBtn) {
+        confirmBtn.disabled = true;
+        confirmBtn.classList.add('opacity-40', 'cursor-not-allowed');
+      }
+      if (playBtn) {
+        playBtn.disabled = false;
+        playBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+        playBtn.focus();
+      }
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function copyFormattedSeed() {
+      const displayEl = document.getElementById('formatted-seed-display');
+      if (displayEl && displayEl.textContent) {
+        navigator.clipboard.writeText(displayEl.textContent).then(() => {
+          alert(`Oda Kodu Kopyalandı: ${displayEl.textContent}\n\nArkadaşınıza bu kodu göndererek aynı sorularla yarışabilirsiniz!`);
+        });
+      }
+    }
+
+    function startCustomSeedMode() {
+      const input = document.getElementById('custom-seed-input');
+      let rawVal = (input && input.value.trim()) ? trToUpperCase(input.value) : generateShareableSeed(GAME_MODES.TOURNAMENT);
+
+      let detectedMode = GAME_MODES.TOURNAMENT;
+      const parts = rawVal.split('-');
+
+      if (parts.length === 3 && /^\d+$/.test(parts[0]) && /^\d+$/.test(parts[2])) {
+        detectedMode = GAME_MODES.MATH_ONLY;
+      } else if (parts.length === 2 && /^\d+$/.test(parts[1])) {
+        detectedMode = GAME_MODES.WORD_ONLY;
+      } else if (parts.length === 3 || parts.length === 2) {
+        detectedMode = GAME_MODES.TOURNAMENT;
+      } else {
+        detectedMode = GAME_MODES.TOURNAMENT;
+      }
+
+      appState.mode = GAME_MODES.CUSTOM_SEED;
+      appState.customSubType = detectedMode;
+      appState.seed = rawVal;
+      appState.currentStageIndex = 0;
+      appState.totalScore = 0;
+      appState.dailySetScores = [0, 0, 0];
+      appState.history = [];
+      appState.maxStages = (detectedMode === GAME_MODES.TOURNAMENT) ? 8 : 6;
+      appState.roundDuration = 90;
+      appState.isGameActive = true;
+      updateActionHeaderButtons();
+
+      document.getElementById('scoreboard-total').textContent = '0';
+      renderTimerModeInUI();
+      
+      currentPRNG = Mulberry32(appState.seed);
+      loadCurrentStage();
+    }
+
+    function loadCurrentStage() {
+      stopTimer();
+      stopDraftTimer();
+
+      const stageIndex = appState.currentStageIndex;
+      const effectiveMode = (appState.mode === GAME_MODES.CUSTOM_SEED) ? appState.customSubType : appState.mode;
+
+      if (appState.seed) {
+        const stageSeedStr = `${appState.seed}_stage_${stageIndex}`;
+        currentPRNG = Mulberry32(stageSeedStr);
+      }
+
+      renderStageTrackerHeader();
+
+      let isWordStage = false;
+      if (effectiveMode === GAME_MODES.WORD_ONLY) {
+        isWordStage = true;
+      } else if (effectiveMode === GAME_MODES.MATH_ONLY) {
+        isWordStage = false;
+      } else if (appState.mode === GAME_MODES.PRACTICE) {
+        isWordStage = (appState.practiceType === 'word');
+      } else {
+        isWordStage = (stageIndex % 2 === 0);
+      }
+
+      const mult = getCurrentMultiplier();
+      const multStr = mult > 1 ? ` (ÇARPAN: x${mult})` : '';
+
+      document.getElementById('footer-status-text').textContent = appState.mode === GAME_MODES.PRACTICE 
+        ? `ANTRENMAN MODU • ${isWordStage ? 'KELİME' : 'İŞLEM'}` 
+        : `ETAP ${stageIndex + 1} / ${appState.maxStages} • ${isWordStage ? 'KELİME' : 'İŞLEM'} ETABI${multStr}`;
+
+      if (isWordStage) setupWordStage();
+      else setupMathStage();
+    }
+
+    /* ==========================================================================
+       5. KELİME ETABI AKIŞI
+       ========================================================================== */
+    function setupWordStage() {
+      const isCustomSeed = (appState.mode === GAME_MODES.CUSTOM_SEED || appState.mode === GAME_MODES.DAILY);
+
+      const predeterminedVowels = [];
+      for (let i = 0; i < 3; i++) {
+        predeterminedVowels.push(getRandomItemWeighted(TURKISH_VOWELS, VOWEL_WEIGHTS));
+      }
+
+      const predeterminedConsonants = [];
+      for (let i = 0; i < 5; i++) {
+        predeterminedConsonants.push(getRandomItemWeighted(TURKISH_CONSONANTS, CONSONANT_WEIGHTS));
+      }
+
+      const exactStageRack = [...predeterminedVowels, ...predeterminedConsonants, '?'];
+
+      appState.stageData = {
+        type: 'word',
+        letters: exactStageRack,
+        drawnLetters: [],
+        typedWord: [],
+        jokerLetter: null,
+        isDrafting: !isCustomSeed,
+        draftTimeRemaining: 15,
+        bestWords: [],
+        availableVowels: [...predeterminedVowels],
+        availableConsonants: [...predeterminedConsonants]
+      };
+
+      if (isCustomSeed) {
+        appState.stageData.isDrafting = false;
+        appState.stageData.bestWords = solveBestWords(exactStageRack);
+        renderWordSolvingView();
+        startStageTimer();
+      } else {
+        renderWordDraftingView();
+        startDraftTimer();
+      }
+    }
+
+    function startDraftTimer() {
+      stopDraftTimer();
+      if (!appState.stageData) return;
+      appState.stageData.draftTimeRemaining = 15;
+      updateDraftTimerDisplay();
+
+      draftTimerInterval = setInterval(() => {
+        if (appState.isPaused) return;
+        if (!appState.stageData || !appState.stageData.isDrafting) {
+          stopDraftTimer();
+          return;
+        }
+
+        appState.stageData.draftTimeRemaining--;
+        updateDraftTimerDisplay();
+
+        if (appState.stageData.draftTimeRemaining <= 0) {
+          stopDraftTimer();
+          autoFillDraftAndStart();
+        }
+      }, 1000);
+    }
+
+    function stopDraftTimer() {
+      if (draftTimerInterval) {
+        clearInterval(draftTimerInterval);
+        draftTimerInterval = null;
+      }
+    }
+
+    function updateDraftTimerDisplay() {
+      const el = document.getElementById('draft-timer-sec');
+      if (el && appState.stageData) {
+        el.textContent = appState.stageData.draftTimeRemaining;
+      }
+    }
+
+    function renderWordDraftingView() {
+      const container = document.getElementById('main-stage-container');
+      if (!container) return;
+
+      const data = appState.stageData;
+      const drawn = data.drawnLetters;
+      const count = drawn.length;
+      const remaining = 8 - count;
+
+      const currentVowelsCount = drawn.filter(ch => TURKISH_VOWELS.includes(ch)).length;
+      const currentConsonantsCount = drawn.filter(ch => TURKISH_CONSONANTS.includes(ch)).length;
+      
+      const canPickVowel = (currentVowelsCount < 3 && data.availableVowels.length > 0);
+      const canPickConsonant = (currentConsonantsCount < 5 && data.availableConsonants.length > 0);
+
+      let slotsHtml = '';
+      for (let i = 0; i < 8; i++) {
+        if (i < count) {
+          slotsHtml += `<div class="letter-tile animate-pop-in">${drawn[i]}</div>`;
+        } else {
+          slotsHtml += `<div class="letter-tile is-empty">${i + 1}</div>`;
+        }
+      }
+      slotsHtml += `<div class="letter-tile is-joker" title="9. Harf JOKERdir">?</div>`;
+
+      container.innerHTML = `
+        <div class="max-w-2xl mx-auto neon-panel p-6 sm:p-8 flex flex-col gap-6 text-center animate-fade-in">
+          <div class="flex items-center justify-between border-b border-pink-500/30 pb-3">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-pink-950/70 border border-pink-500/50 text-pink-300 font-mono-label text-xs uppercase">
+              <i data-lucide="sparkles" class="w-4 h-4"></i> STÜDYO HARF SEÇİMİ
+            </div>
+            <div class="flex items-center gap-2 font-mono-label text-xs text-yellow-300 bg-yellow-950/50 px-3 py-1 rounded border border-yellow-500/40">
+              <i data-lucide="clock" class="w-4 h-4 text-yellow-400 animate-spin"></i>
+              Harf Seçimi İçin Kalan Süre: <strong id="draft-timer-sec" class="text-sm font-bold text-yellow-400">${data.draftTimeRemaining}</strong> sn
+            </div>
+          </div>
+
+          <h2 class="font-headline font-extrabold text-2xl text-white">8 HARFİNİZİ BELİRLEYİNİZ</h2>
+          <p class="text-xs text-gray-400 font-mono-label">Kurallara göre tam <strong>3 Ünlü</strong> ve <strong>5 Ünsüz</strong> seçmelisiniz.</p>
+
+          <div class="flex items-center justify-center gap-1.5 sm:gap-2.5 flex-wrap p-4 rounded bg-surface-container-low border border-gray-800">
+            ${slotsHtml}
+          </div>
+
+          <div class="flex flex-col gap-3">
+            <div class="flex items-center justify-center gap-3 flex-wrap">
+              <button onclick="drawDraftLetter(true)" ${!canPickVowel || remaining === 0 ? 'disabled' : ''} class="btn-neon px-5 py-3.5 text-xs sm:text-sm font-bold flex items-center gap-2">
+                <i data-lucide="type" class="w-4 h-4"></i> ÜNLÜ ÇEK (${currentVowelsCount}/3)
+              </button>
+              <button onclick="drawDraftLetter(false)" ${!canPickConsonant || remaining === 0 ? 'disabled' : ''} class="btn-cyan px-5 py-3.5 text-xs sm:text-sm font-bold flex items-center gap-2">
+                <i data-lucide="hash" class="w-4 h-4"></i> ÜNSÜZ ÇEK (${currentConsonantsCount}/5)
+              </button>
+            </div>
+
+            <div class="flex items-center justify-between text-xs font-mono-label text-gray-400 px-2 pt-2 border-t border-gray-800">
+              <span>TOPLAM: <strong class="text-pink-400 font-bold">${count} / 8</strong></span>
+              <button onclick="autoFillDraftAndStart()" ${remaining === 0 ? 'disabled' : ''} class="text-gray-400 hover:text-white underline">Kalanı Otomatik Çek ve Başla</button>
+            </div>
+          </div>
+        </div>
+      `;
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function drawDraftLetter(isVowel) {
+      if (!appState.stageData || appState.stageData.drawnLetters.length >= 8) return;
+      const data = appState.stageData;
+      
+      let nextLetter = null;
+      if (isVowel && data.availableVowels.length > 0) {
+        nextLetter = data.availableVowels.shift();
+      } else if (!isVowel && data.availableConsonants.length > 0) {
+        nextLetter = data.availableConsonants.shift();
+      }
+
+      if (nextLetter) {
+        data.drawnLetters.push(nextLetter);
+        soundCardPick();
+      }
+
+      if (data.drawnLetters.length === 8) {
+        stopDraftTimer();
+        startWordSolvingPhase();
+      } else {
+        renderWordDraftingView();
+      }
+    }
+
+    function autoFillDraftAndStart() {
+      if (!appState.stageData) return;
+      stopDraftTimer();
+      const data = appState.stageData;
+      
+      while (data.drawnLetters.length < 8) {
+        const curV = data.drawnLetters.filter(ch => TURKISH_VOWELS.includes(ch)).length;
+        const needVowel = (curV < 3);
+
+        if (needVowel && data.availableVowels.length > 0) {
+          data.drawnLetters.push(data.availableVowels.shift());
+        } else if (data.availableConsonants.length > 0) {
+          data.drawnLetters.push(data.availableConsonants.shift());
+        } else if (data.availableVowels.length > 0) {
+          data.drawnLetters.push(data.availableVowels.shift());
+        } else {
+          break;
+        }
+      }
+
+      soundCardPick();
+      startWordSolvingPhase();
+    }
+
+    function startWordSolvingPhase() {
+      stopDraftTimer();
+      soundGong();
+      
+      const allLetters = [...appState.stageData.drawnLetters, '?'];
+      appState.stageData.letters = allLetters;
+      appState.stageData.isDrafting = false;
+      appState.stageData.bestWords = solveBestWords(allLetters);
+      renderWordSolvingView();
+      startStageTimer();
+    }
+
+    function renderWordSolvingView() {
+      const container = document.getElementById('main-stage-container');
+      if (!container) return;
+
+      const letters = appState.stageData.letters;
+      const typed = appState.stageData.typedWord;
+      const currentWordStr = typed.map(t => t.letter).join('');
+      const wordLen = currentWordStr.length;
+      const isValid = (wordLen >= 2 && isValidTurkishWord(currentWordStr));
+
+      const usedIndices = new Set(typed.map(t => t.rackIndex));
+      const rackHtml = letters.map((ch, idx) => {
+        const isUsed = usedIndices.has(idx);
+        const isJoker = (ch === '?');
+        return `
+          <button type="button" onclick="clickRackLetter(${idx})" ${isUsed ? 'disabled' : ''} class="letter-tile ${isUsed ? 'is-used' : ''} ${isJoker ? 'is-joker' : ''}">
+            ${ch}
+          </button>
+        `;
+      }).join('');
+
+      let slotsHtml = typed.length === 0
+        ? `<div class="text-gray-500 font-mono-label text-xs sm:text-sm py-4 italic">Harflere tıklayarak veya klavyeden yazarak kelime oluşturun...</div>`
+        : typed.map((t, idx) => `
+            <div onclick="removeTypedLetter(${idx})" class="word-slot ${t.isJoker ? 'border-yellow-400 text-yellow-300' : ''}">
+              ${t.letter}
+            </div>
+          `).join('');
+
+      const mult = getCurrentMultiplier();
+
+      container.innerHTML = `
+        <div class="max-w-2xl mx-auto flex flex-col gap-5 animate-fade-in">
+
+          <div class="neon-panel p-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-pink-500 animate-ping"></span>
+              <span class="font-headline font-bold text-sm text-pink-300">KELİME ETABI</span>
+              ${mult > 1 ? `<span class="px-2 py-0.5 rounded bg-yellow-400 text-black font-extrabold font-mono-label text-xs">x${mult} PUAN</span>` : ''}
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="clock" class="w-4 h-4 text-pink-400"></i>
+              <span id="stage-timer-display" class="timer-ring ${appState.timerRemaining <= 10 ? 'is-urgent' : ''}">${formatTime(appState.timerRemaining)}</span>
+            </div>
+          </div>
+
+          <div class="neon-panel p-4 sm:p-6 flex flex-col gap-3 text-center">
+            <span class="font-mono-label text-xs text-gray-400 uppercase tracking-wider">VERİLEN HARFLER</span>
+            <div class="flex items-center justify-center gap-1.5 sm:gap-2.5 flex-wrap">${rackHtml}</div>
+          </div>
+
+          <div class="neon-panel-cyan p-4 sm:p-6 flex flex-col items-center gap-4 text-center">
+            <div class="flex items-center justify-between w-full">
+              <span class="font-mono-label text-xs text-cyan-300 uppercase tracking-wider">OLUŞTURULAN KELİME:</span>
+              <span class="font-mono-label text-xs ${isValid ? 'text-emerald-400 font-bold' : 'text-gray-400'}">
+                ${wordLen > 0 ? `${wordLen} HARF ${isValid ? '✓ GEÇERLİ' : '(Sözlükte Yok)'}` : ''}
+              </span>
+            </div>
+
+            <div class="min-h-[4.5rem] flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap w-full py-1">
+              ${slotsHtml}
+            </div>
+
+            <div class="flex items-center justify-center gap-2 w-full flex-wrap pt-2 border-t border-cyan-900/40">
+              <button onclick="removeLastLetter()" ${wordLen === 0 ? 'disabled' : ''} class="btn-cyan px-4 py-2 text-xs flex items-center gap-1.5"><i data-lucide="delete" class="w-4 h-4"></i> SİL</button>
+              <button onclick="clearTypedWord()" ${wordLen === 0 ? 'disabled' : ''} class="btn-cyan px-4 py-2 text-xs flex items-center gap-1.5"><i data-lucide="trash-2" class="w-4 h-4"></i> TEMİZLE</button>
+              <button onclick="submitWordAnswer()" ${wordLen < 2 ? 'disabled' : ''} class="btn-neon px-6 py-2.5 text-xs font-bold flex items-center gap-2 ml-auto"><i data-lucide="check-circle" class="w-4 h-4"></i> ONAYLA</button>
+            </div>
+          </div>
+
+        </div>
+      `;
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function clickRackLetter(rackIndex) {
+      const letters = appState.stageData.letters;
+      const ch = letters[rackIndex];
+
+      if (ch === '?') {
+        openJokerModal(rackIndex);
+      } else {
+        appState.stageData.typedWord.push({ letter: trToUpperCase(ch), rackIndex: rackIndex, isJoker: false });
+        soundTileClick();
+        renderWordSolvingView();
+      }
+    }
+
+    let activeJokerRackIndex = null;
+    function openJokerModal(rackIdx) {
+      activeJokerRackIndex = rackIdx;
+      const modal = document.getElementById('modal-joker');
+      if (modal) modal.classList.remove('hidden');
+    }
+    function closeJokerModal() {
+      const modal = document.getElementById('modal-joker');
+      if (modal) modal.classList.add('hidden');
+      activeJokerRackIndex = null;
+    }
+    function selectJokerReplacement(chosenLetter) {
+      if (activeJokerRackIndex !== null) {
+        appState.stageData.typedWord.push({
+          letter: trToUpperCase(chosenLetter),
+          rackIndex: activeJokerRackIndex,
+          isJoker: true
+        });
+        soundTileClick();
+        closeJokerModal();
+        renderWordSolvingView();
+      }
+    }
+
+    function removeTypedLetter(typedIndex) {
+      appState.stageData.typedWord.splice(typedIndex, 1);
+      soundRemove();
+      renderWordSolvingView();
+    }
+    function removeLastLetter() {
+      if (appState.stageData.typedWord.length > 0) {
+        appState.stageData.typedWord.pop();
+        soundRemove();
+        renderWordSolvingView();
+      }
+    }
+    function clearTypedWord() {
+      appState.stageData.typedWord = [];
+      soundRemove();
+      renderWordSolvingView();
+    }
+
+    function submitWordAnswer() {
+      stopTimer();
+      stopDraftTimer();
+      const typed = appState.stageData.typedWord;
+      const wordStr = trToUpperCase(typed.map(t => t.letter).join(''));
+      const len = wordStr.length;
+      const isValid = (len >= 2 && isValidTurkishWord(wordStr));
+
+      let basePoints = 0;
+      if (isValid) {
+        basePoints = (len === 9) ? 15 : len;
+        soundSuccess();
+      } else {
+        soundFail();
+      }
+
+      const mult = getCurrentMultiplier();
+      const finalPoints = Math.round(basePoints * mult);
+
+      if (appState.mode === GAME_MODES.DAILY) {
+        const setIdx = getCurrentSetIndex();
+        appState.dailySetScores[setIdx] += finalPoints;
+      }
+
+      appState.totalScore += finalPoints;
+      document.getElementById('scoreboard-total').textContent = String(appState.totalScore);
+
+      const roundRecord = {
+        stageIndex: appState.currentStageIndex,
+        stageType: 'word',
+        letters: [...appState.stageData.letters],
+        userAnswer: wordStr || '(Cevap Yok)',
+        isValid: isValid,
+        basePoints: basePoints,
+        multiplier: mult,
+        pointsAwarded: finalPoints,
+        timeUsed: appState.roundDuration - appState.timerRemaining,
+        bestWords: appState.stageData.bestWords.slice(0, 5)
+      };
+      appState.history.push(roundRecord);
+
+      renderRoundSummaryModal(roundRecord);
+    }
+
+    /* ==========================================================================
+       6. İŞLEM ETABI AKIŞI
+       ========================================================================== */
+    function setupMathStage() {
+      const smallPool = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+      const largePool = [10, 25, 50, 75, 100];
+
+      const initialNumbers = [];
+      for (let i = 0; i < 5; i++) {
+        const idx = Math.floor(currentPRNG() * smallPool.length);
+        initialNumbers.push(smallPool[idx]);
+      }
+      initialNumbers.push(largePool[Math.floor(currentPRNG() * largePool.length)]);
+
+      const target = Math.floor(currentPRNG() * 900) + 100;
+      const solverResult = solveNumbers(target, initialNumbers);
+
+      appState.stageData = {
+        type: 'math',
+        target: target,
+        initialNumbers: [...initialNumbers],
+        pool: initialNumbers.map((val, idx) => ({ id: `init_${idx}`, val: val, isUsed: false })),
+        steps: [],
+        selectedA: null,
+        selectedOp: null,
+        bestSolver: solverResult
+      };
+
+      renderMathSolvingView();
+      startStageTimer();
+    }
+
+    function renderMathSolvingView() {
+      const container = document.getElementById('main-stage-container');
+      if (!container) return;
+
+      const data = appState.stageData;
+      const target = data.target;
+
+      let closestVal = null;
+      let closestDiff = 9999;
+      data.pool.forEach(item => {
+        const diff = Math.abs(target - item.val);
+        if (diff < closestDiff) {
+          closestDiff = diff;
+          closestVal = item.val;
+        }
+      });
+
+      const numbersHtml = data.pool.map(item => `
+        <button type="button" onclick="clickNumberTile('${item.id}')" ${item.isUsed ? 'disabled' : ''} class="number-tile ${item.isUsed ? 'is-used' : ''} ${(data.selectedA && data.selectedA.id === item.id) ? 'is-selected' : ''}">
+          ${item.val}
+        </button>
+      `).join('');
+
+      const ops = ['+', '-', '×', '÷'];
+      const opsHtml = ops.map(op => `
+        <button type="button" onclick="clickOpBtn('${op}')" ${!data.selectedA ? 'disabled' : ''} class="op-btn ${data.selectedOp === op ? 'is-active' : ''}">
+          ${op}
+        </button>
+      `).join('');
+
+      const stepsHtml = data.steps.length === 0
+        ? `<div class="text-xs text-gray-500 font-mono-label italic py-2">Henüz işlem yapılmadı.</div>`
+        : data.steps.map((st, i) => `
+            <div class="flex items-center justify-between text-xs sm:text-sm font-mono-label bg-surface-container-low px-3 py-1.5 rounded border border-gray-800">
+              <span class="text-gray-400">Adım ${i + 1}:</span>
+              <span class="text-white font-bold">${st.a} ${st.op} ${st.b} = <strong class="text-cyan-400">${st.res}</strong></span>
+            </div>
+          `).join('');
+
+      const mult = getCurrentMultiplier();
+
+      container.innerHTML = `
+        <div class="max-w-2xl mx-auto flex flex-col gap-4 animate-fade-in">
+          <div class="neon-panel p-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-cyan-400 animate-ping"></span>
+              <span class="font-headline font-bold text-sm text-cyan-300">İŞLEM ETABI</span>
+              ${mult > 1 ? `<span class="px-2 py-0.5 rounded bg-yellow-400 text-black font-extrabold font-mono-label text-xs">x${mult} PUAN</span>` : ''}
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="clock" class="w-4 h-4 text-cyan-400"></i>
+              <span id="stage-timer-display" class="timer-ring ${appState.timerRemaining <= 10 ? 'is-urgent' : ''}">${formatTime(appState.timerRemaining)}</span>
+            </div>
+          </div>
+
+          <div class="neon-panel-gold p-4 sm:p-6 text-center flex flex-col items-center gap-1">
+            <span class="font-mono-label text-xs text-yellow-300/80 uppercase tracking-widest">HEDEF SAYI</span>
+            <div class="target-led">${target}</div>
+            <div class="font-mono-label text-xs text-gray-400 mt-1">
+              En Yakın Değer: <strong class="text-white">${closestVal !== null ? closestVal : '-'}</strong> (Fark: <strong class="${closestDiff === 0 ? 'text-emerald-400' : 'text-yellow-400'}">${closestDiff === 0 ? '0 (TAM İSABET!)' : closestDiff}</strong>)
+            </div>
+          </div>
+
+          <div class="neon-panel-cyan p-4 sm:p-6 flex flex-col gap-4">
+            <div class="flex items-center justify-center gap-2 sm:gap-3 flex-wrap">${numbersHtml}</div>
+            <div class="pt-2 border-t border-cyan-900/40 flex items-center justify-center gap-3">${opsHtml}</div>
+          </div>
+
+          <div class="neon-panel p-4 flex flex-col gap-2">
+            <div class="flex items-center justify-between">
+              <span class="font-mono-label text-xs text-gray-400 uppercase tracking-wider">İŞLEMLER:</span>
+            </div>
+            <div class="flex flex-col gap-1.5 max-h-36 overflow-y-auto">${stepsHtml}</div>
+            <div class="flex items-center justify-end gap-2 pt-2 border-t border-gray-800 mt-2">
+              <button onclick="undoLastMathStep()" ${data.steps.length === 0 ? 'disabled' : ''} class="btn-cyan px-3 py-1.5 text-xs"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> GERİ AL</button>
+              <button onclick="resetMathSteps()" ${data.steps.length === 0 ? 'disabled' : ''} class="btn-cyan px-3 py-1.5 text-xs"><i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> SIFIRLA</button>
+              <button onclick="submitMathAnswer()" class="btn-neon px-5 py-2 text-xs font-bold flex items-center gap-1.5 ml-2"><i data-lucide="check-circle" class="w-4 h-4"></i> ONAYLA</button>
+            </div>
+          </div>
+        </div>
+      `;
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function clickNumberTile(id) {
+      const data = appState.stageData;
+      const targetItem = data.pool.find(it => it.id === id);
+      if (!targetItem || targetItem.isUsed) return;
+
+      if (!data.selectedA || (data.selectedA && !data.selectedOp)) {
+        data.selectedA = targetItem;
+        soundTileClick();
+      } else if (data.selectedA && data.selectedOp) {
+        const aVal = data.selectedA.val;
+        const bVal = targetItem.val;
+        const op = data.selectedOp;
+
+        let result = null;
+        if (op === '+') result = aVal + bVal;
+        else if (op === '-') {
+          if (aVal <= bVal) { alert('Sonuç pozitif olmalıdır!'); soundFail(); return; }
+          result = aVal - bVal;
+        } else if (op === '×') result = aVal * bVal;
+        else if (op === '÷') {
+          if (bVal === 0 || aVal % bVal !== 0) { alert('Tam bölünmelidir!'); soundFail(); return; }
+          result = aVal / bVal;
+        }
+
+        data.selectedA.isUsed = true;
+        targetItem.isUsed = true;
+        const newId = `res_${Date.now()}_${Math.random()}`;
+        data.pool.push({ id: newId, val: result, isUsed: false });
+
+        data.steps.push({ a: aVal, b: bVal, op: op, res: result, usedAId: data.selectedA.id, usedBId: targetItem.id, resultId: newId });
+        data.selectedA = null;
+        data.selectedOp = null;
+
+        soundSuccess();
+      }
+      renderMathSolvingView();
+    }
+
+    function clickOpBtn(op) {
+      if (!appState.stageData.selectedA) return;
+      appState.stageData.selectedOp = op;
+      soundTileClick();
+      renderMathSolvingView();
+    }
+
+    function undoLastMathStep() {
+      const data = appState.stageData;
+      if (data.steps.length === 0) return;
+      const lastStep = data.steps.pop();
+      data.pool = data.pool.filter(it => it.id !== lastStep.resultId);
+      const itemA = data.pool.find(it => it.id === lastStep.usedAId);
+      const itemB = data.pool.find(it => it.id === lastStep.usedBId);
+      if (itemA) itemA.isUsed = false;
+      if (itemB) itemB.isUsed = false;
+      data.selectedA = null;
+      data.selectedOp = null;
+      soundRemove();
+      renderMathSolvingView();
+    }
+
+    function resetMathSteps() {
+      const data = appState.stageData;
+      data.steps = [];
+      data.pool = data.initialNumbers.map((val, idx) => ({ id: `init_${idx}`, val: val, isUsed: false }));
+      data.selectedA = null;
+      data.selectedOp = null;
+      soundRemove();
+      renderMathSolvingView();
+    }
+
+    function submitMathAnswer() {
+      stopTimer();
+      stopDraftTimer();
+      const data = appState.stageData;
+      const target = data.target;
+
+      let closestVal = data.initialNumbers[0];
+      let closestDiff = Math.abs(target - closestVal);
+
+      data.pool.forEach(item => {
+        const diff = Math.abs(target - item.val);
+        if (diff < closestDiff) {
+          closestDiff = diff;
+          closestVal = item.val;
+        }
+      });
+
+      let basePoints = 0;
+      if (closestDiff === 0) basePoints = 10;
+      else if (closestDiff === 1) basePoints = 9;
+      else if (closestDiff === 2) basePoints = 8;
+      else if (closestDiff === 3) basePoints = 7;
+      else if (closestDiff === 4) basePoints = 6;
+      else if (closestDiff === 5) basePoints = 5;
+      else if (closestDiff <= 10) basePoints = 3;
+      else basePoints = 0;
+
+      const mult = getCurrentMultiplier();
+      const finalPoints = Math.round(basePoints * mult);
+
+      if (finalPoints >= 8) soundSuccess();
+      else soundFail();
+
+      if (appState.mode === GAME_MODES.DAILY) {
+        const setIdx = getCurrentSetIndex();
+        appState.dailySetScores[setIdx] += finalPoints;
+      }
+
+      appState.totalScore += finalPoints;
+      document.getElementById('scoreboard-total').textContent = String(appState.totalScore);
+
+      const roundRecord = {
+        stageIndex: appState.currentStageIndex,
+        stageType: 'math',
+        target: target,
+        initialNumbers: [...data.initialNumbers],
+        userValue: closestVal,
+        userSteps: [...data.steps],
+        diff: closestDiff,
+        basePoints: basePoints,
+        multiplier: mult,
+        pointsAwarded: finalPoints,
+        timeUsed: appState.roundDuration - appState.timerRemaining,
+        bestSolver: data.bestSolver
+      };
+      appState.history.push(roundRecord);
+      renderRoundSummaryModal(roundRecord);
+    }
+
+    /* ==========================================================================
+       7. ÖZET VE SONUÇ EKRANLARI
+       ========================================================================== */
+    function renderRoundSummaryModal(record) {
+      const modal = document.getElementById('modal-round-result');
+      const card = document.getElementById('round-result-card');
+      if (!modal || !card) return;
+
+      const isWord = (record.stageType === 'word');
+      const isPractice = (appState.mode === GAME_MODES.PRACTICE);
+      const maxStg = appState.maxStages || 8;
+      const isLastStage = (appState.currentStageIndex >= maxStg - 1);
+
+      let actionButtons = '';
+      if (isPractice) {
+        actionButtons = `
+          <div class="flex flex-col sm:flex-row items-center gap-2 w-full">
+            <button onclick="startPracticeMode('word')" class="btn-neon flex-1 py-3 text-xs font-bold flex items-center justify-center gap-1.5 w-full">
+              <i data-lucide="type" class="w-4 h-4"></i> KELİME ANTRENMANI (YENİ)
+            </button>
+            <button onclick="startPracticeMode('math')" class="btn-cyan flex-1 py-3 text-xs font-bold flex items-center justify-center gap-1.5 w-full">
+              <i data-lucide="binary" class="w-4 h-4"></i> İŞLEM ANTRENMANI (YENİ)
+            </button>
+            <button onclick="exitPracticeToMenu()" class="btn-gold px-4 py-3 text-xs font-bold flex items-center justify-center gap-1 w-full sm:w-auto">
+              <i data-lucide="home" class="w-4 h-4"></i> ANA MENÜ
+            </button>
+          </div>
+        `;
+      } else if (isLastStage) {
+        actionButtons = `<button onclick="finishTournament()" class="btn-gold w-full py-3.5 text-sm font-bold">KARNEYİ GÖR VE PAYLAŞ</button>`;
+      } else {
+        actionButtons = `<button onclick="proceedToNextStage()" class="btn-cyan w-full py-3.5 text-sm font-bold">SONRAKİ ETAP (${record.stageIndex + 2} / ${maxStg}) ➔</button>`;
+      }
+
+      let solverStepsHtml = '';
+      if (!isWord) {
+        if (record.bestSolver && record.bestSolver.steps && record.bestSolver.steps.length > 0) {
+          solverStepsHtml = `
+            <div class="flex flex-col gap-1.5 mt-1 font-mono-label text-xs">
+              ${record.bestSolver.steps.map((st, idx) => `
+                <div class="flex items-center gap-2 text-gray-200 bg-black/40 px-3 py-1.5 rounded border border-cyan-900/40">
+                  <span class="text-cyan-400 font-bold">${idx + 1}. Adım:</span>
+                  <span>${st}</span>
+                </div>
+              `).join('')}
+              <div class="flex items-center justify-between text-emerald-300 font-bold bg-emerald-950/40 px-3 py-1.5 rounded border border-emerald-500/30 mt-1">
+                <span>Ulaşılan Sonuç:</span>
+                <span class="text-sm font-extrabold">${record.bestSolver.val}</span>
+              </div>
+            </div>
+          `;
+        } else {
+          solverStepsHtml = `<span class="font-mono-label text-xs text-gray-400">Çözüm üretilemedi.</span>`;
+        }
+      }
+
+      card.innerHTML = `
+        <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+          <h3 class="font-headline font-extrabold text-xl text-white">
+            ${isPractice ? 'ANTRENMAN SONUCU' : `ETAP ${record.stageIndex + 1} / ${maxStg} SONUCU`}
+          </h3>
+          <span class="font-mono-label text-sm text-pink-400 font-bold">+${record.pointsAwarded} PUAN ${record.multiplier > 1 ? `(x${record.multiplier})` : ''}</span>
+        </div>
+
+        <div class="p-4 rounded bg-surface-container-high border border-gray-800 flex flex-col gap-2">
+          <span class="font-mono-label text-xs text-gray-400">CEVABINIZ:</span>
+          <div class="flex items-center justify-between">
+            <span class="font-headline font-extrabold text-2xl ${record.isValid || record.diff === 0 ? 'text-emerald-400' : 'text-pink-300'}">
+              ${isWord ? record.userAnswer : `${record.userValue} (Fark: ${record.diff})`}
+            </span>
+            ${isWord ? `<span class="text-xs font-mono-label px-2 py-1 rounded ${record.isValid ? 'bg-emerald-950 text-emerald-300' : 'bg-red-950 text-red-300'}">${record.isValid ? `${record.userAnswer.length} Harfli (Geçerli)` : 'Geçersiz'}</span>` : ''}
+          </div>
+        </div>
+
+        <div class="p-4 rounded bg-surface-container-low border border-gray-800 flex flex-col gap-2">
+          <span class="font-mono-label text-xs text-cyan-300">BİLGİSAYAR ÇÖZÜMÜ:</span>
+          ${isWord 
+            ? `<div class="flex items-center gap-2 flex-wrap">${record.bestWords.map(w => `<span class="px-2 py-1 rounded bg-cyan-950 border border-cyan-500/40 text-cyan-200 font-bold text-xs">${w}</span>`).join('')}</div>`
+            : solverStepsHtml
+          }
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-gray-800">
+          ${actionButtons}
+        </div>
+      `;
+
+      modal.classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function exitPracticeToMenu() {
+      document.getElementById('modal-round-result').classList.add('hidden');
+      renderMainMenu();
+    }
+
+    function proceedToNextStage() {
+      document.getElementById('modal-round-result').classList.add('hidden');
+      appState.currentStageIndex++;
+      if (appState.currentStageIndex < appState.maxStages) loadCurrentStage();
+      else finishTournament();
+    }
+
+    function generateShareableSeed(mode) {
+      const activeMode = (mode === GAME_MODES.CUSTOM_SEED) ? appState.customSubType : (mode || appState.mode);
+
+      const w1 = CATCHY_WORDS[Math.floor(Math.random() * CATCHY_WORDS.length)];
+      const w2 = CATCHY_WORDS[Math.floor(Math.random() * CATCHY_WORDS.length)];
+      const num1 = Math.floor(Math.random() * 900) + 100;
+      const num2 = Math.floor(Math.random() * 900) + 100;
+
+      if (activeMode === GAME_MODES.WORD_ONLY) {
+        return `${w1}-${num1}`;
+      } else if (activeMode === GAME_MODES.MATH_ONLY) {
+        return `${num1}-${w1}-${num2}`;
+      } else {
+        return `${w1}-${w2}`;
+      }
+    }
+
+    function copyMatchCodeToClipboard(textToCopy, isDailyMsg = false) {
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        if (isDailyMsg) {
+          alert(`Skor Mesajınız Kopyalandı:\n"${textToCopy}"\n\nArkadaşlarınıza gönderip meydan okuyabilirsiniz!`);
+        } else {
+          alert(`Oda Kodu Kopyalandı: ${textToCopy}\n\nArkadaşınız bu kodu girerek tam olarak aynı sorularınızla yarışabilir!`);
+        }
+      }).catch(() => {
+        alert(textToCopy);
+      });
+    }
+
+    function finishTournament() {
+      stopTimer();
+      stopDraftTimer();
+      
+      appState.currentStageIndex = appState.maxStages;
+      renderStageTrackerHeader();
+
+      document.getElementById('modal-round-result').classList.add('hidden');
+      const container = document.getElementById('main-stage-container');
+      if (!container) return;
+
+      const total = appState.totalScore;
+      const shareCode = appState.seed || generateShareableSeed(appState.mode);
+
+      if (appState.mode === GAME_MODES.DAILY) {
+        localStorage.setItem(`daily_score_${getTodaySeedString()}`, total);
+      }
+
+      let dailyBreakdownHtml = '';
+      if (appState.mode === GAME_MODES.DAILY) {
+        dailyBreakdownHtml = `
+          <div class="grid grid-cols-3 gap-2 my-2 text-left">
+            <div class="p-3 rounded bg-surface-container-low border border-gray-800 text-center">
+              <span class="font-mono-label text-[10px] text-gray-400 block">1. SET (x1.0)</span>
+              <span class="font-headline font-bold text-lg text-white">${appState.dailySetScores[0]} P</span>
+            </div>
+            <div class="p-3 rounded bg-surface-container-low border border-yellow-500/40 text-center">
+              <span class="font-mono-label text-[10px] text-yellow-400 block">2. SET (x1.5)</span>
+              <span class="font-headline font-bold text-lg text-yellow-300">${appState.dailySetScores[1]} P</span>
+            </div>
+            <div class="p-3 rounded bg-surface-container-low border border-pink-500/40 text-center">
+              <span class="font-mono-label text-[10px] text-pink-400 block">3. SET (x2.0)</span>
+              <span class="font-headline font-bold text-lg text-pink-400">${appState.dailySetScores[2]} P</span>
+            </div>
+          </div>
+        `;
+      }
+
+      // --------------------------------------------------------------------------
+      // DETAYLI YARIŞMA KARNESİ (YENİ ÖZELLİK)
+      // --------------------------------------------------------------------------
+      const historyRecapHtml = appState.history.map((rec, i) => {
+        const isWord = (rec.stageType === 'word');
+        
+        let detailsText = '';
+        if (isWord) {
+          const rackStr = rec.letters.join(' ');
+          detailsText = `
+            <div class="flex flex-col gap-0.5">
+              <div class="text-[11px] text-gray-400">Harfler: <span class="font-bold text-cyan-300">${rackStr}</span></div>
+              <div class="text-[11px] text-gray-200">Cevabınız: <span class="font-bold ${rec.isValid ? 'text-emerald-400' : 'text-red-400'}">${rec.userAnswer}</span> ${rec.isValid ? `(${rec.userAnswer.length} Harf)` : '(Geçersiz)'}</div>
+            </div>
+          `;
+        } else {
+          const numsStr = rec.initialNumbers.join(', ');
+          const diffStr = (rec.diff === 0) ? 'Tam İsabet!' : `${rec.diff} Farklı`;
+          detailsText = `
+            <div class="flex flex-col gap-0.5">
+              <div class="text-[11px] text-gray-400">Sayılar: <span class="font-bold text-cyan-300">${numsStr}</span> | Hedef: <span class="font-bold text-yellow-300">${rec.target}</span></div>
+              <div class="text-[11px] text-gray-200">Ulaşılan: <span class="font-bold text-emerald-400">${rec.userValue}</span> (${diffStr})</div>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="p-3 rounded bg-surface-container-low border border-gray-800 flex items-center justify-between text-left gap-2">
+            <div class="flex flex-col gap-1 flex-1">
+              <div class="flex items-center gap-2">
+                <span class="px-1.5 py-0.5 rounded text-[10px] font-mono-label font-bold uppercase ${isWord ? 'bg-pink-950 text-pink-300 border border-pink-500/30' : 'bg-cyan-950 text-cyan-300 border border-cyan-500/30'}">
+                  Etap ${i + 1}: ${isWord ? 'Kelime' : 'İşlem'}
+                </span>
+                ${rec.multiplier > 1 ? `<span class="text-[9px] text-yellow-400 font-bold font-mono-label">x${rec.multiplier} Çarpan</span>` : ''}
+              </div>
+              ${detailsText}
+            </div>
+            <div class="text-right shrink-0">
+              <span class="font-headline font-bold text-base text-pink-400">+${rec.pointsAwarded}</span>
+              <span class="font-mono-label text-[10px] text-gray-400 block">PUAN</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      let shareCardHtml = '';
+      if (appState.mode === GAME_MODES.DAILY) {
+        const dailyShareText = `🏆 Bir Kelime Bir İşlem (${getTodayFormattedDate()}) Günün Yarışması'nı ${total} Puan ile tamamladım! Sen kaç puan alacaksın?`;
+        shareCardHtml = `
+          <div class="neon-panel-gold p-4 rounded flex flex-col items-center gap-3">
+            <div class="flex items-center gap-2 text-xs font-mono-label text-yellow-300">
+              <i data-lucide="share-2" class="w-4 h-4"></i> SKORUNU ARKADAŞLARINLA PAYLAŞ!
+            </div>
+            <p class="text-xs text-gray-300">Bugünkü Günün Yarışması skorunu kopyalayıp arkadaşlarına meydan oku!</p>
+            <button onclick="copyMatchCodeToClipboard('${dailyShareText}', true)" class="btn-gold px-5 py-2.5 text-xs flex items-center gap-2 font-bold">
+              <i data-lucide="copy" class="w-4 h-4"></i> SKOR MESAJINI KOPYALA
+            </button>
+          </div>
+        `;
+      } else {
+        shareCardHtml = `
+          <div class="neon-panel-cyan p-4 rounded flex flex-col items-center gap-3">
+            <div class="flex items-center gap-2 text-xs font-mono-label text-cyan-300">
+              <i data-lucide="share-2" class="w-4 h-4"></i> ARKADAŞINA MEYDAN OKU!
+            </div>
+            <p class="text-xs text-gray-300">Aşağıdaki kodu kopyalayıp arkadaşına gönder. Eşit şartlarda yarışın!</p>
+            <div class="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded border border-cyan-500/50">
+              <span class="font-mono-label text-sm text-white font-bold tracking-widest">${shareCode}</span>
+              <button onclick="copyMatchCodeToClipboard('${shareCode}', false)" class="btn-cyan px-3 py-1 text-xs flex items-center gap-1 ml-2">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i> KOPYALA
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      container.innerHTML = `
+        <div class="max-w-2xl mx-auto neon-panel p-6 sm:p-8 text-center flex flex-col gap-6 animate-fade-in max-h-[85vh] overflow-y-auto">
+          <h2 class="font-headline font-extrabold text-3xl text-white">TEBRİKLER! YARIŞMA BİTTİ</h2>
+          
+          <div class="neon-panel-gold p-6 rounded flex flex-col gap-1 items-center justify-center">
+            <span class="font-mono-label text-xs text-yellow-300 block uppercase">TOPLAM SKOR</span>
+            <span class="font-headline font-extrabold text-5xl text-yellow-300">${total}</span>
+            <span class="font-mono-label text-xs text-gray-400 block">PUAN</span>
+          </div>
+
+          ${dailyBreakdownHtml}
+          ${shareCardHtml}
+
+          <!-- DETAYLI ETAP ÖZET KARNESİ -->
+          <div class="neon-panel p-4 flex flex-col gap-3 text-left">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-2">
+              <h4 class="font-headline font-bold text-sm text-cyan-300 flex items-center gap-2">
+                <i data-lucide="list-checks" class="w-4 h-4 text-cyan-400"></i> DETAYLI YARIŞMA KARNESİ
+              </h4>
+              <span class="font-mono-label text-xs text-gray-400">${appState.history.length} ETAP</span>
+            </div>
+            <div class="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1">
+              ${historyRecapHtml}
+            </div>
+          </div>
+
+          <button onclick="renderMainMenu()" class="btn-gold py-3.5 text-sm font-bold">ANA MENÜYE DÖN</button>
+        </div>
+      `;
+      if (window.lucide) lucide.createIcons();
+    }
+
+    /* ==========================================================================
+       8. TIMER, DEMO TURU VE KILAVUZ MODAL FONKSİYONLARI
+       ========================================================================== */
+    function openGuideImageModal() {
+      const modal = document.getElementById('modal-guide-image');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeGuideImageModal() {
+      const modal = document.getElementById('modal-guide-image');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    function startStageTimer() {
+      stopTimer();
+      appState.timerRemaining = appState.roundDuration;
+      appState.isTimerRunning = true;
+      appState.isPaused = false;
+      updateTimerDisplay();
+
+      timerInterval = setInterval(() => {
+        if (appState.isPaused) return;
+        appState.timerRemaining--;
+        updateTimerDisplay();
+        if (appState.timerRemaining <= 10 && appState.timerRemaining > 0) soundTick();
+        if (appState.timerRemaining <= 0) { stopTimer(); handleTimerExpired(); }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+      appState.isTimerRunning = false;
+    }
+
+    function updateTimerDisplay() {
+      const disp = document.getElementById('stage-timer-display');
+      if (disp) disp.textContent = formatTime(appState.timerRemaining);
+    }
+
+    function handleTimerExpired() {
+      soundGong();
+      const current = appState.stageData;
+      if (!current) return;
+      if (current.type === 'word') submitWordAnswer();
+      else if (current.type === 'math') submitMathAnswer();
+    }
+
+    function togglePauseGame() {
+      if (!appState.isGameActive) return;
+      if (!appState.isTimerRunning && !appState.isPaused && (!appState.stageData || !appState.stageData.isDrafting)) return;
+      appState.isPaused = !appState.isPaused;
+      const modal = document.getElementById('modal-pause');
+      if (modal) modal.classList.toggle('hidden', !appState.isPaused);
+    }
+
+    function promptAbandonGame() {
+      if (!appState.isGameActive) return;
+      document.getElementById('modal-abandon').classList.remove('hidden');
+    }
+    function closeAbandonModal() { document.getElementById('modal-abandon').classList.add('hidden'); }
+    function confirmAbandonGame() {
+      closeAbandonModal();
+      document.getElementById('modal-pause').classList.add('hidden');
+      appState.totalScore = 0;
+      appState.currentStageIndex = 0;
+      appState.history = [];
+      document.getElementById('scoreboard-total').textContent = '0';
+      renderMainMenu();
+    }
+
+    function openSettingsModal() { 
+      document.getElementById('modal-settings').classList.remove('hidden'); 
+      renderTimerModeInUI(); 
+    }
+
+    function closeSettingsModal() { 
+      document.getElementById('modal-settings').classList.add('hidden'); 
+    }
+
+    function setTimerDuration(sec) { 
+      appState.userDefaultDuration = sec;
+      appState.roundDuration = sec; 
+      renderTimerModeInUI(); 
+    }
+
+    function renderTimerModeInUI() {
+      const footerSpan = document.getElementById('footer-timer-mode');
+      if (footerSpan) footerSpan.textContent = `${appState.roundDuration} SN`;
+
+      [45, 60, 90].forEach(sec => {
+        const btn = document.getElementById(`btn-timer-${sec}`);
+        if (btn) {
+          if (sec === appState.userDefaultDuration) {
+            btn.className = 'py-2.5 rounded font-mono-label text-xs border border-pink-500 bg-pink-950/40 text-pink-300 font-bold';
+          } else {
+            btn.className = 'py-2.5 rounded font-mono-label text-xs border border-gray-700 text-gray-300';
+          }
+        }
+      });
+    }
+
+    function openRulesModal() { 
+      document.getElementById('modal-rules').classList.remove('hidden'); 
+      if (window.lucide) lucide.createIcons();
+    }
+    function closeRulesModal() { document.getElementById('modal-rules').classList.add('hidden'); }
+
+    /* Driver.js İnteraktif Tanıtım Turu */
+    function startInteractiveDemo() {
+      if (typeof driver === 'undefined' || !driver.js) {
+        alert("Tanıtım kütüphanesi yükleniyor, lütfen birkaç saniye sonra tekrar deneyin.");
+        return;
+      }
+
+      const driverObj = driver.js.driver({
+        showProgress: true,
+        animate: true,
+        allowClose: true,
+        doneBtnText: 'Tamamlandı',
+        nextBtnText: 'İleri ➔',
+        prevBtnText: '❮ Geri',
+        progressText: 'Adım {{current}} / {{total}}',
+        steps: [
+          {
+            element: '#btn-header-score',
+            popover: {
+              title: '1. Canlı Skor ve Son Oyun Skor Tablosu',
+              description: 'Ana sayfada "SON SKOR", yarışma modlarındayken ise etaplarda topladığınız canlı "SKOR" burada gösterilir.',
+              side: 'bottom',
+              align: 'start'
+            }
+          },
+          {
+            element: '#btn-pause',
+            popover: {
+              title: '2. Duraklat (Pause)',
+              description: 'Yarışma modundayken süreyi duraklatmanızı sağlar. Ana sayfadayken pasif durumdadır.',
+              side: 'bottom',
+              align: 'center'
+            }
+          },
+          {
+            element: '#btn-quit',
+            popover: {
+              title: '3. Terk Et Butonu',
+              description: 'Devam eden bir yarışmayı sonlandırıp ana menüye dönmek için kullanılır. Sadece yarışma esnasında aktifleşir.',
+              side: 'bottom',
+              align: 'center'
+            }
+          },
+          {
+            element: '#btn-settings',
+            popover: {
+              title: '4. Süre ve Stüdyo Ayarları',
+              description: 'Ayarlar simgesinden yarışma sürelerinizi (45, 60 veya 90 saniye) ve ses efektlerini özelleştirebilirsiniz.',
+              side: 'bottom',
+              align: 'end'
+            }
+          },
+          {
+            element: '.neon-panel-gold',
+            popover: {
+              title: '5. Günün Yarışması (Özel Mod)',
+              description: 'Her gün yenilenen 3 set (18 etap) süren bu turnuvada katlamalı puan çarpanları (x1.0, x1.5, x2.0) ile günün şampiyonu olmak için yarışırsınız!',
+              side: 'bottom',
+              align: 'center'
+            }
+          },
+          {
+            element: '#branch-modes-grid',
+            popover: {
+              title: '6. Kelime ve İşlem Oyunları',
+              description: 'Sadece kelime türetmeye (6 Etap) veya sadece sayılarla hedef sayıya ulaşmaya (6 Etap) odaklanan özel branş yarışmalarıdır.',
+              side: 'top',
+              align: 'center'
+            }
+          },
+          {
+            element: '#custom-seed-input',
+            popover: {
+              title: '7. Oda Kodu ve Özel Rekabet',
+              description: 'Arkadaşınızdan gelen kodu buraya yapıştırıp aynı sorularla yarışabilir veya kendi özel kodunuzu üretebilirsiniz.',
+              side: 'top',
+              align: 'start'
+            }
+          }
+        ]
+      });
+
+      driverObj.drive();
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+      const stage = appState.stageData;
+      if (!stage || appState.isPaused) return;
+
+      if (stage.type === 'word' && !stage.isDrafting) {
+        if (e.key === 'Backspace') {
+          e.preventDefault();
+          removeLastLetter();
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          if (stage.typedWord.length >= 2) submitWordAnswer();
+        } else {
+          const charPressed = trToUpperCase(e.key);
+          if (charPressed.length === 1 && TURKISH_ALPHABET.includes(charPressed)) {
+            const usedIndices = new Set(stage.typedWord.map(t => t.rackIndex));
+            let foundIndex = -1;
+            for (let i = 0; i < stage.letters.length; i++) {
+              if (!usedIndices.has(i) && trToUpperCase(stage.letters[i]) === charPressed) {
+                foundIndex = i;
+                break;
+              }
+            }
+            if (foundIndex !== -1) {
+              clickRackLetter(foundIndex);
+            } else {
+              const jokerIdx = stage.letters.findIndex((ch, idx) => ch === '?' && !usedIndices.has(idx));
+              if (jokerIdx !== -1) {
+                stage.typedWord.push({ letter: charPressed, rackIndex: jokerIdx, isJoker: true });
+                soundTileClick();
+                renderWordSolvingView();
+              }
+            }
+          }
+        }
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initGame();
+    });
+  </script>
+</body>
+</html>
