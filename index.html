@@ -916,7 +916,7 @@
     }
 
     /* ==========================================================================
-       4. OYUN DURUMU VE LOCALSTORAGE (KALDIDIĞI YERDEN DEVAM ETME)
+       4. OYUN DURUMU VE LOCALSTORAGE (KALDIĞI YERDEN DEVAM ETME)
        ========================================================================== */
     const GAME_MODES = { 
       TOURNAMENT: 'TOURNAMENT', 
@@ -1159,24 +1159,24 @@
             <h2 class="font-headline font-extrabold text-2xl sm:text-3xl text-white tracking-tight">OYNAMAK İSTEDİĞİNİZ MODU SEÇİN</h2>
           </div>
 
-          <!-- YARIM KALAN OYUNU SÜRDÜR KARTI -->
-          <!-- YARIM KALAN OYUNU SÜRDÜR KARTI (DÜZELTİLMİŞ) -->
-${savedGame ? `
-  <div class="neon-panel-cyan p-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-2 border-cyan-400 shadow-[0_0_20px_rgba(0,255,204,0.2)]">
-    <div class="flex items-center gap-3 text-left">
-      <div class="w-10 h-10 rounded-full bg-cyan-950 border border-cyan-400 flex items-center justify-center text-cyan-300 shrink-0">
-        <i data-lucide="play-circle" class="w-6 h-6"></i>
-      </div>
-      <div class="min-w-0">
-        <h4 class="font-headline font-bold text-sm text-white leading-tight">YARIM KALAN YARIŞMANIZ VAR!</h4>
-        <p class="text-xs text-cyan-200 mt-0.5">Etap ${savedGame.currentStageIndex + 1} / ${savedGame.maxStages} • Skor: ${savedGame.totalScore} Puan</p>
-      </div>
-    </div>
-    <button onclick="resumeSavedGame()" class="btn-cyan px-4 py-2.5 text-xs font-bold shrink-0 flex items-center justify-center gap-1.5 w-full sm:w-auto">
-      <i data-lucide="rotate-cw" class="w-4 h-4"></i> KALDIĞIN YERDEN DEVAM ET
-    </button>
-  </div>
-` : ''}
+          <!-- YARIM KALAN OYUNU SÜRDÜR KARTI (DÜZELTİLMİŞ RESPONSIVE EKRAN) -->
+          ${savedGame ? `
+            <div class="neon-panel-cyan p-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-2 border-cyan-400 shadow-[0_0_20px_rgba(0,255,204,0.2)]">
+              <div class="flex items-center gap-3 text-left">
+                <div class="w-10 h-10 rounded-full bg-cyan-950 border border-cyan-400 flex items-center justify-center text-cyan-300 shrink-0">
+                  <i data-lucide="play-circle" class="w-6 h-6"></i>
+                </div>
+                <div class="min-w-0">
+                  <h4 class="font-headline font-bold text-sm text-white leading-tight">YARIM KALAN YARIŞMANIZ VAR!</h4>
+                  <p class="text-xs text-cyan-200 mt-0.5">Etap ${savedGame.currentStageIndex + 1} / ${savedGame.maxStages} • Skor: ${savedGame.totalScore} Puan</p>
+                </div>
+              </div>
+              <button onclick="resumeSavedGame()" class="btn-cyan px-4 py-2.5 text-xs font-bold shrink-0 flex items-center justify-center gap-1.5 w-full sm:w-auto">
+                <i data-lucide="rotate-cw" class="w-4 h-4"></i> KALDIĞIN YERDEN DEVAM ET
+              </button>
+            </div>
+          ` : ''}
+
           <!-- GÜNÜN YARIŞMASI ÖZEL KARTI (12 ETAP OLARAK GÜNCELLENDİ) -->
           <div class="neon-panel-gold p-5 text-left flex flex-col sm:flex-row items-center justify-between gap-4 border-2 border-yellow-500/60 shadow-[0_0_20px_rgba(255,224,74,0.15)] relative overflow-hidden">
             <div class="flex flex-col gap-1 z-10">
@@ -1356,7 +1356,7 @@ ${savedGame ? `
 
       if (mode === GAME_MODES.DAILY) {
         appState.maxStages = 12; // 3 Set x 4 Etap (12 Etap)
-        appState.seed = getTodaySeedString();
+        appState.seed = appState.seed || getTodaySeedString();
         appState.roundDuration = 90;
       } else if (mode === GAME_MODES.WORD_ONLY || mode === GAME_MODES.MATH_ONLY) {
         appState.maxStages = 6;
@@ -1419,8 +1419,9 @@ ${savedGame ? `
         const isWordOnly = (parts.length === 2 && /^\d+$/.test(parts[1]));
         const isTournament = (parts.length === 2 && !/^\d+$/.test(parts[1]));
         const isCustomRoom = (parts.length === 3 && !/^\d+$/.test(parts[0]) && /^\d+$/.test(parts[1]));
+        const isDailyCode = rawVal.startsWith("GUNUN-YARISMASI-");
 
-        const isPredefinedValidCode = (isMathOnly || isWordOnly || isTournament || isCustomRoom);
+        const isPredefinedValidCode = (isMathOnly || isWordOnly || isTournament || isCustomRoom || isDailyCode);
 
         if (isPredefinedValidCode) {
           startCustomSeedMode();
@@ -1469,6 +1470,12 @@ ${savedGame ? `
       clearSavedGameState();
       const input = document.getElementById('custom-seed-input');
       let rawVal = (input && input.value.trim()) ? trToUpperCase(input.value) : generateShareableSeed(GAME_MODES.TOURNAMENT);
+
+      if (rawVal.startsWith("GUNUN-YARISMASI-")) {
+        appState.seed = rawVal;
+        startMode(GAME_MODES.DAILY);
+        return;
+      }
 
       let detectedMode = GAME_MODES.TOURNAMENT;
       const parts = rawVal.split('-');
@@ -2165,7 +2172,7 @@ ${savedGame ? `
       });
 
       let basePoints = 0;
-      if (closestDiff === 0) basePoints = 12;
+      if (closestDiff === 0) basePoints = 12; // 10 + 2 Tam İsabet Bonusu!
       else if (closestDiff === 1) basePoints = 9;
       else if (closestDiff === 2) basePoints = 8;
       else if (closestDiff === 3) basePoints = 7;
@@ -2348,7 +2355,9 @@ ${savedGame ? `
       let text = `🏆 MAVİBLUE BİR KELİME BİR İŞLEM\n`;
       text += `📊 Detaylı Yarışma Karnesi\n`;
       text += `⏱️ Süre Ayarı: ${durationStr}\n`;
-      text += `🔑 Oda Kodu: ${shareCode}\n`;
+      if (appState.mode !== GAME_MODES.DAILY) {
+        text += `🔑 Oda Kodu: ${shareCode}\n`;
+      }
       text += `🌟 Toplam Skor: ${appState.totalScore} Puan\n\n`;
 
       appState.history.forEach((rec, i) => {
@@ -2360,10 +2369,12 @@ ${savedGame ? `
         }
       });
 
-      text += `\n⚡ Oda Koduyla Aynı Sorularda Yarışmak İçin Kodu Gir: ${shareCode}`;
+      if (appState.mode !== GAME_MODES.DAILY) {
+        text += `\n⚡ Oda Koduyla Aynı Sorularda Yarışmak İçin Kodu Gir: ${shareCode}`;
+      }
 
       navigator.clipboard.writeText(text).then(() => {
-        alert("Karne Kopyalandı! 📋\n\nMetin panoya kopyalandı. Oda kodunuz da metnin en altına eklendi. WhatsApp veya mesaj uygulamanıza gidip 'Yapıştır' diyerek arkadaşlarınızla paylaşabilirsiniz.");
+        alert("Karne Kopyalandı! 📋\n\nMetin panoya kopyalandı. WhatsApp veya mesaj uygulamanıza gidip 'Yapıştır' diyerek arkadaşlarınızla paylaşabilirsiniz.");
       }).catch(() => {
         alert(text);
       });
@@ -2604,7 +2615,7 @@ ${savedGame ? `
     }
 
     function closeSettingsModal() { 
-      document.getElementById('modal-settings').classList.add('hidden'); 
+      document.getElementById('modal-settings').classList.remove('hidden'); 
     }
 
     function setTimerDuration(sec) { 
