@@ -1160,23 +1160,23 @@
           </div>
 
           <!-- YARIM KALAN OYUNU SÜRDÜR KARTI -->
-          ${savedGame ? `
-            <div class="neon-panel-cyan p-4 flex items-center justify-between gap-3 border-2 border-cyan-400 shadow-[0_0_20px_rgba(0,255,204,0.2)] animate-pulse">
-              <div class="flex items-center gap-3 text-left">
-                <div class="w-10 h-10 rounded-full bg-cyan-950 border border-cyan-400 flex items-center justify-center text-cyan-300">
-                  <i data-lucide="play-circle" class="w-6 h-6"></i>
-                </div>
-                <div>
-                  <h4 class="font-headline font-bold text-sm text-white">YARIM KALAN YARIŞMANIZ VAR!</h4>
-                  <p class="text-xs text-cyan-200">Etap ${savedGame.currentStageIndex + 1} / ${savedGame.maxStages} • Skor: ${savedGame.totalScore} Puan</p>
-                </div>
-              </div>
-              <button onclick="resumeSavedGame()" class="btn-cyan px-5 py-2.5 text-xs font-bold shrink-0 flex items-center gap-1.5">
-                <i data-lucide="rotate-cw" class="w-4 h-4"></i> KALDIĞIN YERDEN DEVAM ET
-              </button>
-            </div>
-          ` : ''}
-
+          <!-- YARIM KALAN OYUNU SÜRDÜR KARTI (DÜZELTİLMİŞ) -->
+${savedGame ? `
+  <div class="neon-panel-cyan p-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-2 border-cyan-400 shadow-[0_0_20px_rgba(0,255,204,0.2)]">
+    <div class="flex items-center gap-3 text-left">
+      <div class="w-10 h-10 rounded-full bg-cyan-950 border border-cyan-400 flex items-center justify-center text-cyan-300 shrink-0">
+        <i data-lucide="play-circle" class="w-6 h-6"></i>
+      </div>
+      <div class="min-w-0">
+        <h4 class="font-headline font-bold text-sm text-white leading-tight">YARIM KALAN YARIŞMANIZ VAR!</h4>
+        <p class="text-xs text-cyan-200 mt-0.5">Etap ${savedGame.currentStageIndex + 1} / ${savedGame.maxStages} • Skor: ${savedGame.totalScore} Puan</p>
+      </div>
+    </div>
+    <button onclick="resumeSavedGame()" class="btn-cyan px-4 py-2.5 text-xs font-bold shrink-0 flex items-center justify-center gap-1.5 w-full sm:w-auto">
+      <i data-lucide="rotate-cw" class="w-4 h-4"></i> KALDIĞIN YERDEN DEVAM ET
+    </button>
+  </div>
+` : ''}
           <!-- GÜNÜN YARIŞMASI ÖZEL KARTI (12 ETAP OLARAK GÜNCELLENDİ) -->
           <div class="neon-panel-gold p-5 text-left flex flex-col sm:flex-row items-center justify-between gap-4 border-2 border-yellow-500/60 shadow-[0_0_20px_rgba(255,224,74,0.15)] relative overflow-hidden">
             <div class="flex flex-col gap-1 z-10">
