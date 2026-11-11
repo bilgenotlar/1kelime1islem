@@ -1506,6 +1506,9 @@
       stopTimer();
       stopDraftTimer();
 
+      // Yeni etaba geçildiğinde süreyi modun varsayılan süresine sıfırla
+      appState.timerRemaining = appState.roundDuration;
+
       const stageIndex = appState.currentStageIndex;
       const effectiveMode = (appState.mode === GAME_MODES.CUSTOM_SEED) ? appState.customSubType : appState.mode;
 
