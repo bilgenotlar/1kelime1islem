@@ -18,7 +18,7 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
 
-  <!-- Driver.js CSS ve JS (İnteraktif Otomatik Demo İçin) -->
+  <!-- Driver.js CSS ve JS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css"/>
   <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
 
@@ -82,7 +82,6 @@
     .font-headline { font-family: var(--font-headline); }
     .font-mono-label { font-family: var(--font-label); }
 
-    /* MAVİBLUE LOGO ÖZEL CSS */
     .maviblue-logo {
       font-family: var(--font-headline);
       font-weight: 900;
@@ -313,7 +312,6 @@
     .stage-pill.is-done { border-color: var(--secondary); color: var(--secondary); }
     .modal-overlay { background: rgba(8, 8, 14, 0.85); backdrop-filter: blur(6px); }
 
-    /* DRIVER.JS STÜDYO NEON UYUMU */
     .driver-popover {
       background-color: #141422 !important;
       color: #e8e0f0 !important;
@@ -362,7 +360,6 @@
     <header class="neon-panel p-3 sm:p-4 flex flex-col gap-3">
       <div class="flex items-center justify-between gap-2 flex-wrap">
         
-        <!-- Sol Taraf: Logo ve Üstünde Küçük Canlı Yayın Rozeti -->
         <div class="flex flex-col gap-1">
           <div class="flex items-center gap-1.5 px-1.5 py-0.5 rounded bg-red-950/70 border border-red-500/50 text-red-400 font-mono-label text-[10px] uppercase tracking-widest animate-pulse w-max">
             <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
@@ -380,10 +377,8 @@
           </div>
         </div>
 
-        <!-- Sağ Taraf: Sıralama (Skor > Pause > Terk Et > Ses > Ayarlar > Kılavuz) -->
         <div class="flex items-center gap-2 sm:gap-3">
           
-          <!-- 1. SKOR / SON SKOR -->
           <div id="btn-header-score" class="px-3 py-1.5 rounded bg-surface-container-low border border-pink-500/40 flex items-center gap-2 shadow-inner">
             <i data-lucide="trophy" class="w-4 h-4 text-pink-400"></i>
             <span id="scoreboard-label" class="font-mono-label text-xs text-gray-400 hide-mobile">SON SKOR:</span>
@@ -392,28 +387,23 @@
           </div>
 
           <div class="flex items-center gap-1.5">
-            <!-- 2. PAUSE (DURAKLAT) -->
             <button id="btn-pause" onclick="togglePauseGame()" title="Yarışmayı Duraklat" disabled class="btn-neon p-2 flex items-center justify-center text-xs opacity-40 cursor-not-allowed">
               <i data-lucide="pause" class="w-4 h-4"></i>
             </button>
 
-            <!-- 3. TERK ET -->
             <button id="btn-quit" onclick="promptAbandonGame()" title="Yarışmayı Terk Et" disabled class="px-3 py-2 rounded bg-red-950/40 border border-red-600/40 text-red-400/50 font-mono-label text-xs uppercase cursor-not-allowed opacity-40 transition flex items-center gap-1.5">
               <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
               <span class="hide-mobile">TERK ET</span>
             </button>
 
-            <!-- 4. SES -->
             <button id="btn-sound" onclick="toggleAudio()" title="Ses Aç/Kapat" class="btn-cyan p-2 flex items-center justify-center text-xs">
               <i id="sound-icon" data-lucide="volume-2" class="w-4 h-4"></i>
             </button>
 
-            <!-- 5. AYARLAR -->
             <button id="btn-settings" onclick="openSettingsModal()" title="Ayarlar" class="btn-neon p-2 flex items-center justify-center text-xs">
               <i data-lucide="settings" class="w-4 h-4"></i>
             </button>
 
-            <!-- 6. KILAVUZ -->
             <button id="btn-guide" onclick="openGuideImageModal()" title="Görsel Kılavuz" class="btn-cyan px-2.5 py-2 flex items-center justify-center text-xs gap-1">
               <i data-lucide="image" class="w-4 h-4 text-cyan-400"></i>
               <span class="hide-mobile font-mono-label text-xs">KILAVUZ</span>
@@ -423,9 +413,7 @@
         </div>
       </div>
 
-      <!-- Header Alt Şeridi -->
       <div id="header-sub-bar" class="flex items-center justify-between gap-1 sm:gap-2 overflow-x-auto pt-1.5 border-t border-gray-800/80 text-xs font-mono-label text-cyan-300">
-        <!-- Dinamik İçerik JavaScript Tarafından Doldurulacak -->
       </div>
     </header>
 
@@ -597,37 +585,53 @@
               <span>Yalnızca sayılarla hedef değere ulaşmaya odaklanan matematik yarışı.</span>
             </div>
             <div class="p-2.5 rounded bg-surface-container-low border border-gray-800">
-              <strong class="text-yellow-300 font-headline block mb-0.5">Günün Yarışması (18 Etap)</strong>
-              <span>3 Set x 6 Etap. Sabit 90 saniye süreyle her gün güncellenen katlamalı turnuva.</span>
+              <strong class="text-yellow-300 font-headline block mb-0.5">Günün Yarışması (12 Etap)</strong>
+              <span>3 Set x 4 Etap (Toplam 12 Oyun). Sabit 90 saniye süreyle her gün güncellenen katlamalı turnuva.</span>
             </div>
           </div>
           <div class="p-2.5 rounded bg-yellow-950/40 border border-yellow-500/30 text-yellow-200 mt-1">
             <strong>🔥 Günün Yarışması Katlama Çarpanları:</strong><br>
-            • 1. Set (1–6. Etaplar): Standard Puan (x1.0)<br>
-            • 2. Set (7–12. Etaplar): %50 Ekstra Puan (x1.5)<br>
-            • 3. Set (13–18. Etaplar): Çift Puan (x2.0)
+            • 1. Set (1–4. Etaplar): Standard Puan (x1.0)<br>
+            • 2. Set (5–8. Etaplar): %50 Ekstra Puan (x1.5)<br>
+            • 3. Set (9–12. Etaplar): Çift Puan (x2.0)
           </div>
         </div>
 
-        <!-- Bölüm 2: Kelime Etapları ve Joker -->
+        <!-- Bölüm 2: Kelime Etapları ve Puanlama -->
         <div class="flex flex-col gap-2 border-t border-gray-800 pt-3">
           <h4 class="font-headline font-bold text-sm text-cyan-300 flex items-center gap-1.5">
-            <i data-lucide="type" class="w-4 h-4"></i> 2. KELİME ETAPLARI & JOKER HARF
+            <i data-lucide="type" class="w-4 h-4"></i> 2. KELİME ETAPLARI & GÜNCELLENMİŞ PUANLAMA
           </h4>
           <p>Amaç, sunulan harflerle TDK uyumlu en uzun kelimeyi bulmaktır.</p>
           <ul class="list-disc list-inside space-y-1 text-gray-300 pl-1">
             <li><strong>Harf Havuzu:</strong> 3 Ünlü + 5 Ünsüz harf çekilir. 9. harf otomatik <strong>Joker (?)</strong> harftir.</li>
-            <li><strong>Joker Kullanımı:</strong> <span class="text-yellow-300">?</span> simgesine tıklayarak istediğiniz Türkçe harfi seçip kelimenize dahil edebilirsiniz.</li>
-            <li><strong>Harfleri Karıştırma:</strong> Kelime yazma ekranındaki <strong>KARIŞTIR</strong> butonuna basarak (veya Klavyeden <strong>SPACE/Boşluk</strong> tuşuna basarak) harflerin sırasını rastgele değiştirebilirsiniz.</li>
-            <li><strong>Sözlük Şartı:</strong> Kelimenin en az 2 harfli ve TDK uyumlu kelime listesinde bulunması zorunludur.</li>
-            <li><strong>Puanlama:</strong> 2–8 harfli geçerli kelimeler <strong>harf sayısı kadar</strong> puan verir. 9 harfli tam isabet kelimeler <strong>15 Bonus Puan</strong> kazandırır!</li>
+            <li><strong>Harfleri Karıştırma:</strong> Kelime ekranındaki <strong>KARIŞTIR</strong> butonuna basarak (veya <strong>SPACE / Boşluk</strong> tuşu ile) harfleri karıştırabilirsiniz.</li>
+            <li><strong>YENİ PUANLAMA TABLOSU:</strong>
+              <div class="overflow-x-auto my-1.5">
+                <table class="w-full text-left font-mono-label text-[11px] border-collapse">
+                  <thead>
+                    <tr class="border-b border-gray-700 bg-surface-container-low text-pink-300">
+                      <th class="p-1.5">Kelime Uzunluğu</th>
+                      <th class="p-1.5">Kazanılan Puan</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-800/60">
+                    <tr><td class="p-1.5">2, 3, 4 ve 5 Harfli</td><td class="p-1.5 font-bold text-white">Harf Sayısı Kadar (2, 3, 4, 5 P)</td></tr>
+                    <tr><td class="p-1.5 text-cyan-300">6 Harfli Kelime</td><td class="p-1.5 font-bold text-cyan-300">6 + 2 Bonus = 8 Puan</td></tr>
+                    <tr><td class="p-1.5 text-cyan-300">7 Harfli Kelime</td><td class="p-1.5 font-bold text-cyan-300">7 + 3 Bonus = 10 Puan</td></tr>
+                    <tr><td class="p-1.5 text-yellow-300">8 Harfli Kelime</td><td class="p-1.5 font-bold text-yellow-300">8 + 5 Bonus = 13 Puan</td></tr>
+                    <tr><td class="p-1.5 text-emerald-400">9 Harfli Kelime (Tam İsabet!)</td><td class="p-1.5 font-bold text-emerald-400">DOĞRUDAN 20 PUAN!</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </li>
           </ul>
         </div>
 
-        <!-- Bölüm 3: İşlem Etapları ve Puanlama Tablosu -->
+        <!-- Bölüm 3: İşlem Etapları -->
         <div class="flex flex-col gap-2 border-t border-gray-800 pt-3">
           <h4 class="font-headline font-bold text-sm text-emerald-400 flex items-center gap-1.5">
-            <i data-lucide="binary" class="w-4 h-4"></i> 3. İŞLEM ETAPLARI VE DETAYLI PUANLAMA
+            <i data-lucide="binary" class="w-4 h-4"></i> 3. İŞLEM ETAPLARI VE PUANLAMA
           </h4>
           <p>5 küçük (1–9), 1 büyük (10, 25, 50, 75, 100) sayı ile 3 basamaklı hedef sayıya ulaşmaya çalışılır.</p>
           <div class="overflow-x-auto my-1">
@@ -652,26 +656,13 @@
           </div>
         </div>
 
-        <!-- Bölüm 4: Oda Kodu ve Kısayollar -->
+        <!-- Bölüm 4: Mobil Otomatik Kayıt ve Kısayollar -->
         <div class="flex flex-col gap-2 border-t border-gray-800 pt-3">
           <h4 class="font-headline font-bold text-sm text-purple-300 flex items-center gap-1.5">
-            <i data-lucide="keyboard" class="w-4 h-4"></i> 4. KLAVYE KULLANIMI, ODA KODLARI İLE REKABET VE ANTRENMAN
+            <i data-lucide="smartphone" class="w-4 h-4"></i> 4. OTOMATİK KAYIT (MOBİL UYUMLU) & KISAYOLLAR
           </h4>
-          <p>• <strong>Klavye İle Kelime Yazma:</strong> Kelime etabında doğrudan klavyeden harflere basarak kelimenizi yazabilirsiniz.<br>
-          • <strong>Backspace / Space / Enter:</strong> Backspace son harfi siler, <strong>Space (Boşluk) harfleri karıştırır</strong>, Enter kelimeyi onaylar.<br>
-          • <strong>Oda Kodu Mantığı:</strong> Arkadaşınızdan gelen hazır kodu <i>Oda Kodu ile Rekabet</i> kutusuna yapıştırıp TAMAM'a basarsanız oyun 90 saniye sabit süreyle adil rekabet modunda başlar. Dilerseniz birazdan başlayacağınız oyunu arkadaşınıza göndererek ona meydan okuyabilirsiniz.<br>
-		  • <strong>Antrenman:</strong> Puan stresine girmeden kendinizi test edebileceğiniz bu bölümde Kelime veya İşlem Oyununu dilediğiniz kadar oynayabilirsiniz.</p>
-        </div>
-
-        <!-- Görsel İnfografik Kılavuz Bağlantısı -->
-        <div class="p-3 rounded bg-surface-container-high border border-cyan-500/40 flex items-center justify-between gap-2 mt-1">
-          <div class="flex items-center gap-2">
-            <i data-lucide="image" class="w-4 h-4 text-cyan-400 shrink-0"></i>
-            <span class="font-mono-label text-[11px] text-gray-300">Kuralları <strong>görsel infografik</strong> olarak incelemek ister misiniz?</span>
-          </div>
-          <button onclick="closeRulesModal(); openGuideImageModal();" class="btn-cyan px-3 py-1.5 text-[11px] font-bold shrink-0 flex items-center gap-1">
-            <i data-lucide="sparkles" class="w-3 h-3"></i> GÖRSEL KILAVUZ
-          </button>
+          <p>• <strong>Mobil Sekme Kaybı Yok:</strong> Oyundayken tarayıcıyı veya uygulamayı kapatsanız dahi tekrar girdiğinizde <i>"Kaldığın Yerden Devam Et"</i> seçeneği ile yarışmanız korumadadır.<br>
+          • <strong>Backspace / Space / Enter:</strong> Backspace son harfi siler, Space harfleri karıştırır, Enter cevabı onaylar.</p>
         </div>
 
       </div>
@@ -925,7 +916,7 @@
     }
 
     /* ==========================================================================
-       4. OYUN DURUMU VE AKIŞI
+       4. OYUN DURUMU VE LOCALSTORAGE (KALDIDIĞI YERDEN DEVAM ETME)
        ========================================================================== */
     const GAME_MODES = { 
       TOURNAMENT: 'TOURNAMENT', 
@@ -958,7 +949,65 @@
     let timerInterval = null;
     let draftTimerInterval = null;
 
-    // Header Butonlarının ve Skor Etiketinin Yönetimi
+    // LOCALSTORAGE'A ANLIK DURUM KAYDETME
+    function saveGameStateToLocalStorage() {
+      if (!appState.isGameActive || appState.mode === GAME_MODES.PRACTICE) {
+        localStorage.removeItem('maviblue_saved_game');
+        return;
+      }
+      try {
+        localStorage.setItem('maviblue_saved_game', JSON.stringify(appState));
+      } catch (e) {
+        console.warn('Oyun durumu kaydedilemedi:', e);
+      }
+    }
+
+    function clearSavedGameState() {
+      localStorage.removeItem('maviblue_saved_game');
+    }
+
+    function checkSavedGameExists() {
+      const saved = localStorage.getItem('maviblue_saved_game');
+      if (!saved) return null;
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.isGameActive && parsed.currentStageIndex < parsed.maxStages) {
+          return parsed;
+        }
+      } catch (e) {}
+      return null;
+    }
+
+    function resumeSavedGame() {
+      const saved = checkSavedGameExists();
+      if (!saved) return;
+      appState = saved;
+      currentPRNG = Mulberry32(appState.seed || 'RESUME_SEED');
+      
+      document.getElementById('scoreboard-total').textContent = String(appState.totalScore);
+      updateActionHeaderButtons();
+      renderTimerModeInUI();
+      renderStageTrackerHeader();
+
+      // Kaldığı etap kelime mi işlem mi kontrol et
+      if (appState.stageData) {
+        if (appState.stageData.type === 'word') {
+          if (appState.stageData.isDrafting) {
+            renderWordDraftingView();
+            startDraftTimer();
+          } else {
+            renderWordSolvingView();
+            startStageTimer();
+          }
+        } else {
+          renderMathSolvingView();
+          startStageTimer();
+        }
+      } else {
+        loadCurrentStage();
+      }
+    }
+
     function updateActionHeaderButtons() {
       const pauseBtn = document.getElementById('btn-pause');
       const quitBtn = document.getElementById('btn-quit');
@@ -1036,16 +1085,17 @@
       return `${dd}.${mm}.${yyyy}`;
     }
 
+    // GÜNÜN YARIŞMASI ÇARPANLARI (12 ETAP İÇİN GÜNCELLENDİ)
     function getCurrentMultiplier() {
       if (appState.mode !== GAME_MODES.DAILY) return 1.0;
-      if (appState.currentStageIndex < 6) return 1.0;
-      if (appState.currentStageIndex < 12) return 1.5;
-      return 2.0;
+      if (appState.currentStageIndex < 4) return 1.0;  // 1-4. Etaplar (1. Set)
+      if (appState.currentStageIndex < 8) return 1.5;  // 5-8. Etaplar (2. Set)
+      return 2.0;                                       // 9-12. Etaplar (3. Set)
     }
 
     function getCurrentSetIndex() {
-      if (appState.currentStageIndex < 6) return 0;
-      if (appState.currentStageIndex < 12) return 1;
+      if (appState.currentStageIndex < 4) return 0;
+      if (appState.currentStageIndex < 8) return 1;
       return 2;
     }
 
@@ -1078,13 +1128,12 @@
       appState.dailySetScores = [0, 0, 0];
       renderTimerModeInUI();
 
-      // Ana Menüdeyken Header Alt Şeridine Duyuru Metnini Yerleştir
       const subBar = document.getElementById('header-sub-bar');
       if (subBar) {
         subBar.innerHTML = `
           <div class="flex items-center justify-center gap-2 text-xs sm:text-sm font-mono-label text-cyan-300 w-full py-0.5">
             <i data-lucide="sparkles" class="w-4 h-4 text-pink-400 shrink-0"></i>
-            <span class="font-semibold tracking-wide">Efsane yarışma geri döndü! İster tek başına zihnini zorla, ister oda kodunla arkadaşına anında meydan oku.</span>
+            <span class="font-semibold tracking-wide">Efsane yarışma geri döndü! İster tek başına oyna, ister oda kodunu paylaşıp arkadaşınla aynı sorularla anında yarış.</span>
           </div>
         `;
       }
@@ -1096,6 +1145,7 @@
 
       const todayScore = localStorage.getItem(`daily_score_${getTodaySeedString()}`);
       const todayDateStr = getTodayFormattedDate();
+      const savedGame = checkSavedGameExists();
 
       container.innerHTML = `
         <div class="max-w-3xl mx-auto neon-panel p-6 sm:p-8 flex flex-col gap-6 text-center animate-fade-in">
@@ -1109,12 +1159,30 @@
             <h2 class="font-headline font-extrabold text-2xl sm:text-3xl text-white tracking-tight">OYNAMAK İSTEDİĞİNİZ MODU SEÇİN</h2>
           </div>
 
-          <!-- GÜNÜN YARIŞMASI ÖZEL KARTI -->
+          <!-- YARIM KALAN OYUNU SÜRDÜR KARTI -->
+          ${savedGame ? `
+            <div class="neon-panel-cyan p-4 flex items-center justify-between gap-3 border-2 border-cyan-400 shadow-[0_0_20px_rgba(0,255,204,0.2)] animate-pulse">
+              <div class="flex items-center gap-3 text-left">
+                <div class="w-10 h-10 rounded-full bg-cyan-950 border border-cyan-400 flex items-center justify-center text-cyan-300">
+                  <i data-lucide="play-circle" class="w-6 h-6"></i>
+                </div>
+                <div>
+                  <h4 class="font-headline font-bold text-sm text-white">YARIM KALAN YARIŞMANIZ VAR!</h4>
+                  <p class="text-xs text-cyan-200">Etap ${savedGame.currentStageIndex + 1} / ${savedGame.maxStages} • Skor: ${savedGame.totalScore} Puan</p>
+                </div>
+              </div>
+              <button onclick="resumeSavedGame()" class="btn-cyan px-5 py-2.5 text-xs font-bold shrink-0 flex items-center gap-1.5">
+                <i data-lucide="rotate-cw" class="w-4 h-4"></i> KALDIĞIN YERDEN DEVAM ET
+              </button>
+            </div>
+          ` : ''}
+
+          <!-- GÜNÜN YARIŞMASI ÖZEL KARTI (12 ETAP OLARAK GÜNCELLENDİ) -->
           <div class="neon-panel-gold p-5 text-left flex flex-col sm:flex-row items-center justify-between gap-4 border-2 border-yellow-500/60 shadow-[0_0_20px_rgba(255,224,74,0.15)] relative overflow-hidden">
             <div class="flex flex-col gap-1 z-10">
               <div class="flex items-center gap-2">
                 <span class="px-2 py-0.5 rounded bg-yellow-400 text-black font-headline font-extrabold text-xs uppercase tracking-wider">ÖZEL MOD</span>
-                <span class="font-mono-label text-xs text-yellow-300">3 SET • 18 OYUN • 90 SN</span>
+                <span class="font-mono-label text-xs text-yellow-300">3 SET • 12 OYUN • 90 SN</span>
                 <span class="font-mono-label text-xs text-yellow-400/90 bg-yellow-950/80 px-2 py-0.5 rounded border border-yellow-500/40 flex items-center gap-1 ml-auto sm:ml-0">
                   <i data-lucide="calendar-days" class="w-3.5 h-3.5"></i> ${todayDateStr}
                 </span>
@@ -1122,7 +1190,7 @@
               <h3 class="font-headline font-extrabold text-xl text-white flex items-center gap-2 mt-1">
                 <i data-lucide="calendar" class="w-5 h-5 text-yellow-400"></i> GÜNÜN YARIŞMASI
               </h3>
-              <p class="text-xs text-gray-300 max-w-md">1. Set (x1.0) ➔ 2. Set (x1.5) ➔ 3. Set (x2.0). Bugünün özel sorularıyla rekabete katılın!</p>
+              <p class="text-xs text-gray-300 max-w-md">1. Set (x1.0) ➔ 2. Set (x1.5) ➔ 3. Set (x2.0). Bugünün 12 özel sorusuyla zirveye tırmanın!</p>
               ${todayScore ? `<div class="mt-2 text-xs font-mono-label text-emerald-400 font-bold">✓ Bugünü Tamamladınız! Skorunuz: ${todayScore} Puan</div>` : ''}
             </div>
 
@@ -1142,7 +1210,6 @@
               <span class="text-[10px] font-mono-label text-pink-400 mt-3 block">8 ETAP • KARMA</span>
             </button>
 
-            <!-- KELİME VE İŞLEM OYUNLARINI BİRLİKTE ÇERÇEVELEYEN GRİD -->
             <div id="branch-modes-grid" class="col-span-1 sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button onclick="startMode('${GAME_MODES.WORD_ONLY}')" class="neon-panel-cyan p-4 hover:border-cyan-400 hover:shadow-[0_0_16px_rgba(0,255,204,0.3)] transition cursor-pointer group flex flex-col justify-between">
                 <div>
@@ -1168,7 +1235,6 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left border-t border-gray-800 pt-4">
             
-            <!-- ODA KODU İLE REKABET -->
             <div class="neon-panel-gold p-4 flex flex-col gap-3">
               <div class="flex items-center justify-between">
                 <span class="font-headline font-bold text-sm text-yellow-300 flex items-center gap-1.5">
@@ -1241,8 +1307,8 @@
 
             let extraBadge = '';
             if (appState.mode === GAME_MODES.DAILY) {
-              if (idx === 6) extraBadge = ' <span class="text-yellow-400 text-[9px] font-bold">[x1.5]</span>';
-              if (idx === 12) extraBadge = ' <span class="text-pink-400 text-[9px] font-bold">[x2.0]</span>';
+              if (idx === 4) extraBadge = ' <span class="text-yellow-400 text-[9px] font-bold">[x1.5]</span>';
+              if (idx === 8) extraBadge = ' <span class="text-pink-400 text-[9px] font-bold">[x2.0]</span>';
             }
 
             return `
@@ -1267,6 +1333,7 @@
 
     function startPracticeMode(type) {
       closePracticeModal();
+      clearSavedGameState();
       const roundModal = document.getElementById('modal-round-result');
       if (roundModal) roundModal.classList.add('hidden');
 
@@ -1276,6 +1343,7 @@
     }
 
     function startMode(mode) {
+      clearSavedGameState();
       appState.mode = mode;
       appState.currentStageIndex = 0;
       appState.totalScore = 0;
@@ -1287,7 +1355,7 @@
       document.getElementById('scoreboard-total').textContent = '0';
 
       if (mode === GAME_MODES.DAILY) {
-        appState.maxStages = 18;
+        appState.maxStages = 12; // 3 Set x 4 Etap (12 Etap)
         appState.seed = getTodaySeedString();
         appState.roundDuration = 90;
       } else if (mode === GAME_MODES.WORD_ONLY || mode === GAME_MODES.MATH_ONLY) {
@@ -1398,6 +1466,7 @@
     }
 
     function startCustomSeedMode() {
+      clearSavedGameState();
       const input = document.getElementById('custom-seed-input');
       let rawVal = (input && input.value.trim()) ? trToUpperCase(input.value) : generateShareableSeed(GAME_MODES.TOURNAMENT);
 
@@ -1467,6 +1536,8 @@
 
       if (isWordStage) setupWordStage();
       else setupMathStage();
+
+      saveGameStateToLocalStorage();
     }
 
     /* ==========================================================================
@@ -1509,6 +1580,7 @@
         renderWordDraftingView();
         startDraftTimer();
       }
+      saveGameStateToLocalStorage();
     }
 
     function startDraftTimer() {
@@ -1526,6 +1598,7 @@
 
         appState.stageData.draftTimeRemaining--;
         updateDraftTimerDisplay();
+        saveGameStateToLocalStorage();
 
         if (appState.stageData.draftTimeRemaining <= 0) {
           stopDraftTimer();
@@ -1628,6 +1701,8 @@
         soundCardPick();
       }
 
+      saveGameStateToLocalStorage();
+
       if (data.drawnLetters.length === 8) {
         stopDraftTimer();
         startWordSolvingPhase();
@@ -1670,15 +1745,14 @@
       appState.stageData.bestWords = solveBestWords(allLetters);
       renderWordSolvingView();
       startStageTimer();
+      saveGameStateToLocalStorage();
     }
 
-    // YENİ EKLEME: HARFLERİ RASTGELE KARIŞTIRMA (SHUFFLE) FONKSİYONU
     function shuffleRackLetters() {
       if (!appState.stageData || appState.stageData.type !== 'word') return;
       const letters = appState.stageData.letters;
       if (!letters || letters.length === 0) return;
 
-      // Fisher-Yates Algoritması ile Karıştırma
       for (let i = letters.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [letters[i], letters[j]] = [letters[j], letters[i]];
@@ -1686,6 +1760,7 @@
 
       soundShuffle();
       renderWordSolvingView();
+      saveGameStateToLocalStorage();
     }
 
     function renderWordSolvingView() {
@@ -1737,7 +1812,6 @@
           <div class="neon-panel p-4 sm:p-6 flex flex-col gap-3 text-center relative">
             <div class="flex items-center justify-between w-full">
               <span class="font-mono-label text-xs text-gray-400 uppercase tracking-wider">VERİLEN HARFLER</span>
-              <!-- KARIŞTIR (SHUFFLE) BUTONU -->
               <button onclick="shuffleRackLetters()" title="Harfleri Karıştır (Kısayol: SPACE)" class="btn-gold px-3 py-1 text-[11px] font-bold flex items-center gap-1.5 shadow-sm">
                 <i data-lucide="shuffle" class="w-3.5 h-3.5"></i> KARIŞTIR
               </button>
@@ -1779,6 +1853,7 @@
         appState.stageData.typedWord.push({ letter: trToUpperCase(ch), rackIndex: rackIndex, isJoker: false });
         soundTileClick();
         renderWordSolvingView();
+        saveGameStateToLocalStorage();
       }
     }
 
@@ -1803,6 +1878,7 @@
         soundTileClick();
         closeJokerModal();
         renderWordSolvingView();
+        saveGameStateToLocalStorage();
       }
     }
 
@@ -1810,20 +1886,24 @@
       appState.stageData.typedWord.splice(typedIndex, 1);
       soundRemove();
       renderWordSolvingView();
+      saveGameStateToLocalStorage();
     }
     function removeLastLetter() {
       if (appState.stageData.typedWord.length > 0) {
         appState.stageData.typedWord.pop();
         soundRemove();
         renderWordSolvingView();
+        saveGameStateToLocalStorage();
       }
     }
     function clearTypedWord() {
       appState.stageData.typedWord = [];
       soundRemove();
       renderWordSolvingView();
+      saveGameStateToLocalStorage();
     }
 
+    // YENİ GÜNCELLENMİŞ KELİME PUANLAMA MANTIĞI
     function submitWordAnswer() {
       stopTimer();
       stopDraftTimer();
@@ -1834,7 +1914,11 @@
 
       let basePoints = 0;
       if (isValid) {
-        basePoints = (len === 9) ? 15 : len;
+        if (len <= 5) basePoints = len;
+        else if (len === 6) basePoints = 8;   // 6 + 2 Bonus
+        else if (len === 7) basePoints = 10;  // 7 + 3 Bonus
+        else if (len === 8) basePoints = 13;  // 8 + 5 Bonus
+        else if (len === 9) basePoints = 20;  // 9 Harfli Tam İsabet = 20 Puan!
         soundSuccess();
       } else {
         soundFail();
@@ -1865,6 +1949,7 @@
       };
       appState.history.push(roundRecord);
 
+      saveGameStateToLocalStorage();
       renderRoundSummaryModal(roundRecord);
     }
 
@@ -1898,6 +1983,7 @@
 
       renderMathSolvingView();
       startStageTimer();
+      saveGameStateToLocalStorage();
     }
 
     function renderMathSolvingView() {
@@ -2020,6 +2106,7 @@
         soundSuccess();
       }
       renderMathSolvingView();
+      saveGameStateToLocalStorage();
     }
 
     function clickOpBtn(op) {
@@ -2027,6 +2114,7 @@
       appState.stageData.selectedOp = op;
       soundTileClick();
       renderMathSolvingView();
+      saveGameStateToLocalStorage();
     }
 
     function undoLastMathStep() {
@@ -2042,6 +2130,7 @@
       data.selectedOp = null;
       soundRemove();
       renderMathSolvingView();
+      saveGameStateToLocalStorage();
     }
 
     function resetMathSteps() {
@@ -2052,6 +2141,7 @@
       data.selectedOp = null;
       soundRemove();
       renderMathSolvingView();
+      saveGameStateToLocalStorage();
     }
 
     function submitMathAnswer() {
@@ -2110,6 +2200,8 @@
         bestSolver: data.bestSolver
       };
       appState.history.push(roundRecord);
+
+      saveGameStateToLocalStorage();
       renderRoundSummaryModal(roundRecord);
     }
 
@@ -2205,6 +2297,7 @@
     }
 
     function exitPracticeToMenu() {
+      clearSavedGameState();
       document.getElementById('modal-round-result').classList.add('hidden');
       renderMainMenu();
     }
@@ -2276,6 +2369,7 @@
     function finishTournament() {
       stopTimer();
       stopDraftTimer();
+      clearSavedGameState(); // Oyun tam bittiğinde geçici kaydı sil
       
       appState.currentStageIndex = appState.maxStages;
       renderStageTrackerHeader();
@@ -2443,7 +2537,6 @@
 
     function startStageTimer() {
       stopTimer();
-      appState.timerRemaining = appState.roundDuration;
       appState.isTimerRunning = true;
       appState.isPaused = false;
       updateTimerDisplay();
@@ -2452,6 +2545,8 @@
         if (appState.isPaused) return;
         appState.timerRemaining--;
         updateTimerDisplay();
+        saveGameStateToLocalStorage();
+
         if (appState.timerRemaining <= 10 && appState.timerRemaining > 0) soundTick();
         if (appState.timerRemaining <= 0) { stopTimer(); handleTimerExpired(); }
       }, 1000);
@@ -2479,6 +2574,7 @@
       if (!appState.isGameActive) return;
       if (!appState.isTimerRunning && !appState.isPaused && (!appState.stageData || !appState.stageData.isDrafting)) return;
       appState.isPaused = !appState.isPaused;
+      saveGameStateToLocalStorage();
       const modal = document.getElementById('modal-pause');
       if (modal) modal.classList.toggle('hidden', !appState.isPaused);
     }
@@ -2490,6 +2586,7 @@
     function closeAbandonModal() { document.getElementById('modal-abandon').classList.add('hidden'); }
     function confirmAbandonGame() {
       closeAbandonModal();
+      clearSavedGameState();
       document.getElementById('modal-pause').classList.add('hidden');
       appState.totalScore = 0;
       appState.currentStageIndex = 0;
@@ -2511,6 +2608,7 @@
       appState.userDefaultDuration = sec;
       appState.roundDuration = sec; 
       renderTimerModeInUI(); 
+      saveGameStateToLocalStorage();
     }
 
     function renderTimerModeInUI() {
@@ -2591,7 +2689,7 @@
             element: '.neon-panel-gold',
             popover: {
               title: '5. Günün Yarışması (Özel Mod)',
-              description: 'Her gün yenilenen 3 set (18 etap) süren bu turnuvada katlamalı puan çarpanları (x1.0, x1.5, x2.0) ile günün şampiyonu olmak için yarışırsınız!',
+              description: 'Her gün yenilenen 3 set (12 etap) süren bu turnuvada katlamalı puan çarpanları (x1.0, x1.5, x2.0) ile günün şampiyonu olmak için yarışırsınız!',
               side: 'bottom',
               align: 'center'
             }
@@ -2620,7 +2718,6 @@
       driverObj.drive();
     }
 
-    // YENİ GÜNCELLEME: Space Tuşuna Harfleri Karıştırma (Shuffle) Fonksiyonu Eklendi
     window.addEventListener('keydown', (e) => {
       if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
       const stage = appState.stageData;
@@ -2655,6 +2752,7 @@
                 stage.typedWord.push({ letter: charPressed, rackIndex: jokerIdx, isJoker: true });
                 soundTileClick();
                 renderWordSolvingView();
+                saveGameStateToLocalStorage();
               }
             }
           }
